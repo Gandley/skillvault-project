@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pricing — SkillVault</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --font-display: 'Space Grotesk', sans-serif;
+      --font-body: 'DM Sans', sans-serif;
+      --bg-primary: #0b0c10;
+      --bg-secondary: #15171e;
+      --bg-card: #1a1c24;
+      --bg-card-hover: #20242f;
+      --text-primary: #f0f2f8;
+      --text-secondary: #a4a8b8;
+      --text-muted: #6b6f82;
+      --accent: #6366f1;
+      --accent-light: #818cf8;
+      --accent-glow: rgba(99,102,241,0.22);
+      --border: #2a2d3a;
+      --border-subtle: #1f222d;
+      --green: #34d399;
+      --green-bg: rgba(52,211,153,0.12);
+      --amber: #f59e0b;
+      --amber-bg: rgba(245,158,11,0.12);
+      --rose: #f43f5e;
+      --rose-bg: rgba(244,63,94,0.12);
+      --cyan: #22d3ee;
+      --cyan-bg: rgba(34,211,238,0.12);
+      --violet: #a78bfa;
+      --violet-bg: rgba(167,139,250,0.12);
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 16px;
+      --radius-xl: 20px;
+    }
+    * { margin:0; padding:0; box-sizing:border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: var(--font-body);
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      line-height: 1.6;
+    }
+    .auth-user { display: flex; align-items: center; gap: 14px; }
+    .auth-email { font-size: 14px; color: var(--text-secondary); }
+    .auth-signout {
+      padding: 7px 14px; border-radius: 8px; border: 1px solid var(--border);
+      background: var(--bg-card); color: var(--text-secondary); font-size: 13px;
+      font-weight: 500; cursor: pointer; transition: all 0.2s; font-family: var(--font-body);
+    }
+    .auth-signout:hover { color: var(--rose); border-color: var(--rose); }
+    .auth-link { display: inline-flex; align-items: center; }
+    .auth-btn { display: inline-flex; align-items: center; }
+    h1,h2,h3,h4,h5,h6 { font-family: var(--font-display); font-weight: 600; letter-spacing: -0.02em; }
+    ::-webkit-scrollbar { width:6px; height:6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #3a3e50; border-radius: 3px; }
+    ::selection { background: var(--accent); color: #fff; }
+
+    /* Nav */
+    .nav {
+      background: rgba(11,12,16,0.88); backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 100;
+    }
+    .nav-inner { max-width: 1280px; margin: 0 auto; padding: 14px 24px; display: flex; align-items: center; justify-content: space-between; }
+    .logo { display: flex; align-items: center; gap: 10; text-decoration: none; }
+    .logo-icon {
+      width: 36px; height: 36px; border-radius: 10px;
+      background: linear-gradient(135deg, var(--accent), var(--accent-light));
+      display: flex; align-items: center; justify-content: center; color: #fff;
+      box-shadow: 0 2px 8px var(--accent-glow); flex-shrink: 0;
+    }
+    .logo-text { font-family: var(--font-display); font-size: 20px; font-weight: 700; color: var(--text-primary); letter-spacing: -0.02em; margin-left: 10px; }
+    .nav-links { display: flex; align-items: center; gap: 24px; }
+    .nav-link { font-size: 14px; color: var(--text-secondary); text-decoration: none; transition: color 0.2s; font-weight: 500; }
+    .nav-link:hover { color: var(--text-primary); }
+    .nav-btn {
+      padding: 8px 18px; border-radius: 10px; background: var(--accent); color: #fff;
+      font-size: 14px; font-weight: 600; text-decoration: none; transition: all 0.2s;
+    }
+    .nav-btn:hover { background: var(--accent-light); }
+
+    /* Hero */
+    .hero { padding: 60px 24px 30px; text-align: center; }
+    .hero-inner { max-width: 680px; margin: 0 auto; }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 6;
+      padding: 6px 14px; border-radius: 100px; background: var(--bg-card);
+      border: 1px solid var(--border); font-size: 13px; font-weight: 500;
+      color: var(--text-secondary); margin-bottom: 16px;
+    }
+    .hero-title { font-family: var(--font-display); font-size: clamp(32px, 5vw, 48px); font-weight: 700; line-height: 1.1; color: var(--text-primary); margin-bottom: 14px; }
+    .hero-sub { font-size: 17px; color: var(--text-secondary); max-width: 520px; margin: 0 auto; line-height: 1.6; }
+
+    /* Pricing Cards */
+    .pricing-section { max-width: 1280px; margin: 0 auto; padding: 40px 24px; }
+    .pricing-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+    .pricing-card {
+      background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-xl);
+      padding: 28px; display: flex; flex-direction: column; gap: 20px; position: relative; transition: all 0.25s;
+    }
+    .pricing-card:hover { transform: translateY(-3px); border-color: var(--border-subtle); box-shadow: 0 8px 32px rgba(0,0,0,0.35); }
+    .pricing-card.recommended {
+      border-color: rgba(167,139,250,0.25);
+      box-shadow: 0 0 0 1px rgba(167,139,250,0.08), 0 8px 32px rgba(0,0,0,0.35);
+      background: linear-gradient(180deg, #1e2030 0%, #1a1c24 100%);
+    }
+    .recommended-badge {
+      position: absolute; top: -1px; left: 50%; transform: translateX(-50%);
+      background: var(--violet); color: #0b0c10; font-size: 12px; font-weight: 700;
+      padding: 5px 16px; border-radius: 0 0 12px 12px; text-transform: uppercase; letter-spacing: 0.04em;
+    }
+    .card-icon { width: 48px; height: 48px; border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; }
+    .card-title { font-family: var(--font-display); font-size: 22px; font-weight: 700; color: var(--text-primary); }
+    .card-desc { font-size: 14px; color: var(--text-secondary); line-height: 1.5; }
+    .price-wrap { display: flex; align-items: baseline; gap: 6; }
+    .price { font-family: var(--font-display); font-size: 42px; font-weight: 700; color: var(--text-primary); line-height: 1; }
+    .price-note { font-size: 15px; color: var(--text-muted); font-weight: 500; }
+    .feature-list { display: flex; flex-direction: column; gap: 10; list-style: none; padding: 0; margin: 0; }
+    .feature-item { display: flex; align-items: flex-start; gap: 10; font-size: 14px; color: var(--text-secondary); line-height: 1.4; }
+    .feature-check { flex-shrink: 0; margin-top: 2px; }
+    .feature-text { padding-top: 1px; }
+    .btn {
+      display: block; width: 100%; text-align: center; padding: 12px 20px; border-radius: var(--radius-md);
+      border: 1px solid; font-size: 15px; font-weight: 600; font-family: var(--font-body);
+      text-decoration: none; cursor: pointer; transition: all 0.2s;
+    }
+    .btn-green { background: var(--green-bg); color: var(--green); border-color: rgba(52,211,153,0.25); }
+    .btn-green:hover { background: rgba(52,211,153,0.2); }
+    .btn-amber { background: var(--amber-bg); color: var(--amber); border-color: rgba(245,158,11,0.25); }
+    .btn-amber:hover { background: rgba(245,158,11,0.2); }
+    .btn-violet { background: var(--violet); color: #0b0c10; border-color: var(--violet); font-weight: 700; }
+    .btn-violet:hover { background: var(--accent-light); }
+
+    /* FAQ */
+    .faq-section { max-width: 720px; margin: 0 auto; padding: 60px 24px; }
+    .faq-title { font-family: var(--font-display); font-size: clamp(24px, 3.5vw, 32px); font-weight: 700; color: var(--text-primary); text-align: center; margin-bottom: 36px; }
+    .faq-item { border-bottom: 1px solid var(--border); }
+    .faq-question {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 18px 0; cursor: pointer; font-size: 16px; font-weight: 600;
+      color: var(--text-primary); font-family: var(--font-display); user-select: none;
+    }
+    .faq-question:hover { color: var(--accent-light); }
+    .faq-icon { width: 24px; height: 24px; border-radius: 6px; display: flex; align-items: center; justify-content: center;
+      color: var(--text-muted); transition: all 0.2s; flex-shrink: 0; margin-left: 12px;
+    }
+    .faq-item.active .faq-icon { transform: rotate(45deg); color: var(--accent-light); }
+    .faq-answer { max-height: 0; overflow: hidden; transition: max-height 0.3s ease, padding 0.3s ease; }
+    .faq-item.active .faq-answer { max-height: 300px; padding-bottom: 18px; }
+    .faq-answer p { font-size: 14px; color: var(--text-secondary); line-height: 1.7; }
+
+    /* Footer */
+    .footer { border-top: 1px solid var(--border); padding: 20px 24px; }
+    .footer-inner { max-width: 1280px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12; }
+    .footer-left { font-size: 13px; color: var(--text-muted); }
+    .footer-links { display: flex; gap: 20; }
+    .footer-link { font-size: 13px; color: var(--text-muted); text-decoration: none; transition: color 0.2s; }
+    .footer-link:hover { color: var(--text-secondary); }
+
+    @media (max-width: 640px) {
+      .nav-links { display: none; }
+      .pricing-grid { grid-template-columns: 1fr; }
+      .footer-inner { flex-direction: column; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="nav">
+    <div class="nav-inner">
+      <a href="/" class="logo">
+        <div class="logo-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
+        </div>
+        <span class="logo-text">SkillVault</span>
+      </a>
+      <div class="nav-links" id="nav-auth">
+        <a href="/" class="nav-link">Skills</a>
+        <a href="pricing.html" class="nav-link">Pricing</a>
+        <a href="#coming-soon" class="nav-link">Docs</a>
+        <a href="/login.html" class="nav-btn">Go Pro</a>
+      </div>
+    </div>
+  </nav>
+
+  <section class="hero">
+    <div class="hero-inner">
+      <div class="hero-badge">Flexible Pricing</div>
+      <h1 class="hero-title">Simple, Transparent Pricing</h1>
+      <p class="hero-sub">Choose the plan that fits your workflow. No hidden fees, no surprises. Upgrade or downgrade anytime.</p>
+    </div>
+  </section>
+
+  <section class="pricing-section">
+    <div class="pricing-grid">
+
+      <!-- Free -->
+      <div class="pricing-card">
+        <div>
+          <div class="card-icon" style="background: var(--green-bg); color: var(--green);">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 12 20 22 4 22 4 12"/><rect x="2" y="7" width="20" height="5"/><line x1="12" y1="22" x2="12" y2="7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/></svg>
+          </div>
+          <h3 class="card-title" style="margin-top: 14px;">Free</h3>
+          <p class="card-desc">Get started with core skills — account required.</p>
+        </div>
+        <div class="price-wrap">
+          <span class="price">$0</span>
+          <span class="price-note">forever</span>
+        </div>
+        <ul class="feature-list">
+          <li class="feature-item"><svg class="feature-check" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg><span class="feature-text">3 beginner-friendly skills</span></li>
+          <li class="feature-item"><svg class="feature-check" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg><span class="feature-text">Account required to download</span></li>
+          <li class="feature-item"><svg class="feature-check" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg><span class="feature-text">Community support</span></li>
+          <li class="feature-item"><svg class="feature-check" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg><span class="feature-text">Basic documentation</span></li>
+        </ul>
+        <button class="btn btn-green" onclick="svAuthGo('/login.html')">Get Started Free</button>
+      </div>
+
+      <!-- Pay-Per-Skill -->
+      <div class="pricing-card">
+        <div>
+          <div class="card-icon" style="background: var(--amber-bg); color: var(--amber);">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+          </div>
+          <h3 class="card-title" style="margin-top: 14px;">Pay-Per-Skill</h3>
+          <p class="card-desc">Buy only what you need. Full ownership, one-time fee.</p>
+        </div>
+        <div class="price-wrap">
+          <span class="price">$9</span>
+          <span class="price-note">per skill</span>
+        </div>
+        <ul class="feature-list">
+          <li class="feature-item"><svg class="feature-check" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--amber)" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg><span class="feature-text">5 premium skills available</span></li>
+          <li class="feature-item"><svg class="feature-check" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--amber)" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg><span class="feature-text">One-time purchase, lifetime access</span></li>
+          <li class="feature-item"><svg class="feature-check" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--amber)" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg><span class="feature-text">Requires free account</span></li>
+          <li class="feature-item"><svg class="feature-check" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--amber)" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg><span class="feature-text">Email + chat support</span></li>
+        </ul>
+        <button class="btn btn-amber" onclick="svAuthGo('/login.html')">Browse Skills</button>
+      </div>
+
+      <!-- Vault Pro — Recommended -->
+      <div class="pricing-card recommended">
+        <div class="recommended-badge">Recommended</div>
+        <div>
+          <div class="card-icon" style="background: rgba(167,139,250,0.18); color: var(--violet);">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          </div>
+          <h3 class="card-title" style="margin-top: 14px; color: var(--violet);">Vault Pro</h3>
+          <p class="card-desc">Unlimited access to everything — present and future.</p>
+        </div>
+        <div class="price-wrap">
+          <span class="price" style="color: var(--violet);">$27</span>
+          <span class="price-note">/month</span>
+        </div>
+        <ul class="feature-list">
+          <li class="feature-item"><svg class="feature-check" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--violet)" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg><span class="feature-text">All 18 skills + future additions</span></li>
+          <li class="feature-item"><svg class="feature-check" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--violet)" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg><span class="feature-text">New skills added monthly</span></li>
+          <li class="feature-item"><svg class="feature-check" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--violet)" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg><span class="feature-text">Priority support</span></li>
+          <li class="feature-item"><svg class="feature-check" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--violet)" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg><span class="feature-text">Advanced documentation & examples</span></li>
+          <li class="feature-item"><svg class="feature-check" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--violet)" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg><span class="feature-text">Early access to beta features</span></li>
+        </ul>
+        <button class="btn btn-violet" onclick="svAuthGo('/login.html')">Go Pro</button>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- FAQ Section -->
+  <section class="faq-section">
+    <h2 class="faq-title">Frequently Asked Questions</h2>
+
+    <div class="faq-item">
+      <div class="faq-question" onclick="this.parentElement.classList.toggle('active')">
+        <span>What's included in Vault Pro?</span>
+        <span class="faq-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span>
+      </div>
+      <div class="faq-answer">
+        <p>Vault Pro gives you unlimited access to all 18 current skills plus every new skill we release. New skills are added monthly, and Pro members get them immediately at no extra cost. You also get priority support, advanced documentation with real-world examples, and early access to beta features before they go public.</p>
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-question" onclick="this.parentElement.classList.toggle('active')">
+        <span>Can I buy skills individually?</span>
+        <span class="faq-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span>
+      </div>
+      <div class="faq-answer">
+        <p>Yes. 5 premium skills are available as one-time purchases for $9 each. Once you buy a skill, it's yours forever — no recurring fees, no expiration. You'll need a free SkillVault account to manage your purchases and downloads. Individual skills are perfect if you only need specific tools rather than the full library.</p>
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-question" onclick="this.parentElement.classList.toggle('active')">
+        <span>How do I access my downloads after purchase?</span>
+        <span class="faq-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span>
+      </div>
+      <div class="faq-answer">
+        <p>After any purchase, your skills are available in your SkillVault dashboard. Free skills download after logging in. Paid and Pro skills require logging into your account — from there you can download, update, and reinstall anytime. All files are yours to keep and use across unlimited projects.</p>
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-question" onclick="this.parentElement.classList.toggle('active')">
+        <span>Can I cancel my Pro subscription anytime?</span>
+        <span class="faq-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span>
+      </div>
+      <div class="faq-answer">
+        <p>Absolutely. Vault Pro is a month-to-month subscription with no contracts or cancellation fees. You can cancel anytime from your account settings, and you'll retain access until the end of your current billing period. If you rejoin later, your access and any previously downloaded skills are restored immediately.</p>
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-question" onclick="this.parentElement.classList.toggle('active')">
+        <span>What's the difference between Free and Paid skills?</span>
+        <span class="faq-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span>
+      </div>
+      <div class="faq-answer">
+        <p>Free skills are our most beginner-friendly tools — simple to set up, well-documented, and production-ready. Paid skills ($9) are more advanced, with deeper integrations, more features, and broader use cases. Pro skills are our most powerful offerings, including cutting-edge AI features, automation workflows, and complex integrations. All tiers are built to the same quality standard.</p>
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-question" onclick="this.parentElement.classList.toggle('active')">
+        <span>Do you offer refunds?</span>
+        <span class="faq-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span>
+      </div>
+      <div class="faq-answer">
+        <p>Yes. We offer a 14-day money-back guarantee on all purchases. If a skill doesn't meet your expectations, contact our support team within 14 days and we'll issue a full refund — no questions asked. Pro subscriptions can also be refunded within the first 14 days of any billing cycle.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-left">
+        <span style="font-weight: 600; color: var(--text-primary);">SkillVault</span>
+        <span style="color: var(--text-muted); margin-left: 8;">· 18 skills available</span>
+      </div>
+      <div class="footer-links">
+        <a href="pricing.html" class="footer-link">Pricing</a>
+        <a href="#coming-soon" class="footer-link">Docs</a>
+        <a href="#coming-soon" class="footer-link">API</a>
+        <a href="#coming-soon" class="footer-link">Support</a>
+      </div>
+    </div>
+  </footer>
+
+  <script async crossorigin="anonymous" data-clerk-publishable-key="pk_test_bWF4aW11bS1tYW1tYWwtMzcuY2xlcmsuYWNjb3VudHMuZGV2JA" src="https://maximum-mammal-37.clerk.accounts.dev/npm/@clerk/clerk-js@latest/dist/clerk.browser.js" type="text/javascript"></script>
+  <script src="auth-nav.js"></script>
+  <script>
+    function svAuthGo(baseUrl) {
+      const returnUrl = window.location.pathname + window.location.search;
+      window.location.href = baseUrl + '?return_url=' + encodeURIComponent(returnUrl);
+    }
+  </script>
+
+</body>
+</html>
