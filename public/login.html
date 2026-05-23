@@ -14,7 +14,6 @@
       --bg-primary: #0b0c10;
       --bg-secondary: #15171e;
       --bg-card: #1a1c24;
-      --bg-card-hover: #20242f;
       --text-primary: #f0f2f8;
       --text-secondary: #a4a8b8;
       --text-muted: #6b6f82;
@@ -22,28 +21,21 @@
       --accent-light: #818cf8;
       --accent-glow: rgba(99,102,241,0.22);
       --border: #2a2d3a;
-      --border-subtle: #1f222d;
-      --green: #34d399;
-      --green-bg: rgba(52,211,153,0.12);
-      --radius-sm: 8px;
+      --rose: #f43f5e;
       --radius-md: 12px;
-      --radius-lg: 16px;
       --radius-xl: 20px;
     }
     * { margin:0; padding:0; box-sizing:border-box; }
-    html { scroll-behavior: smooth; }
     body {
       font-family: var(--font-body);
       background: var(--bg-primary);
       color: var(--text-primary);
       -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
       min-height: 100vh;
       display: flex;
       flex-direction: column;
     }
-    h1,h2,h3,h4,h5,h6 { font-family: var(--font-display); font-weight: 600; letter-spacing: -0.02em; }
-    ::selection { background: var(--accent); color: #fff; }
+    h1 { font-family: var(--font-display); font-weight: 600; letter-spacing: -0.02em; }
 
     /* Nav */
     .nav {
@@ -58,25 +50,11 @@
       display: flex; align-items: center; justify-content: center; color: #fff;
       box-shadow: 0 2px 8px var(--accent-glow); flex-shrink: 0;
     }
-    .logo-text { font-family: var(--font-display); font-size: 20px; font-weight: 700; color: var(--text-primary); letter-spacing: -0.02em; margin-left: 10px; }
+    .logo-text { font-family: var(--font-display); font-size: 20px; font-weight: 700; color: var(--text-primary); margin-left: 10px; }
     .nav-links { display: flex; align-items: center; gap: 20px; }
-    .nav-link { font-size: 14px; color: var(--text-secondary); text-decoration: none; transition: color 0.2s; font-weight: 500; }
+    .nav-link { font-size: 14px; color: var(--text-secondary); text-decoration: none; font-weight: 500; }
     .nav-link:hover { color: var(--text-primary); }
-    .nav-btn {
-      padding: 8px 18px; border-radius: 10px; background: var(--accent); color: #fff;
-      font-size: 14px; font-weight: 600; text-decoration: none; transition: all 0.2s;
-    }
-    .nav-btn:hover { background: var(--accent-light); }
-    .auth-user { display: flex; align-items: center; gap: 14px; }
-    .auth-email { font-size: 14px; color: var(--text-secondary); }
-    .auth-signout {
-      padding: 7px 14px; border-radius: 8px; border: 1px solid var(--border);
-      background: var(--bg-card); color: var(--text-secondary); font-size: 13px;
-      font-weight: 500; cursor: pointer; transition: all 0.2s; font-family: var(--font-body);
-    }
-    .auth-signout:hover { color: var(--rose); border-color: var(--rose); }
-    .auth-link { display: inline-flex; align-items: center; }
-    .auth-btn { display: inline-flex; align-items: center; }
+    .nav-btn { padding: 8px 18px; border-radius: 10px; background: var(--accent); color: #fff; font-size: 14px; font-weight: 600; text-decoration: none; }
 
     /* Main */
     .main { flex: 1; display: flex; align-items: center; justify-content: center; padding: 60px 24px; }
@@ -86,40 +64,29 @@
     }
     .card-title { font-family: var(--font-display); font-size: 24px; font-weight: 700; margin-bottom: 6px; }
     .card-sub { font-size: 14px; color: var(--text-muted); margin-bottom: 28px; }
-    .signin-container { margin-bottom: 20px; min-height: 320px; }
-    .signup-prompt { font-size: 14px; color: var(--text-secondary); margin-top: 16px; }
-    .signup-prompt a { color: var(--accent); text-decoration: none; font-weight: 600; }
-    .signup-prompt a:hover { text-decoration: underline; }
 
-    /* Loading spinner */
-    .loading-wrap { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 200px; gap: 14px; }
-    .spinner {
-      width: 36px; height: 36px; border: 3px solid var(--border); border-top-color: var(--accent);
-      border-radius: 50%; animation: spin 0.8s linear infinite;
-    }
+    /* Loading */
+    .loading-wrap { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; padding: 40px 0; }
+    .spinner { width: 36px; height: 36px; border: 3px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; }
     @keyframes spin { to { transform: rotate(360deg); } }
     .loading-text { font-size: 14px; color: var(--text-muted); }
 
-    /* Error message */
-    .error-wrap { display: flex; flex-direction: column; align-items: center; gap: 16px; padding: 20px; }
+    /* Error */
+    .error-wrap { display: none; flex-direction: column; align-items: center; gap: 16px; padding: 20px; }
     .error-text { font-size: 14px; color: var(--rose); }
-    .retry-btn {
-      padding: 8px 18px; border-radius: 8px; background: var(--accent); color: #fff;
-      font-size: 13px; font-weight: 600; border: none; cursor: pointer;
-    }
+    .retry-btn { padding: 8px 18px; border-radius: 8px; background: var(--accent); color: #fff; font-size: 13px; font-weight: 600; border: none; cursor: pointer; }
+
+    .signup-prompt { font-size: 14px; color: var(--text-secondary); margin-top: 16px; }
+    .signup-prompt a { color: var(--accent); text-decoration: none; font-weight: 600; }
 
     /* Footer */
     .footer { border-top: 1px solid var(--border); padding: 20px 24px; }
     .footer-inner { max-width: 1280px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12; }
     .footer-left { font-size: 13px; color: var(--text-muted); }
     .footer-links { display: flex; gap: 20px; }
-    .footer-link { font-size: 13px; color: var(--text-muted); text-decoration: none; transition: color 0.2s; }
-    .footer-link:hover { color: var(--text-secondary); }
+    .footer-link { font-size: 13px; color: var(--text-muted); text-decoration: none; }
 
-    @media (max-width: 640px) {
-      .nav-links { display: none; }
-      .footer-inner { flex-direction: column; text-align: center; }
-    }
+    @media (max-width: 640px) { .nav-links { display: none; } .footer-inner { flex-direction: column; text-align: center; } }
   </style>
 </head>
 <body>
@@ -143,13 +110,12 @@
     <div class="card">
       <h1 class="card-title">Welcome Back</h1>
       <p class="card-sub">Sign in to your SkillVault account</p>
-      <div id="clerk-signin" class="signin-container">
-        <div class="loading-wrap" id="loading">
-          <div class="spinner"></div>
-          <span class="loading-text">Loading authentication...</span>
-        </div>
+      <div id="clerk-signin" class="signin-container"></div>
+      <div class="loading-wrap" id="loading">
+        <div class="spinner"></div>
+        <span class="loading-text">Loading authentication...</span>
       </div>
-      <div id="error-wrap" class="error-wrap" style="display:none;">
+      <div class="error-wrap" id="error-wrap">
         <span class="error-text" id="error-text">Failed to load authentication.</span>
         <button class="retry-btn" onclick="window.location.reload()">Try Again</button>
       </div>
@@ -160,8 +126,8 @@
   <footer class="footer">
     <div class="footer-inner">
       <div class="footer-left">
-        <span style="font-weight: 600; color: var(--text-primary);">SkillVault</span>
-        <span style="color: var(--text-muted); margin-left: 8px;">· AI-Powered Skills</span>
+        <span style="font-weight:600;color:var(--text-primary)">SkillVault</span>
+        <span style="color:var(--text-muted);margin-left:8px">· AI-Powered Skills</span>
       </div>
       <div class="footer-links">
         <a href="pricing.html" class="footer-link">Pricing</a>
@@ -171,78 +137,48 @@
     </div>
   </footer>
 
+  <!-- Clerk CDN with publishable key — auto-loads itself -->
   <script async crossorigin="anonymous" data-clerk-publishable-key="pk_test_bWF4aW11bS1tYW1tYWwtMzcuY2xlcmsuYWNjb3VudHMuZGV2JA" src="https://maximum-mammal-37.clerk.accounts.dev/npm/@clerk/clerk-js@latest/dist/clerk.browser.js" type="text/javascript"></script>
   <script src="auth-nav.js"></script>
+
   <script>
     (function() {
       const params = new URLSearchParams(window.location.search);
       const returnUrl = params.get('return_url') || '/';
-      const signinEl = document.getElementById('clerk-signin');
       const loadingEl = document.getElementById('loading');
       const errorWrap = document.getElementById('error-wrap');
       const errorText = document.getElementById('error-text');
 
       function showError(msg) {
         if (loadingEl) loadingEl.style.display = 'none';
-        if (errorWrap) {
-          errorWrap.style.display = 'flex';
-          errorText.textContent = msg || 'Failed to load authentication.';
-        }
+        if (errorWrap) { errorWrap.style.display = 'flex'; errorText.textContent = msg || 'Failed to load authentication.'; }
       }
 
       function mountSignIn() {
-        // Remove loading indicator
         if (loadingEl) loadingEl.style.display = 'none';
+        if (!window.Clerk) { showError('Authentication library not loaded.'); return; }
+        const el = document.getElementById('clerk-signin');
+        if (el && window.Clerk.mountSignIn) {
+          window.Clerk.mountSignIn(el, { redirectUrl: returnUrl, afterSignInUrl: returnUrl });
+        } else {
+          showError('Authentication component not available.');
+        }
+      }
 
-        if (!window.Clerk) {
-          showError('Authentication library not loaded. Please check your connection and refresh.');
+      // Poll for Clerk to finish auto-loading (script tag with data-clerk-publishable-key triggers this)
+      let attempts = 0;
+      const timer = setInterval(() => {
+        attempts++;
+        if (window.Clerk && window.Clerk.loaded) {
+          clearInterval(timer);
+          mountSignIn();
           return;
         }
-
-        window.Clerk.load({ publishableKey: 'pk_test_bWF4aW11bS1tYW1tYWwtMzcuY2xlcmsuYWNjb3VudHMuZGV2JA' }).then(() => {
-          const el = document.getElementById('clerk-signin');
-          if (el && window.Clerk.mountSignIn) {
-            window.Clerk.mountSignIn(el, {
-              redirectUrl: returnUrl,
-              afterSignInUrl: returnUrl,
-              routing: 'hash',
-            });
-          } else {
-            showError('Authentication component not available. Please refresh.');
-          }
-        }).catch((err) => {
-          console.error('Clerk load error:', err);
-          showError('Authentication failed to initialize. Please try again.');
-        });
-      }
-
-      // Wait for Clerk script to actually load
-      const clerkScript = document.querySelector('script[data-clerk-publishable-key]');
-      if (clerkScript) {
-        if (clerkScript.readyState === 'complete' || clerkScript.readyState === 'loaded') {
-          mountSignIn();
-        } else {
-          clerkScript.addEventListener('load', mountSignIn);
-          clerkScript.addEventListener('error', () => showError('Failed to load authentication library.'));
+        if (attempts >= 150) {
+          clearInterval(timer);
+          showError('Authentication took too long to load. Please check your connection and refresh.');
         }
-      } else {
-        // Fallback: poll for 10 seconds
-        let attempts = 0;
-        const maxAttempts = 100;
-        const check = () => {
-          attempts++;
-          if (window.Clerk) {
-            mountSignIn();
-            return;
-          }
-          if (attempts >= maxAttempts) {
-            showError('Authentication library took too long to load. Please check your connection and refresh.');
-            return;
-          }
-          setTimeout(check, 100);
-        };
-        check();
-      }
+      }, 100);
     })();
   </script>
 
