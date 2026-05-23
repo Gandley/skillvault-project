@@ -21,10 +21,12 @@ export default function RepoView() {
   const [sortBy, setSortBy] = useState('popular');
   const [bannerDismissed, setBannerDismissed] = useState(false);
 
+  const CLERK_HOSTED_SIGNIN = 'https://maximum-mammal-37.clerk.accounts.dev/sign-in';
+
   const handleBannerPro = async () => {
     if (!isSignedIn || !user) {
-      const returnUrl = window.location.pathname + window.location.search;
-      window.location.href = '/login.html?return_url=' + encodeURIComponent(returnUrl);
+      const returnUrl = encodeURIComponent(window.location.href);
+      window.location.href = CLERK_HOSTED_SIGNIN + '?redirect_url=' + returnUrl;
       return;
     }
     try {

@@ -186,7 +186,7 @@
         <a href="/" class="nav-link">Skills</a>
         <a href="pricing.html" class="nav-link">Pricing</a>
         <a href="#coming-soon" class="nav-link">Docs</a>
-        <a href="/login.html" class="nav-btn">Go Pro</a>
+        <a href="https://maximum-mammal-37.clerk.accounts.dev/sign-in?redirect_url=https%3A%2F%2Fskillvault-project-nu.vercel.app%2Fpricing.html" class="nav-btn">Go Pro</a>
       </div>
     </div>
   </nav>
@@ -221,7 +221,7 @@
           <li class="feature-item"><svg class="feature-check" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg><span class="feature-text">Community support</span></li>
           <li class="feature-item"><svg class="feature-check" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg><span class="feature-text">Basic documentation</span></li>
         </ul>
-        <button class="btn btn-green" onclick="svAuthGo('/login.html')">Get Started Free</button>
+        <button class="btn btn-green" onclick="svAuthGo()">Get Started Free</button>
       </div>
 
       <!-- Pay-Per-Skill -->
@@ -243,7 +243,7 @@
           <li class="feature-item"><svg class="feature-check" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--amber)" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg><span class="feature-text">Requires free account</span></li>
           <li class="feature-item"><svg class="feature-check" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--amber)" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg><span class="feature-text">Email + chat support</span></li>
         </ul>
-        <button class="btn btn-amber" onclick="svAuthGo('/login.html')">Browse Skills</button>
+        <button class="btn btn-amber" onclick="svAuthGo()">Browse Skills</button>
       </div>
 
       <!-- Vault Pro — Recommended -->
@@ -267,7 +267,7 @@
           <li class="feature-item"><svg class="feature-check" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--violet)" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg><span class="feature-text">Advanced documentation & examples</span></li>
           <li class="feature-item"><svg class="feature-check" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--violet)" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg><span class="feature-text">Early access to beta features</span></li>
         </ul>
-        <button class="btn btn-violet" onclick="svAuthGo('/login.html')">Go Pro</button>
+        <button class="btn btn-violet" onclick="svAuthGo()">Go Pro</button>
       </div>
 
     </div>
@@ -357,9 +357,10 @@
   <script async crossorigin="anonymous" data-clerk-publishable-key="pk_test_bWF4aW11bS1tYW1tYWwtMzcuY2xlcmsuYWNjb3VudHMuZGV2JA" src="https://maximum-mammal-37.clerk.accounts.dev/npm/@clerk/clerk-js@latest/dist/clerk.browser.js" type="text/javascript"></script>
   <script src="auth-nav.js"></script>
   <script>
-    function svAuthGo(baseUrl) {
-      const returnUrl = window.location.pathname + window.location.search;
-      window.location.href = baseUrl + '?return_url=' + encodeURIComponent(returnUrl);
+    const CLERK_HOSTED_SIGNIN = 'https://maximum-mammal-37.clerk.accounts.dev/sign-in';
+    function svAuthGo() {
+      const returnUrl = encodeURIComponent(window.location.href);
+      window.location.href = CLERK_HOSTED_SIGNIN + '?redirect_url=' + returnUrl;
     }
   </script>
 

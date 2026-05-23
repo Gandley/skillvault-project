@@ -1,6 +1,8 @@
 import { useEffect, useState, useCallback } from 'react';
 
 const CLERK_KEY = 'pk_test_bWF4aW11bS1tYW1tYWwtMzcuY2xlcmsuYWNjb3VudHMuZGV2JA';
+const CLERK_HOSTED_SIGNIN = 'https://maximum-mammal-37.clerk.accounts.dev/sign-in';
+const CLERK_HOSTED_SIGNUP = 'https://maximum-mammal-37.clerk.accounts.dev/sign-up';
 
 let clerkPromise = null;
 let clerkLoaded = false;
@@ -46,13 +48,13 @@ export function useClerkAuth() {
   }, [refresh]);
 
   const signInRedirect = useCallback((returnPath) => {
-    const url = `/login.html?return_url=${encodeURIComponent(returnPath || window.location.pathname)}`;
-    window.location.href = url;
+    const returnUrl = encodeURIComponent(returnPath || window.location.href);
+    window.location.href = `${CLERK_HOSTED_SIGNIN}?redirect_url=${returnUrl}`;
   }, []);
 
   const signUpRedirect = useCallback((returnPath) => {
-    const url = `/signup.html?return_url=${encodeURIComponent(returnPath || window.location.pathname)}`;
-    window.location.href = url;
+    const returnUrl = encodeURIComponent(returnPath || window.location.href);
+    window.location.href = `${CLERK_HOSTED_SIGNUP}?redirect_url=${returnUrl}`;
   }, []);
 
   const signOut = useCallback(() => {
@@ -67,8 +69,8 @@ export function useClerkAuth() {
 export function requireAuth(action, tier) {
   if (tier === 'free') return true;
   if (!window.Clerk || !window.Clerk.user) {
-    const returnUrl = window.location.pathname + window.location.search;
-    window.location.href = `/login.html?return_url=${encodeURIComponent(returnUrl)}`;
+    const returnUrl = encodeURIComponent(window.location.href);
+    window.location.href = `${CLERK_HOSTED_SIGNIN}?redirect_url=${returnUrl}`;
     return false;
   }
   return true;

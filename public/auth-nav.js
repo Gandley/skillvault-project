@@ -1,11 +1,17 @@
 /**
- * SkillVault Auth Navigation — Clerk integration
+ * SkillVault Auth Navigation — Clerk hosted pages integration
  * Include this script on every static HTML page after the Clerk CDN.
  */
 (function() {
   'use strict';
 
   const CLERK_KEY = 'pk_test_bWF4aW11bS1tYW1tYWwtMzcuY2xlcmsuYWNjb3VudHMuZGV2JA';
+  const CLERK_HOSTED_SIGNIN = 'https://maximum-mammal-37.clerk.accounts.dev/sign-in';
+  const CLERK_HOSTED_SIGNUP = 'https://maximum-mammal-37.clerk.accounts.dev/sign-up';
+
+  function getReturnUrl() {
+    return encodeURIComponent(window.location.href);
+  }
 
   function renderNav() {
     if (!window.Clerk || !window.Clerk.loaded) return;
@@ -25,10 +31,10 @@
         window.Clerk.signOut();
       });
     } else {
-      const returnUrl = encodeURIComponent(window.location.pathname + window.location.search);
+      const returnUrl = getReturnUrl();
       navAuth.innerHTML = `
-        <a href="/login.html?return_url=${returnUrl}" class="nav-link auth-link">Login</a>
-        <a href="/signup.html?return_url=${returnUrl}" class="nav-btn auth-btn">Sign Up</a>
+        <a href="${CLERK_HOSTED_SIGNIN}?redirect_url=${returnUrl}" class="nav-link auth-link">Login</a>
+        <a href="${CLERK_HOSTED_SIGNUP}?redirect_url=${returnUrl}" class="nav-btn auth-btn">Sign Up</a>
       `;
     }
   }

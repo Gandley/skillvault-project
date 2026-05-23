@@ -1,7 +1,7 @@
 import { useClerkAuth } from '../lib/auth';
 
 export default function AuthNav() {
-  const { isSignedIn, user, signInRedirect, signOut } = useClerkAuth();
+  const { isSignedIn, user, signInRedirect, signUpRedirect, signOut } = useClerkAuth();
 
   if (isSignedIn && user) {
     return (
@@ -12,12 +12,10 @@ export default function AuthNav() {
     );
   }
 
-  const returnUrl = encodeURIComponent(window.location.pathname + window.location.search);
-
   return (
     <div style={authBtns}>
-      <a href={`/login.html?return_url=${returnUrl}`} style={loginBtn}>Login</a>
-      <a href={`/signup.html?return_url=${returnUrl}`} style={signupBtn}>Sign Up</a>
+      <button onClick={() => signInRedirect()} style={loginBtn}>Login</button>
+      <button onClick={() => signUpRedirect()} style={signupBtn}>Sign Up</button>
     </div>
   );
 }
@@ -42,5 +40,5 @@ const signupBtn = {
   padding: '8px 18px', borderRadius: 10,
   background: 'var(--accent)', color: '#fff', fontSize: 13,
   fontWeight: 600, textDecoration: 'none', transition: 'all 0.2s',
-  display: 'inline-flex', alignItems: 'center',
+  display: 'inline-flex', alignItems: 'center', border: 'none', cursor: 'pointer',
 };
