@@ -63,6 +63,16 @@
     .card-title { font-family: var(--font-display); font-size: 24px; font-weight: 700; margin-bottom: 6px; }
     .card-sub { font-size: 14px; color: var(--text-muted); margin-bottom: 28px; }
 
+    /* CRITICAL: Clerk container must have explicit dimensions */
+    .signin-container {
+      width: 100%;
+      min-width: 300px;
+      min-height: 400px;
+      display: block;
+      overflow: visible;
+      position: relative;
+    }
+
     .loading-wrap { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; padding: 40px 0; }
     .spinner { width: 36px; height: 36px; border: 3px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; }
     @keyframes spin { to { transform: rotate(360deg); } }
@@ -132,6 +142,7 @@
     </div>
   </footer>
 
+  <!-- Clerk script loads synchronously and auto-initializes via data-clerk-publishable-key -->
   <script crossorigin="anonymous" data-clerk-publishable-key="pk_test_bWF4aW11bS1tYW1tYWwtMzcuY2xlcmsuYWNjb3VudHMuZGV2JA" src="https://maximum-mammal-37.clerk.accounts.dev/npm/@clerk/clerk-js@4.73.14/dist/clerk.browser.js" type="text/javascript"></script>
   <script src="auth-nav.js"></script>
 
@@ -142,35 +153,73 @@
       const loadingEl = document.getElementById('loading');
       const errorWrap = document.getElementById('error-wrap');
       const errorText = document.getElementById('error-text');
+      const containerEl = document.getElementById('clerk-signin');
 
       function showError(msg) {
         if (loadingEl) loadingEl.style.display = 'none';
         if (errorWrap) { errorWrap.style.display = 'flex'; errorText.textContent = msg || 'Failed to load authentication.'; }
       }
 
-      function mountSignIn() {
+      function hideLoading() {
         if (loadingEl) loadingEl.style.display = 'none';
-        if (!window.Clerk) { showError('Clerk library not available.'); return; }
+      }
+
+      function tryMountSignIn() {
+        if (!window.Clerk) {
+          showError('Clerk library not available.');
+          return false;
+        }
+        if (!window.Clerk.loaded) {
+          return false; // Not ready yet, keep polling
+        }
         const el = document.getElementById('clerk-signin');
-        if (el && window.Clerk.mountSignIn) {
-          window.Clerk.mountSignIn(el, { redirectUrl: returnUrl, afterSignInUrl: returnUrl });
+        if (!el) {
+          showError('Mount element not found.');
+          return true; // Stop polling
+        }
+        if (window.Clerk.mountSignIn) {
+          try {
+            window.Clerk.mountSignIn(el, { redirectUrl: returnUrl, afterSignInUrl: returnUrl });
+            hideLoading();
+            return true;
+          } catch (err) {
+            console.error('mountSignIn failed:', err);
+            // Fallback to openSignIn modal
+            tryOpenSignIn();
+            return true;
+          }
         } else {
-          showError('Sign-in component not available.');
+          // Fallback to openSignIn modal
+          tryOpenSignIn();
+          return true;
         }
       }
 
-      // Wait for Clerk to auto-initialize from the data-clerk-publishable-key attribute
+      function tryOpenSignIn() {
+        if (!window.Clerk || !window.Clerk.openSignIn) {
+          showError('Authentication unavailable.');
+          return;
+        }
+        hideLoading();
+        // Clear the container and show a message
+        if (containerEl) {
+          containerEl.innerHTML = '';
+          containerEl.style.minHeight = 'auto';
+        }
+        window.Clerk.openSignIn({ redirectUrl: returnUrl, afterSignInUrl: returnUrl });
+      }
+
       let attempts = 0;
       const timer = setInterval(() => {
         attempts++;
-        if (window.Clerk && window.Clerk.loaded) {
+        if (tryMountSignIn()) {
           clearInterval(timer);
-          mountSignIn();
           return;
         }
         if (attempts >= 150) {
           clearInterval(timer);
-          showError('Authentication took too long to load. Please check your connection and refresh.');
+          // Final fallback: try the modal
+          tryOpenSignIn();
         }
       }, 100);
     })();

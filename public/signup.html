@@ -63,6 +63,16 @@
     .card-title { font-family: var(--font-display); font-size: 24px; font-weight: 700; margin-bottom: 6px; }
     .card-sub { font-size: 14px; color: var(--text-muted); margin-bottom: 28px; }
 
+    /* CRITICAL: Clerk container must have explicit dimensions */
+    .signup-container {
+      width: 100%;
+      min-width: 300px;
+      min-height: 400px;
+      display: block;
+      overflow: visible;
+      position: relative;
+    }
+
     .loading-wrap { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; padding: 40px 0; }
     .spinner { width: 36px; height: 36px; border: 3px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; }
     @keyframes spin { to { transform: rotate(360deg); } }
@@ -142,34 +152,69 @@
       const loadingEl = document.getElementById('loading');
       const errorWrap = document.getElementById('error-wrap');
       const errorText = document.getElementById('error-text');
+      const containerEl = document.getElementById('clerk-signup');
 
       function showError(msg) {
         if (loadingEl) loadingEl.style.display = 'none';
         if (errorWrap) { errorWrap.style.display = 'flex'; errorText.textContent = msg || 'Failed to load authentication.'; }
       }
 
-      function mountSignUp() {
+      function hideLoading() {
         if (loadingEl) loadingEl.style.display = 'none';
-        if (!window.Clerk) { showError('Clerk library not available.'); return; }
-        const el = document.getElementById('clerk-signup');
-        if (el && window.Clerk.mountSignUp) {
-          window.Clerk.mountSignUp(el, { redirectUrl: returnUrl, afterSignUpUrl: returnUrl });
-        } else {
-          showError('Sign-up component not available.');
+      }
+
+      function tryMountSignUp() {
+        if (!window.Clerk) {
+          showError('Clerk library not available.');
+          return false;
         }
+        if (!window.Clerk.loaded) {
+          return false;
+        }
+        const el = document.getElementById('clerk-signup');
+        if (!el) {
+          showError('Mount element not found.');
+          return true;
+        }
+        if (window.Clerk.mountSignUp) {
+          try {
+            window.Clerk.mountSignUp(el, { redirectUrl: returnUrl, afterSignUpUrl: returnUrl });
+            hideLoading();
+            return true;
+          } catch (err) {
+            console.error('mountSignUp failed:', err);
+            tryOpenSignUp();
+            return true;
+          }
+        } else {
+          tryOpenSignUp();
+          return true;
+        }
+      }
+
+      function tryOpenSignUp() {
+        if (!window.Clerk || !window.Clerk.openSignUp) {
+          showError('Authentication unavailable.');
+          return;
+        }
+        hideLoading();
+        if (containerEl) {
+          containerEl.innerHTML = '';
+          containerEl.style.minHeight = 'auto';
+        }
+        window.Clerk.openSignUp({ redirectUrl: returnUrl, afterSignUpUrl: returnUrl });
       }
 
       let attempts = 0;
       const timer = setInterval(() => {
         attempts++;
-        if (window.Clerk && window.Clerk.loaded) {
+        if (tryMountSignUp()) {
           clearInterval(timer);
-          mountSignUp();
           return;
         }
         if (attempts >= 150) {
           clearInterval(timer);
-          showError('Authentication took too long to load. Please check your connection and refresh.');
+          tryOpenSignUp();
         }
       }, 100);
     })();
