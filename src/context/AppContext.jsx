@@ -1,13 +1,12 @@
 import { createContext, useContext, useState, useEffect } from 'react';
-import { loadData, saveData, isUnlocked, setUnlocked, loadSettings, saveSettings } from '../lib/storage';
+import { loadData, saveData, loadSettings, saveSettings } from '../lib/storage';
 
 const AppContext = createContext();
 
 export function AppProvider({ children }) {
   const [data, setData] = useState(loadData);
   const [settings, setSettingsState] = useState(loadSettings);
-  const [unlocked, setUnlockedState] = useState(() => isUnlocked());
-  const [view, setView] = useState(unlocked ? 'repo' : 'gate');
+  const [view, setView] = useState('repo');
 
   useEffect(() => {
     saveData(data);
@@ -20,18 +19,6 @@ export function AppProvider({ children }) {
   const setSettings = (s) => {
     const next = typeof s === 'function' ? s(settings) : { ...settings, ...s };
     setSettingsState(next);
-  };
-
-  const unlock = () => {
-    setUnlocked(true);
-    setUnlockedState(true);
-    setView('repo');
-  };
-
-  const lock = () => {
-    setUnlocked(false);
-    setUnlockedState(false);
-    setView('gate');
   };
 
   const goAdmin = () => setView('admin');
