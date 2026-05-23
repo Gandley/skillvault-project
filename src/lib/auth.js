@@ -1,8 +1,8 @@
 import { useEffect, useState, useCallback } from 'react';
 
 const CLERK_KEY = 'pk_test_bWF4aW11bS1tYW1tYWwtMzcuY2xlcmsuYWNjb3VudHMuZGV2JA';
-const CLERK_HOSTED_SIGNIN = 'https://maximum-mammal-37.clerk.accounts.dev/sign-in';
-const CLERK_HOSTED_SIGNUP = 'https://maximum-mammal-37.clerk.accounts.dev/sign-up';
+const CLERK_HOSTED_SIGNIN = 'https://maximum-mammal-37.accounts.dev/sign-in';
+const CLERK_HOSTED_SIGNUP = 'https://maximum-mammal-37.accounts.dev/sign-up';
 
 let clerkPromise = null;
 let clerkLoaded = false;

@@ -21,7 +21,7 @@ export default function RepoView() {
   const [sortBy, setSortBy] = useState('popular');
   const [bannerDismissed, setBannerDismissed] = useState(false);
 
-  const CLERK_HOSTED_SIGNIN = 'https://maximum-mammal-37.clerk.accounts.dev/sign-in';
+  const CLERK_HOSTED_SIGNIN = 'https://maximum-mammal-37.accounts.dev/sign-in';
 
   const handleBannerPro = async () => {
     if (!isSignedIn || !user) {
