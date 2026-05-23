@@ -37,7 +37,6 @@
     }
     h1 { font-family: var(--font-display); font-weight: 600; letter-spacing: -0.02em; }
 
-    /* Nav */
     .nav {
       background: rgba(11,12,16,0.88); backdrop-filter: blur(16px);
       border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 100;
@@ -56,7 +55,6 @@
     .nav-link:hover { color: var(--text-primary); }
     .nav-btn { padding: 8px 18px; border-radius: 10px; background: var(--accent); color: #fff; font-size: 14px; font-weight: 600; text-decoration: none; }
 
-    /* Main */
     .main { flex: 1; display: flex; align-items: center; justify-content: center; padding: 60px 24px; }
     .card {
       background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-xl);
@@ -65,21 +63,22 @@
     .card-title { font-family: var(--font-display); font-size: 24px; font-weight: 700; margin-bottom: 6px; }
     .card-sub { font-size: 14px; color: var(--text-muted); margin-bottom: 28px; }
 
-    /* Loading */
     .loading-wrap { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; padding: 40px 0; }
     .spinner { width: 36px; height: 36px; border: 3px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; }
     @keyframes spin { to { transform: rotate(360deg); } }
     .loading-text { font-size: 14px; color: var(--text-muted); }
 
-    /* Error */
     .error-wrap { display: none; flex-direction: column; align-items: center; gap: 16px; padding: 20px; }
     .error-text { font-size: 14px; color: var(--rose); }
     .retry-btn { padding: 8px 18px; border-radius: 8px; background: var(--accent); color: #fff; font-size: 13px; font-weight: 600; border: none; cursor: pointer; }
 
+    .fallback-wrap { display: none; flex-direction: column; align-items: center; gap: 12px; padding: 20px; }
+    .fallback-text { font-size: 14px; color: var(--text-secondary); }
+    .fallback-link { color: var(--accent); text-decoration: none; font-weight: 600; }
+
     .signup-prompt { font-size: 14px; color: var(--text-secondary); margin-top: 16px; }
     .signup-prompt a { color: var(--accent); text-decoration: none; font-weight: 600; }
 
-    /* Footer */
     .footer { border-top: 1px solid var(--border); padding: 20px 24px; }
     .footer-inner { max-width: 1280px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12; }
     .footer-left { font-size: 13px; color: var(--text-muted); }
@@ -119,6 +118,10 @@
         <span class="error-text" id="error-text">Failed to load authentication.</span>
         <button class="retry-btn" onclick="window.location.reload()">Try Again</button>
       </div>
+      <div class="fallback-wrap" id="fallback-wrap">
+        <span class="fallback-text">Taking longer than expected?</span>
+        <a href="/signup.html" class="fallback-link">Create a new account instead</a>
+      </div>
       <p class="signup-prompt">Don't have an account? <a href="/signup.html">Sign up</a></p>
     </div>
   </main>
@@ -137,8 +140,8 @@
     </div>
   </footer>
 
-  <!-- Clerk CDN with publishable key — auto-loads itself -->
-  <script async crossorigin="anonymous" data-clerk-publishable-key="pk_test_bWF4aW11bS1tYW1tYWwtMzcuY2xlcmsuYWNjb3VudHMuZGV2JA" src="https://maximum-mammal-37.clerk.accounts.dev/npm/@clerk/clerk-js@latest/dist/clerk.browser.js" type="text/javascript"></script>
+  <!-- Pinned Clerk version, not @latest -->
+  <script async crossorigin="anonymous" data-clerk-publishable-key="pk_test_bWF4aW11bS1tYW1tYWwtMzcuY2xlcmsuYWNjb3VudHMuZGV2JA" src="https://maximum-mammal-37.clerk.accounts.dev/npm/@clerk/clerk-js@4.73.14/dist/clerk.browser.js" type="text/javascript"></script>
   <script src="auth-nav.js"></script>
 
   <script>
@@ -148,10 +151,16 @@
       const loadingEl = document.getElementById('loading');
       const errorWrap = document.getElementById('error-wrap');
       const errorText = document.getElementById('error-text');
+      const fallbackWrap = document.getElementById('fallback-wrap');
 
       function showError(msg) {
         if (loadingEl) loadingEl.style.display = 'none';
         if (errorWrap) { errorWrap.style.display = 'flex'; errorText.textContent = msg || 'Failed to load authentication.'; }
+      }
+
+      function showFallback() {
+        if (loadingEl) loadingEl.style.display = 'none';
+        if (fallbackWrap) fallbackWrap.style.display = 'flex';
       }
 
       function mountSignIn() {
@@ -159,21 +168,30 @@
         if (!window.Clerk) { showError('Authentication library not loaded.'); return; }
         const el = document.getElementById('clerk-signin');
         if (el && window.Clerk.mountSignIn) {
+          console.log('[Clerk] Mounting sign-in component...');
           window.Clerk.mountSignIn(el, { redirectUrl: returnUrl, afterSignInUrl: returnUrl });
+          console.log('[Clerk] mountSignIn called successfully');
         } else {
           showError('Authentication component not available.');
         }
       }
 
-      // Poll for Clerk to finish auto-loading (script tag with data-clerk-publishable-key triggers this)
       let attempts = 0;
       const timer = setInterval(() => {
         attempts++;
+        console.log('[Clerk] Poll attempt', attempts, 'loaded:', window.Clerk ? window.Clerk.loaded : false);
+
         if (window.Clerk && window.Clerk.loaded) {
           clearInterval(timer);
           mountSignIn();
           return;
         }
+
+        // Show fallback after 5 seconds
+        if (attempts === 50) {
+          showFallback();
+        }
+
         if (attempts >= 150) {
           clearInterval(timer);
           showError('Authentication took too long to load. Please check your connection and refresh.');
