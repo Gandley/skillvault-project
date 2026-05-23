@@ -12,10 +12,12 @@ export default function AuthNav() {
     );
   }
 
+  const returnUrl = encodeURIComponent(window.location.pathname + window.location.search);
+
   return (
     <div style={authBtns}>
-      <button onClick={() => signInRedirect()} style={loginBtn}>Login</button>
-      <button onClick={() => signUpRedirect()} style={signupBtn}>Sign Up</button>
+      <a href={`/login.html?return_url=${returnUrl}`} style={loginBtn}>Login</a>
+      <a href={`/signup.html?return_url=${returnUrl}`} style={signupBtn}>Sign Up</a>
     </div>
   );
 }
@@ -40,5 +42,5 @@ const signupBtn = {
   padding: '8px 18px', borderRadius: 10,
   background: 'var(--accent)', color: '#fff', fontSize: 13,
   fontWeight: 600, textDecoration: 'none', transition: 'all 0.2s',
-  display: 'inline-flex', alignItems: 'center', border: 'none', cursor: 'pointer',
+  display: 'inline-flex', alignItems: 'center',
 };
