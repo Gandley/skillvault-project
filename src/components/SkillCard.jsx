@@ -1,6 +1,7 @@
 import * as Icons from 'lucide-react';
 import { Star, Download, Lock, Zap, Gift } from 'lucide-react';
 import { useClerkAuth } from '../lib/auth';
+import { buySingleSkill, subscribeVaultPro } from '../lib/stripe';
 
 const colorMap = {
   green: { bg: 'var(--green-bg)', text: 'var(--green)', border: 'rgba(52,211,153,0.2)' },
@@ -31,8 +32,34 @@ export default function SkillCard({ skill }) {
   const isPaid = skill.tier === 'paid';
   const isPro = skill.tier === 'pro';
 
-  const handleProtected = () => {
+  const handleFree = () => {
     signInRedirect(window.location.pathname + window.location.search);
+  };
+
+  const handlePaid = async () => {
+    if (!isSignedIn || !user) {
+      signInRedirect(window.location.pathname + window.location.search);
+      return;
+    }
+    try {
+      await buySingleSkill(skill.id, user.id);
+    } catch (err) {
+      console.error('Checkout error:', err);
+      alert('Payment failed. Please try again.');
+    }
+  };
+
+  const handlePro = async () => {
+    if (!isSignedIn || !user) {
+      signInRedirect(window.location.pathname + window.location.search);
+      return;
+    }
+    try {
+      await subscribeVaultPro(user.id);
+    } catch (err) {
+      console.error('Checkout error:', err);
+      alert('Payment failed. Please try again.');
+    }
   };
 
   return (
@@ -109,17 +136,17 @@ export default function SkillCard({ skill }) {
         {/* CTA Button */}
         <div style={ctaWrap}>
           {isFree ? (
-            <button onClick={handleProtected} style={{ ...ctaBtn, background: 'var(--green-bg)', color: 'var(--green)', borderColor: 'rgba(52,211,153,0.25)' }}>
+            <button onClick={handleFree} style={{ ...ctaBtn, background: 'var(--green-bg)', color: 'var(--green)', borderColor: 'rgba(52,211,153,0.25)' }}>
               <Download size={15} />
               Download Free
             </button>
           ) : isPaid ? (
-            <button onClick={handleProtected} style={{ ...ctaBtn, background: 'var(--amber-bg)', color: 'var(--amber)', borderColor: 'rgba(245,158,11,0.25)' }}>
+            <button onClick={handlePaid} style={{ ...ctaBtn, background: 'var(--amber-bg)', color: 'var(--amber)', borderColor: 'rgba(245,158,11,0.25)' }}>
               <Zap size={15} />
               Buy for $9
             </button>
           ) : (
-            <button onClick={handleProtected} style={{ ...ctaBtn, background: 'rgba(167,139,250,0.12)', color: 'var(--violet)', borderColor: 'rgba(167,139,250,0.25)' }}>
+            <button onClick={handlePro} style={{ ...ctaBtn, background: 'rgba(167,139,250,0.12)', color: 'var(--violet)', borderColor: 'rgba(167,139,250,0.25)' }}>
               <Lock size={15} />
               Get Vault Pro
             </button>

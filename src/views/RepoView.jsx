@@ -3,6 +3,8 @@ import { useApp } from '../context/AppContext';
 import SkillCard from '../components/SkillCard';
 import PricingSection from '../components/PricingSection';
 import AuthNav from '../components/AuthNav';
+import { useClerkAuth } from '../lib/auth';
+import { subscribeVaultPro } from '../lib/stripe';
 import * as Icons from 'lucide-react';
 import { ArrowUpDown, Shield, Lock } from 'lucide-react';
 
@@ -13,10 +15,25 @@ function formatNumber(n) {
 
 export default function RepoView() {
   const { data, settings, goAdmin } = useApp();
+  const { isSignedIn, user } = useClerkAuth();
   const [search, setSearch] = useState('');
   const [activeCategory, setActiveCategory] = useState('all');
   const [sortBy, setSortBy] = useState('popular');
   const [bannerDismissed, setBannerDismissed] = useState(false);
+
+  const handleBannerPro = async () => {
+    if (!isSignedIn || !user) {
+      const returnUrl = window.location.pathname + window.location.search;
+      window.location.href = '/login.html?return_url=' + encodeURIComponent(returnUrl);
+      return;
+    }
+    try {
+      await subscribeVaultPro(user.id);
+    } catch (err) {
+      console.error('Checkout error:', err);
+      alert('Payment failed. Please try again.');
+    }
+  };
 
   const filtered = useMemo(() => {
     let list = data.skills;
@@ -87,7 +104,7 @@ export default function RepoView() {
               <span>Get unlimited access to all 18 skills — <strong style={{ color: 'var(--violet)' }}>$27/month</strong></span>
             </div>
             <div style={bannerRight}>
-              <button onClick={() => window.location.href = '/login.html?return_url=' + encodeURIComponent(window.location.pathname + window.location.search)} style={bannerBtn}>Go Pro</button>
+              <button onClick={handleBannerPro} style={bannerBtn}>Go Pro</button>
               <button style={bannerClose} onClick={() => setBannerDismissed(true)}><span style={{ fontSize: 18, lineHeight: 1 }}>×</span></button>
             </div>
           </div>

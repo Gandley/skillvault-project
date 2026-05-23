@@ -1,19 +1,38 @@
 import { Check, Zap, Crown, Gift } from 'lucide-react';
 import { useClerkAuth } from '../lib/auth';
+import { buySingleSkill, subscribeVaultPro } from '../lib/stripe';
 
 export default function PricingSection() {
-  const { signInRedirect } = useClerkAuth();
+  const { isSignedIn, user, signInRedirect } = useClerkAuth();
 
   const handleFree = () => {
     signInRedirect(window.location.pathname + window.location.search);
   };
 
-  const handlePaid = () => {
-    signInRedirect(window.location.pathname + window.location.search);
+  const handlePaid = async () => {
+    if (!isSignedIn || !user) {
+      signInRedirect(window.location.pathname + window.location.search);
+      return;
+    }
+    try {
+      await buySingleSkill(null, user.id);
+    } catch (err) {
+      console.error('Checkout error:', err);
+      alert('Payment failed. Please try again.');
+    }
   };
 
-  const handlePro = () => {
-    signInRedirect(window.location.pathname + window.location.search);
+  const handlePro = async () => {
+    if (!isSignedIn || !user) {
+      signInRedirect(window.location.pathname + window.location.search);
+      return;
+    }
+    try {
+      await subscribeVaultPro(user.id);
+    } catch (err) {
+      console.error('Checkout error:', err);
+      alert('Payment failed. Please try again.');
+    }
   };
 
   return (
