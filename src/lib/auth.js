@@ -10,18 +10,19 @@ function loadClerk() {
   if (clerkPromise) return clerkPromise;
 
   clerkPromise = new Promise((resolve, reject) => {
+    const startTime = Date.now();
+    const timeout = 30000; // 30 second timeout
+
     const check = () => {
-      if (window.Clerk) {
-        // If Clerk already loaded (auto-init via data attribute), just resolve
-        if (window.Clerk.loaded) {
-          clerkLoaded = true;
-          resolve(window.Clerk);
-          return;
-        }
-        // Otherwise load explicitly
-        window.Clerk.load({ publishableKey: CLERK_KEY })
-          .then(() => { clerkLoaded = true; resolve(window.Clerk); })
-          .catch(reject);
+      // Check if we've timed out
+      if (Date.now() - startTime > timeout) {
+        reject(new Error('Clerk failed to load within 30 seconds'));
+        return;
+      }
+
+      if (window.Clerk && window.Clerk.loaded) {
+        clerkLoaded = true;
+        resolve(window.Clerk);
       } else {
         setTimeout(check, 100);
       }
