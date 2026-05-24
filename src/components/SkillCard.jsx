@@ -26,14 +26,19 @@ export default function SkillCard({ skill }) {
   const Icon = Icons[skill.icon] || Icons.Circle;
   const theme = colorMap[skill.color] || colorMap.violet;
   const tier = tierStyles[skill.tier] || tierStyles.free;
-  const { signInRedirect } = useClerkAuth();
+  const { isSignedIn, user, signInRedirect } = useClerkAuth();
 
   const isFree = skill.tier === 'free';
   const isPaid = skill.tier === 'paid';
   const isPro = skill.tier === 'pro';
 
   const handleFree = () => {
-    signInRedirect(window.location.pathname + window.location.search);
+    if (!isSignedIn || !user) {
+      signInRedirect(window.location.pathname + window.location.search);
+      return;
+    }
+    // User is signed in — proceed with free download
+    alert('Free download started!');
   };
 
   const handlePaid = async () => {
