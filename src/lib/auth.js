@@ -32,17 +32,51 @@ export function useClerkAuth() {
 
   const refresh = useCallback(() => {
     if (window.Clerk && window.Clerk.loaded) {
-      setIsSignedIn(window.Clerk.user !== null);
-      setUser(window.Clerk.user);
+      const clerkUser = window.Clerk.user;
+      const hasUser = clerkUser != null;
+      setIsSignedIn(hasUser);
+      setUser(clerkUser || null);
       setIsLoading(false);
+      console.log('[Auth] Refresh — signedIn:', hasUser, 'user:', clerkUser?.primaryEmailAddress?.emailAddress || 'none');
     }
   }, []);
 
   useEffect(() => {
-    loadClerk().then(() => {
+    let mounted = true;
+    let timer = null;
+
+    loadClerk().then((clerk) => {
+      if (!mounted) return;
       refresh();
-      window.Clerk.addListener(() => refresh());
-    }).catch(() => setIsLoading(false));
+
+      // Clerk addListener for auth changes
+      if (clerk.addListener) {
+        clerk.addListener(() => {
+          if (mounted) refresh();
+        });
+      }
+
+      // Fallback polling every 500ms for 10s
+      let attempts = 0;
+      timer = setInterval(() => {
+        attempts++;
+        if (window.Clerk && window.Clerk.loaded) {
+          if (mounted) refresh();
+        }
+        if (attempts >= 20) {
+          clearInterval(timer);
+          if (mounted) setIsLoading(false);
+        }
+      }, 500);
+    }).catch((err) => {
+      console.error('[Auth] Clerk load error:', err);
+      if (mounted) setIsLoading(false);
+    });
+
+    return () => {
+      mounted = false;
+      if (timer) clearInterval(timer);
+    };
   }, [refresh]);
 
   const signInRedirect = useCallback((returnPath) => {
