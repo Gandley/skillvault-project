@@ -12,6 +12,13 @@ function loadClerk() {
   clerkPromise = new Promise((resolve, reject) => {
     const check = () => {
       if (window.Clerk) {
+        // If Clerk already loaded (auto-init via data attribute), just resolve
+        if (window.Clerk.loaded) {
+          clerkLoaded = true;
+          resolve(window.Clerk);
+          return;
+        }
+        // Otherwise load explicitly
         window.Clerk.load({ publishableKey: CLERK_KEY })
           .then(() => { clerkLoaded = true; resolve(window.Clerk); })
           .catch(reject);
