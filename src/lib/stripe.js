@@ -3,6 +3,8 @@
  * Server-side checkout sessions via API route
  */
 
+import { recordPurchase } from './supabase';
+
 const PRICE_SINGLE_SKILL = 'price_1Ta4flIOVif6Dy1OEVfhQD15';
 const PRICE_VAULT_PRO = 'price_1Ta4g4IOVif6Dy1O2MJynjMz';
 
@@ -27,6 +29,18 @@ export async function redirectToCheckout(priceId, metadata = {}) {
 
   const { url } = await res.json();
   if (url) {
+    // Record pending purchase in Supabase
+    if (metadata.userId && metadata.skillId) {
+      recordPurchase({
+        userId: metadata.userId,
+        skillId: metadata.skillId,
+        stripeSessionId: url.split('/').pop()?.split('#')[0] || 'unknown',
+        amount: metadata.mode === 'subscription' ? 2700 : 900,
+        status: 'pending',
+      }).catch((err) => {
+        console.error('[Stripe] Failed to record purchase:', err);
+      });
+    }
     window.location.href = url;
   } else {
     throw new Error('No checkout URL returned');

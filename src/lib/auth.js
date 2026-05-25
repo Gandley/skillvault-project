@@ -1,4 +1,5 @@
 import { useEffect, useState, useCallback } from 'react';
+import { upsertUserProfile } from './supabase';
 
 const CLERK_KEY = 'pk_live_Y2xlcmsudmF1bHRvZnNraWxscy5jb20k';
 
@@ -8,6 +9,12 @@ let clerkLoaded = false;
 function loadClerk() {
   if (clerkLoaded) return Promise.resolve(window.Clerk);
   if (clerkPromise) return clerkPromise;
+
+  // Check if Clerk script tag exists
+  const clerkScript = document.querySelector('script[src*="clerk.browser.js"]');
+  if (!clerkScript) {
+    return Promise.reject(new Error('Clerk script tag not found'));
+  }
 
   clerkPromise = new Promise((resolve, reject) => {
     const startTime = Date.now();
@@ -61,6 +68,18 @@ export function useClerkAuth() {
       setUser(clerkUser || null);
       setIsLoading(false);
       console.log('[Auth] Refresh — signedIn:', hasUser, 'user:', clerkUser?.primaryEmailAddress?.emailAddress || 'none');
+
+      // Sync user to Supabase
+      if (hasUser && clerkUser) {
+        upsertUserProfile({
+          userId: clerkUser.id,
+          email: clerkUser.primaryEmailAddress?.emailAddress,
+          name: clerkUser.firstName ? `${clerkUser.firstName} ${clerkUser.lastName || ''}`.trim() : undefined,
+          avatarUrl: clerkUser.imageUrl,
+        }).catch((err) => {
+          console.error('[Auth] Supabase sync failed:', err);
+        });
+      }
     }
   }, []);
 
