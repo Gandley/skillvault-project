@@ -11,18 +11,33 @@ function loadClerk() {
 
   clerkPromise = new Promise((resolve, reject) => {
     const startTime = Date.now();
-    const timeout = 30000; // 30 second timeout
+    const timeout = 30000;
+    let loadAttempted = false;
 
     const check = () => {
-      // Check if we've timed out
       if (Date.now() - startTime > timeout) {
         reject(new Error('Clerk failed to load within 30 seconds'));
         return;
       }
 
-      if (window.Clerk && window.Clerk.loaded) {
-        clerkLoaded = true;
-        resolve(window.Clerk);
+      if (window.Clerk) {
+        if (window.Clerk.loaded) {
+          clerkLoaded = true;
+          resolve(window.Clerk);
+        } else if (!loadAttempted) {
+          loadAttempted = true;
+          window.Clerk.load({ publishableKey: CLERK_KEY })
+            .then(() => {
+              clerkLoaded = true;
+              resolve(window.Clerk);
+            })
+            .catch((err) => {
+              console.error('[Auth] Clerk.load() failed:', err);
+              setTimeout(check, 500);
+            });
+        } else {
+          setTimeout(check, 100);
+        }
       } else {
         setTimeout(check, 100);
       }
@@ -52,26 +67,30 @@ export function useClerkAuth() {
   useEffect(() => {
     let mounted = true;
     let timer = null;
+    let listenerCleanup = null;
 
     loadClerk().then((clerk) => {
       if (!mounted) return;
       refresh();
 
-      // Clerk addListener for auth changes
+      // Set up Clerk listener for auth changes
       if (clerk.addListener) {
-        clerk.addListener(() => {
-          if (mounted) refresh();
+        listenerCleanup = clerk.addListener((event) => {
+          if (mounted) {
+            console.log('[Auth] Clerk event:', event?.user?.id ? 'user changed' : 'no user');
+            refresh();
+          }
         });
       }
 
-      // Fallback polling every 500ms for 10s
+      // Aggressive fallback polling every 500ms for 15s
       let attempts = 0;
       timer = setInterval(() => {
         attempts++;
         if (window.Clerk && window.Clerk.loaded) {
           if (mounted) refresh();
         }
-        if (attempts >= 20) {
+        if (attempts >= 30) {
           clearInterval(timer);
           if (mounted) setIsLoading(false);
         }
@@ -84,6 +103,9 @@ export function useClerkAuth() {
     return () => {
       mounted = false;
       if (timer) clearInterval(timer);
+      if (listenerCleanup && typeof listenerCleanup === 'function') {
+        listenerCleanup();
+      }
     };
   }, [refresh]);
 
