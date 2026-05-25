@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Clerk Sign-In Test — SkillVault</title>
+  <style>
+    body { font-family: monospace; background: #0b0c10; color: #f0f2f8; padding: 20px; }
+    pre { background: #1a1c24; padding: 10px; border-radius: 8px; overflow-x: auto; white-space: pre-wrap; word-break: break-word; }
+    .ok { color: #34d399; }
+    .err { color: #f43f5e; }
+    .warn { color: #f59e0b; }
+    input { padding: 8px; margin: 4px 0; border-radius: 4px; border: 1px solid #2a2d3a; background: #15171e; color: #f0f2f8; }
+    button { padding: 10px 20px; background: #6366f1; color: white; border: none; border-radius: 4px; cursor: pointer; }
+  </style>
+</head>
+<body>
+  <h1>Direct Clerk Sign-In Test</h1>
+  <p>This tests Clerk authentication directly without the UI component.</p>
+  
+  <div>
+    <label>Email:</label><br>
+    <input type="email" id="email" placeholder="your@email.com"><br>
+    <label>Password:</label><br>
+    <input type="password" id="password" placeholder="your password"><br><br>
+    <button onclick="testSignIn()">Test Sign In</button>
+  </div>
+
+  <h2>Log:</h2>
+  <div id="log"></div>
+
+  <!-- PRODUCTION Clerk -->
+  <script async crossorigin="anonymous" data-clerk-publishable-key="pk_live_Y2xlcmsudmF1bHRvZnNraWxscy5jb20k" src="https://clerk.vaultofskills.com/npm/@clerk/clerk-js@latest/dist/clerk.browser.js" type="text/javascript"></script>
+
+  <script>
+    const log = document.getElementById('log');
+    function add(msg, cls = '') {
+      const el = document.createElement('pre');
+      el.className = cls;
+      el.textContent = `[${new Date().toISOString().split('T')[1].split('.')[0]}] ${msg}`;
+      log.appendChild(el);
+    }
+
+    // Wait for Clerk to load
+    let attempts = 0;
+    const timer = setInterval(() => {
+      attempts++;
+      if (window.Clerk && window.Clerk.loaded) {
+        clearInterval(timer);
+        add('✅ Clerk loaded and ready', 'ok');
+        return;
+      }
+      if (attempts >= 100) {
+        clearInterval(timer);
+        add('❌ Clerk failed to load', 'err');
+      }
+    }, 100);
+
+    async function testSignIn() {
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+
+      if (!email || !password) {
+        add('❌ Please enter email and password', 'err');
+        return;
+      }
+
+      add('Starting sign-in test...', 'warn');
+      add(`Email: ${email}`);
+
+      if (!window.Clerk) {
+        add('❌ Clerk not available', 'err');
+        return;
+      }
+
+      try {
+        add('Calling Clerk.client.signIn.create()...');
+        const result = await window.Clerk.client.signIn.create({
+          identifier: email,
+          password: password
+        });
+        add(`✅ Sign-in result: ${JSON.stringify({ status: result.status, userId: result.userId })}`, 'ok');
+        
+        if (result.status === 'complete') {
+          add('✅ Sign-in complete! Reloading page...', 'ok');
+          setTimeout(() => window.location.href = '/', 1000);
+        }
+      } catch (error) {
+        add(`❌ Sign-in error: ${error.message || error}`, 'err');
+        add(`Error details: ${JSON.stringify({ name: error.name, status: error.status, errors: error.errors })}`, 'err');
+      }
+    }
+  </script>
+</body>
+</html>
