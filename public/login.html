@@ -182,6 +182,10 @@
             console.log('[Login] 2FA result:', result.status);
             
             if (result.status === 'complete') {
+              // Set the session as active before redirecting
+              if (result.createdSessionId && window.Clerk.setActive) {
+                await window.Clerk.setActive({ session: result.createdSessionId });
+              }
               window.location.href = returnUrl;
             } else {
               showError('Verification failed: ' + result.status);
@@ -198,6 +202,10 @@
           console.log('[Login] Sign-in result:', result.status);
 
           if (result.status === 'complete') {
+            // Set the session as active before redirecting
+            if (result.createdSessionId && window.Clerk.setActive) {
+              await window.Clerk.setActive({ session: result.createdSessionId });
+            }
             window.location.href = returnUrl;
           } else if (result.status === 'needs_first_factor') {
             showError('Please check your email for a verification code.');
