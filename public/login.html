@@ -162,7 +162,7 @@
         if (!window.Clerk) { showError('Clerk library not available.'); return; }
         const el = document.getElementById('clerk-signin');
         if (el && window.Clerk.mountSignIn) {
-          window.Clerk.mountSignIn(el, { redirectUrl: returnUrl, afterSignInUrl: returnUrl });
+          window.Clerk.mountSignIn(el, { afterSignInUrl: returnUrl, routing: 'hash' });
         } else {
           showError('Sign-in component not available.');
         }
@@ -171,7 +171,7 @@
       let attempts = 0;
       const timer = setInterval(() => {
         attempts++;
-        if (window.Clerk && window.Clerk.mountSignIn) {
+        if (window.Clerk && window.Clerk.loaded) {
           clearInterval(timer);
           mountSignIn();
           return;
