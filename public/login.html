@@ -182,6 +182,16 @@
         attempts++;
         if (window.Clerk && window.Clerk.loaded) {
           clearInterval(timer);
+          // Listen for Clerk errors
+          if (window.Clerk.addListener) {
+            window.Clerk.addListener((event) => {
+              console.log('[Clerk event]', event);
+            });
+          }
+          // Catch all Clerk errors
+          window.addEventListener('error', (e) => {
+            console.error('[Global error]', e.error || e.message);
+          });
           mountSignIn();
           return;
         }
