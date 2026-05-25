@@ -151,8 +151,20 @@
           return;
         }
 
-        if (!window.Clerk || !window.Clerk.client) {
-          showError('Authentication not ready yet. Please wait a moment and try again.');
+        // Ensure Clerk is loaded
+        if (!window.Clerk) {
+          showError('Authentication system not loaded. Please refresh the page.');
+          return;
+        }
+
+        if (!window.Clerk.loaded) {
+          showError('Loading authentication... please wait 2 seconds and try again.');
+          // Try to load it
+          try {
+            await window.Clerk.load({ publishableKey: 'pk_live_Y2xlcmsudmF1bHRvZnNraWxscy5jb20k' });
+          } catch (err) {
+            console.error('Clerk load failed:', err);
+          }
           return;
         }
 
