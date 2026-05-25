@@ -22,6 +22,7 @@
       --accent-glow: rgba(99,102,241,0.22);
       --border: #2a2d3a;
       --rose: #f43f5e;
+      --green: #34d399;
       --radius-md: 12px;
       --radius-xl: 20px;
     }
@@ -36,7 +37,8 @@
     .logo-text { font-family: var(--font-display); font-size: 20px; font-weight: 700; color: var(--text-primary); margin-left: 10px; }
 
     .main { flex: 1; display: flex; align-items: center; justify-content: center; padding: 60px 24px; }
-    .card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-xl); padding: 40px 32px; width: 100%; max-width: 440px; text-align: center; }
+    .card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-xl); padding: 40px 32px; width: 100%; max-width: 440px; text-align: center; display: none; }
+    .card.active { display: block; }
     .card-title { font-family: var(--font-display); font-size: 24px; font-weight: 700; margin-bottom: 6px; }
     .card-sub { font-size: 14px; color: var(--text-muted); margin-bottom: 28px; }
 
@@ -50,12 +52,15 @@
     .submit-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
     .error-msg { color: var(--rose); font-size: 14px; margin-top: 12px; display: none; }
+    .success-msg { color: var(--green); font-size: 14px; margin-top: 12px; display: none; }
     .loading-wrap { display: none; flex-direction: column; align-items: center; gap: 14px; padding: 20px 0; }
     .spinner { width: 36px; height: 36px; border: 3px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; }
     @keyframes spin { to { transform: rotate(360deg); } }
 
     .signup-prompt { font-size: 14px; color: var(--text-secondary); margin-top: 16px; }
     .signup-prompt a { color: var(--accent); text-decoration: none; font-weight: 600; }
+
+    .email-hint { font-size: 13px; color: var(--text-muted); margin-bottom: 16px; }
 
     .footer { border-top: 1px solid var(--border); padding: 20px 24px; }
     .footer-inner { max-width: 1280px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12; }
@@ -75,7 +80,8 @@
   </nav>
 
   <main class="main">
-    <div class="card">
+    <!-- STEP 1: Email + Password -->
+    <div class="card active" id="step1">
       <h1 class="card-title">Welcome Back</h1>
       <p class="card-sub">Sign in to your SkillVault account</p>
 
@@ -100,6 +106,31 @@
 
       <p class="signup-prompt">Don't have an account? <a href="/signup.html">Sign up</a></p>
     </div>
+
+    <!-- STEP 2: Verification Code -->
+    <div class="card" id="step2">
+      <h1 class="card-title">Check Your Email</h1>
+      <p class="card-sub">A verification code has been sent to your email</p>
+      <p class="email-hint" id="email-display"></p>
+
+      <form id="verify-form" onsubmit="event.preventDefault();">
+        <div class="form-group">
+          <label>Verification Code</label>
+          <input type="text" id="code" required placeholder="123456" maxlength="6">
+        </div>
+        <button type="submit" class="submit-btn" id="verify-btn">Continue</button>
+      </form>
+
+      <div class="loading-wrap" id="verify-loading">
+        <div class="spinner"></div>
+        <span style="color:var(--text-muted);font-size:14px;">Verifying...</span>
+      </div>
+
+      <div class="error-msg" id="verify-error"></div>
+      <div class="success-msg" id="verify-success">Code sent! Check your inbox.</div>
+
+      <p class="signup-prompt"><a href="#" id="back-link">← Back to sign in</a></p>
+    </div>
   </main>
 
   <footer class="footer">
@@ -114,51 +145,79 @@
     (function() {
       const params = new URLSearchParams(window.location.search);
       const returnUrl = params.get('return_url') || '/';
-      const form = document.getElementById('signin-form');
+
+      // Step 1 elements
+      const step1 = document.getElementById('step1');
+      const signinForm = document.getElementById('signin-form');
       const submitBtn = document.getElementById('submit-btn');
       const loading = document.getElementById('loading');
       const errorMsg = document.getElementById('error-msg');
 
-      function showError(msg) {
+      // Step 2 elements
+      const step2 = document.getElementById('step2');
+      const verifyForm = document.getElementById('verify-form');
+      const verifyBtn = document.getElementById('verify-btn');
+      const verifyLoading = document.getElementById('verify-loading');
+      const verifyError = document.getElementById('verify-error');
+      const verifySuccess = document.getElementById('verify-success');
+      const emailDisplay = document.getElementById('email-display');
+      const backLink = document.getElementById('back-link');
+
+      function showStep1Error(msg) {
         errorMsg.textContent = msg;
         errorMsg.style.display = 'block';
         loading.style.display = 'none';
         submitBtn.disabled = false;
       }
 
-      // Wait for Clerk
-      let attempts = 0;
-      const checkClerk = setInterval(() => {
-        attempts++;
-        if (window.Clerk && window.Clerk.loaded) {
-          clearInterval(checkClerk);
-          console.log('[Login] Clerk ready');
-        }
-        if (attempts >= 100) {
-          clearInterval(checkClerk);
-          console.error('[Login] Clerk failed to load');
-        }
-      }, 100);
+      function showStep2Error(msg) {
+        verifyError.textContent = msg;
+        verifyError.style.display = 'block';
+        verifyLoading.style.display = 'none';
+        verifyBtn.disabled = false;
+      }
 
-      form.addEventListener('submit', async (e) => {
+      function switchToStep2(email) {
+        step1.classList.remove('active');
+        step2.classList.add('active');
+        emailDisplay.textContent = email;
+        verifySuccess.style.display = 'block';
+        document.getElementById('code').focus();
+      }
+
+      function switchToStep1() {
+        step2.classList.remove('active');
+        step1.classList.add('active');
+        verifyError.style.display = 'none';
+        verifySuccess.style.display = 'none';
+        document.getElementById('password').value = '';
+        document.getElementById('password').focus();
+      }
+
+      backLink.addEventListener('click', (e) => {
+        e.preventDefault();
+        switchToStep1();
+      });
+
+      // Step 1: Email + Password
+      signinForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         
         const email = document.getElementById('email').value;
         const password = document.getElementById('password').value;
 
         if (!email || !password) {
-          showError('Please enter both email and password');
+          showStep1Error('Please enter both email and password');
           return;
         }
 
-        // Ensure Clerk is loaded
         if (!window.Clerk) {
-          showError('Authentication system not loaded. Please refresh the page.');
+          showStep1Error('Authentication system not loaded. Please refresh the page.');
           return;
         }
 
         if (!window.Clerk.loaded) {
-          showError('Loading authentication... please wait 2 seconds and try again.');
+          showStep1Error('Loading authentication... please wait 2 seconds and try again.');
           try {
             await window.Clerk.load({ publishableKey: 'pk_live_Y2xlcmsudmF1bHRvZnNraWxscy5jb20k' });
           } catch (err) {
@@ -172,27 +231,6 @@
         errorMsg.style.display = 'none';
 
         try {
-          // If we have a pending sign-in (2FA flow), attempt second factor
-          if (window.currentSignIn) {
-            console.log('[Login] Attempting second factor...');
-            const result = await window.currentSignIn.attemptSecondFactor({
-              strategy: 'email_code',
-              code: password
-            });
-            console.log('[Login] 2FA result:', result.status);
-            
-            if (result.status === 'complete') {
-              // Set the session as active before redirecting
-              if (result.createdSessionId && window.Clerk.setActive) {
-                await window.Clerk.setActive({ session: result.createdSessionId });
-              }
-              window.location.href = returnUrl;
-            } else {
-              showError('Verification failed: ' + result.status);
-            }
-            return;
-          }
-
           console.log('[Login] Attempting sign-in...');
           const result = await window.Clerk.client.signIn.create({
             identifier: email,
@@ -202,34 +240,74 @@
           console.log('[Login] Sign-in result:', result.status);
 
           if (result.status === 'complete') {
-            // Set the session as active before redirecting
             if (result.createdSessionId && window.Clerk.setActive) {
               await window.Clerk.setActive({ session: result.createdSessionId });
             }
             window.location.href = returnUrl;
-          } else if (result.status === 'needs_first_factor') {
-            showError('Please check your email for a verification code.');
           } else if (result.status === 'needs_second_factor') {
+            // Switch to verification code view
             try {
               await result.prepareSecondFactor({ strategy: 'email_code' });
-              showError('A verification code has been sent to your email. Please enter it below.');
-              document.getElementById('password').value = '';
-              document.getElementById('password').placeholder = 'Enter verification code';
-              document.getElementById('password').type = 'text';
-              submitBtn.textContent = 'Verify Code';
               window.currentSignIn = result;
+              switchToStep2(email);
             } catch (err) {
-              showError('Two-factor authentication is required but could not be sent.');
+              showStep1Error('Could not send verification code. Please try again.');
             }
           } else {
-            showError('Sign-in requires additional verification: ' + result.status);
+            showStep1Error('Sign-in requires additional verification: ' + result.status);
           }
         } catch (err) {
           console.error('[Login] Sign-in error:', err);
-          showError(err.message || 'Sign in failed. Please check your credentials and try again.');
+          showStep1Error(err.message || 'Sign in failed. Please check your credentials and try again.');
         } finally {
           submitBtn.disabled = false;
           loading.style.display = 'none';
+        }
+      });
+
+      // Step 2: Verification Code
+      verifyForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        const code = document.getElementById('code').value;
+
+        if (!code) {
+          showStep2Error('Please enter the verification code');
+          return;
+        }
+
+        if (!window.currentSignIn) {
+          showStep2Error('Session expired. Please go back and sign in again.');
+          return;
+        }
+
+        verifyBtn.disabled = true;
+        verifyLoading.style.display = 'flex';
+        verifyError.style.display = 'none';
+
+        try {
+          console.log('[Login] Attempting second factor...');
+          const result = await window.currentSignIn.attemptSecondFactor({
+            strategy: 'email_code',
+            code: code
+          });
+
+          console.log('[Login] 2FA result:', result.status);
+          
+          if (result.status === 'complete') {
+            if (result.createdSessionId && window.Clerk.setActive) {
+              await window.Clerk.setActive({ session: result.createdSessionId });
+            }
+            window.location.href = returnUrl;
+          } else {
+            showStep2Error('Verification failed: ' + result.status);
+          }
+        } catch (err) {
+          console.error('[Login] 2FA error:', err);
+          showStep2Error(err.message || 'Verification failed. Please check the code and try again.');
+        } finally {
+          verifyBtn.disabled = false;
+          verifyLoading.style.display = 'none';
         }
       });
     })();
