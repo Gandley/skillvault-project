@@ -37,13 +37,17 @@ export default function PricingSection() {
 
   return (
     <div style={section}>
+      <style>{`
+        .pricing-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+        @media (max-width: 960px) { .pricing-grid { grid-template-columns: 1fr; } }
+      `}</style>
       <div style={header}>
         <span style={badge}><Gift size={14} /> Flexible Pricing</span>
         <h2 style={title}>Choose Your Access Level</h2>
         <p style={subtitle}>Start free, scale as you grow. Every skill is built for production.</p>
       </div>
 
-      <div style={grid}>
+      <div className="pricing-grid">
         {/* Free */}
         <div style={card}>
           <div style={cardHeader}>
