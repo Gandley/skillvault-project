@@ -32,7 +32,7 @@ export default async function handler(req, res) {
       cancel_url: `${req.headers.origin || 'https://skillvault-project-nu.vercel.app'}/cancel.html`,
     });
 
-    return res.status(200).json({ url: session.url });
+    return res.status(200).json({ url: session.url, session_id: session.id });
   } catch (err) {
     console.error('Stripe checkout error:', err);
     return res.status(500).json({ error: err.message });

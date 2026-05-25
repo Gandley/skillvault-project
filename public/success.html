@@ -101,7 +101,7 @@
       }
 
       try {
-        // Find the pending purchase by session ID and update it to completed
+        // Update the purchase status to completed
         const { error } = await supabase
           .from('purchases')
           .update({ status: 'completed', updated_at: new Date().toISOString() })

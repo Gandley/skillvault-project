@@ -1,7 +1,9 @@
+import { useState, useEffect } from 'react';
 import * as Icons from 'lucide-react';
-import { Star, Download, Lock, Zap, Gift } from 'lucide-react';
+import { Star, Download, Lock, Zap, Gift, CheckCircle } from 'lucide-react';
 import { useClerkAuth } from '../lib/auth';
 import { buySingleSkill, subscribeVaultPro } from '../lib/stripe';
+import { hasUserPurchasedSkill, hasVaultProSubscription } from '../lib/supabase';
 
 const colorMap = {
   green: { bg: 'var(--green-bg)', text: 'var(--green)', border: 'rgba(52,211,153,0.2)' },
@@ -28,22 +30,63 @@ export default function SkillCard({ skill }) {
   const tier = tierStyles[skill.tier] || tierStyles.free;
   const { isSignedIn, user, signInRedirect } = useClerkAuth();
 
+  const [isOwned, setIsOwned] = useState(false);
+  const [hasPro, setHasPro] = useState(false);
+  const [checking, setChecking] = useState(true);
+
   const isFree = skill.tier === 'free';
   const isPaid = skill.tier === 'paid';
   const isPro = skill.tier === 'pro';
+
+  // Check ownership on mount
+  useEffect(() => {
+    if (!isSignedIn || !user) {
+      setChecking(false);
+      return;
+    }
+
+    async function checkOwnership() {
+      try {
+        // Check if user has Vault Pro (covers all skills)
+        const pro = await hasVaultProSubscription(user.id);
+        setHasPro(pro);
+
+        if (pro) {
+          setIsOwned(true);
+          setChecking(false);
+          return;
+        }
+
+        // Check if user purchased this specific skill
+        if (isPaid) {
+          const owned = await hasUserPurchasedSkill(user.id, skill.id);
+          setIsOwned(owned);
+        }
+      } catch (err) {
+        console.error('[SkillCard] Ownership check failed:', err);
+      } finally {
+        setChecking(false);
+      }
+    }
+
+    checkOwnership();
+  }, [isSignedIn, user, skill.id, isPaid]);
 
   const handleFree = () => {
     if (!isSignedIn || !user) {
       signInRedirect(window.location.pathname + window.location.search);
       return;
     }
-    // User is signed in — proceed with free download
     alert('Free download started!');
   };
 
   const handlePaid = async () => {
     if (!isSignedIn || !user) {
       signInRedirect(window.location.pathname + window.location.search);
+      return;
+    }
+    if (isOwned || hasPro) {
+      alert('You already own this skill!');
       return;
     }
     try {
@@ -59,12 +102,54 @@ export default function SkillCard({ skill }) {
       signInRedirect(window.location.pathname + window.location.search);
       return;
     }
+    if (hasPro) {
+      alert('You already have Vault Pro!');
+      return;
+    }
     try {
       await subscribeVaultPro(user.id);
     } catch (err) {
       console.error('Checkout error:', err);
       alert('Payment failed. Please try again.');
     }
+  };
+
+  // Determine button state
+  const getButton = () => {
+    if (isFree) {
+      return (
+        <button onClick={handleFree} style={{ ...ctaBtn, background: 'var(--green-bg)', color: 'var(--green)', borderColor: 'rgba(52,211,153,0.25)' }}>
+          <Download size={15} />
+          Download Free
+        </button>
+      );
+    }
+
+    if (isOwned || hasPro) {
+      return (
+        <button onClick={() => alert('Download starting...')} style={{ ...ctaBtn, background: 'var(--green-bg)', color: 'var(--green)', borderColor: 'rgba(52,211,153,0.25)' }}>
+          <CheckCircle size={15} />
+          Owned — Download
+        </button>
+      );
+    }
+
+    if (isPaid) {
+      return (
+        <button onClick={handlePaid} disabled={checking} style={{ ...ctaBtn, background: 'var(--amber-bg)', color: 'var(--amber)', borderColor: 'rgba(245,158,11,0.25)' }}>
+          <Zap size={15} />
+          {checking ? 'Checking...' : 'Buy for $9'}
+        </button>
+      );
+    }
+
+    // Pro tier
+    return (
+      <button onClick={handlePro} style={{ ...ctaBtn, background: 'rgba(167,139,250,0.12)', color: 'var(--violet)', borderColor: 'rgba(167,139,250,0.25)' }}>
+        <Lock size={15} />
+        Get Vault Pro
+      </button>
+    );
   };
 
   return (
@@ -140,22 +225,7 @@ export default function SkillCard({ skill }) {
 
         {/* CTA Button */}
         <div style={ctaWrap}>
-          {isFree ? (
-            <button onClick={handleFree} style={{ ...ctaBtn, background: 'var(--green-bg)', color: 'var(--green)', borderColor: 'rgba(52,211,153,0.25)' }}>
-              <Download size={15} />
-              Download Free
-            </button>
-          ) : isPaid ? (
-            <button onClick={handlePaid} style={{ ...ctaBtn, background: 'var(--amber-bg)', color: 'var(--amber)', borderColor: 'rgba(245,158,11,0.25)' }}>
-              <Zap size={15} />
-              Buy for $9
-            </button>
-          ) : (
-            <button onClick={handlePro} style={{ ...ctaBtn, background: 'rgba(167,139,250,0.12)', color: 'var(--violet)', borderColor: 'rgba(167,139,250,0.25)' }}>
-              <Lock size={15} />
-              Get Vault Pro
-            </button>
-          )}
+          {getButton()}
         </div>
       </div>
     </div>

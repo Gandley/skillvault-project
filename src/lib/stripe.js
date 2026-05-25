@@ -27,14 +27,14 @@ export async function redirectToCheckout(priceId, metadata = {}) {
     throw new Error(err.error || 'Checkout creation failed');
   }
 
-  const { url } = await res.json();
+  const { url, session_id } = await res.json();
   if (url) {
-    // Record pending purchase in Supabase
-    if (metadata.userId && metadata.skillId) {
+    // Record pending purchase in Supabase with actual Stripe session ID
+    if (metadata.userId) {
       recordPurchase({
         userId: metadata.userId,
-        skillId: metadata.skillId,
-        stripeSessionId: url.split('/').pop()?.split('#')[0] || 'unknown',
+        skillId: metadata.skillId || null,
+        stripeSessionId: session_id || 'unknown',
         amount: metadata.mode === 'subscription' ? 2700 : 900,
         status: 'pending',
       }).catch((err) => {
