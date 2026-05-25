@@ -6,7 +6,7 @@ import AuthNav from '../components/AuthNav';
 import { useClerkAuth } from '../lib/auth';
 import { subscribeVaultPro } from '../lib/stripe';
 import * as Icons from 'lucide-react';
-import { ArrowUpDown, Shield, Lock } from 'lucide-react';
+import { ArrowUpDown, Lock } from 'lucide-react';
 
 function formatNumber(n) {
   if (n >= 1000) return (n / 1000).toFixed(1) + 'k';
@@ -14,7 +14,7 @@ function formatNumber(n) {
 }
 
 export default function RepoView() {
-  const { data, settings, goAdmin } = useApp();
+  const { data, settings } = useApp();
   const { isSignedIn, user } = useClerkAuth();
   const [search, setSearch] = useState('');
   const [activeCategory, setActiveCategory] = useState('all');
@@ -136,10 +136,6 @@ export default function RepoView() {
 
           <div style={actionsWrap}>
             <AuthNav />
-            <button onClick={goAdmin} style={adminBtn}>
-              <Shield size={14} />
-              <span style={{ marginLeft: 6 }}>Admin</span>
-            </button>
           </div>
         </div>
       </nav>
