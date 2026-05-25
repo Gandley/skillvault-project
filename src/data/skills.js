@@ -1,10 +1,10 @@
 export const skillPacks = [
   {
-    id: 'content-intelligence',
-    name: 'Content Intelligence Pack',
-    description: 'Know what to create, when to create it, and how it performed. This pack gives you the full intelligence layer — from spotting trends before they peak, to measuring what actually moves the needle, to building a data-driven posting calendar.',
-    icon: 'Search',
-    color: 'cyan',
+    id: 'nova-content-suite',
+    name: 'Nova Content Suite',
+    description: 'The complete content operations system. From trend intelligence and analytics to article writing, video clipping, social publishing, and lead generation — everything you need to run a modern content machine. 11 production-ready skills that work together or standalone.',
+    icon: 'Zap',
+    color: 'violet',
     skills: [
       {
         id: 'trend-intelligence',
@@ -48,15 +48,6 @@ export const skillPacks = [
         color: 'cyan',
         tier: 'pro',
       },
-    ],
-  },
-  {
-    id: 'content-creation',
-    name: 'Content Creation Pack',
-    description: 'Turn raw ideas into finished content. This pack covers the full creation pipeline — from sourcing articles and writing newsletters, to finding and clipping video content, to multiplying one piece into a week of platform-native posts across every format.',
-    icon: 'PenTool',
-    color: 'violet',
-    skills: [
       {
         id: 'article-cue',
         name: 'Article Cue',
@@ -99,15 +90,6 @@ export const skillPacks = [
         color: 'violet',
         tier: 'pro',
       },
-    ],
-  },
-  {
-    id: 'social-distribution',
-    name: 'Social Distribution Pack',
-    description: 'Get your content everywhere it needs to be. This pack covers the full distribution layer — from setting up Telegram notifications and approval flows, to publishing across 9+ social platforms with one API, to a complete AI-generated pipeline that writes, approves, and posts content automatically.',
-    icon: 'Share2',
-    color: 'amber',
-    skills: [
       {
         id: 'telegram-bot',
         name: 'Telegram Bot',
@@ -150,15 +132,6 @@ export const skillPacks = [
         color: 'amber',
         tier: 'pro',
       },
-    ],
-  },
-  {
-    id: 'business-systems',
-    name: 'Business Systems Pack',
-    description: 'Convert attention into leads and orchestrate your entire operation. This pack covers lead generation assets and the master orchestrator that routes every request to the right pipeline, manages credentials, tracks approvals, and keeps your entire content machine running smoothly.',
-    icon: 'Briefcase',
-    color: 'rose',
-    skills: [
       {
         id: 'lead-magnet-builder',
         name: 'Lead Magnet Builder',
