@@ -1,27 +1,12 @@
 /**
  * Stripe Checkout integration for SkillVault
- * Loads Stripe.js SDK and redirects to Checkout sessions
+ * Server-side checkout sessions via API route
  */
 
-const STRIPE_PK = 'pk_live_7r4zn5DDO3LOT6odQTm3WHqi';
 const PRICE_SINGLE_SKILL = 'price_1Ta4flIOVif6Dy1OEVfhQD15';
 const PRICE_VAULT_PRO = 'price_1Ta4g4IOVif6Dy1O2MJynjMz';
 
-let stripePromise = null;
-
-function getStripe() {
-  if (!stripePromise) {
-    if (!window.Stripe) {
-      return Promise.reject(new Error('Stripe.js not loaded'));
-    }
-    stripePromise = Promise.resolve(window.Stripe(STRIPE_PK));
-  }
-  return stripePromise;
-}
-
 export async function redirectToCheckout(priceId, metadata = {}) {
-  const stripe = await getStripe();
-
   const payload = {
     price_id: priceId,
     user_id: metadata.userId || null,
