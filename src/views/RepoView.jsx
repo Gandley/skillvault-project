@@ -1,32 +1,27 @@
-import { useState, useMemo } from 'react';
+import { useState } from 'react';
 import { useApp } from '../context/AppContext';
+import PackCard from '../components/PackCard';
 import SkillCard from '../components/SkillCard';
 import PricingSection from '../components/PricingSection';
 import AuthNav from '../components/AuthNav';
 import { useClerkAuth } from '../lib/auth';
 import { subscribeVaultPro } from '../lib/stripe';
 import * as Icons from 'lucide-react';
-import { ArrowUpDown, Lock } from 'lucide-react';
-
-function formatNumber(n) {
-  if (n >= 1000) return (n / 1000).toFixed(1) + 'k';
-  return n.toString();
-}
+import { ArrowUpDown, Lock, Layers, Grid } from 'lucide-react';
 
 export default function RepoView() {
   const { data, settings } = useApp();
   const { isSignedIn, user } = useClerkAuth();
   const [search, setSearch] = useState('');
-  const [activeCategory, setActiveCategory] = useState('all');
+  const [activePack, setActivePack] = useState('all');
+  const [viewMode, setViewMode] = useState('packs'); // 'packs' or 'skills'
   const [sortBy, setSortBy] = useState('popular');
   const [bannerDismissed, setBannerDismissed] = useState(false);
-
-  const CLERK_HOSTED_SIGNIN = 'https://maximum-mammal-37.accounts.dev/sign-in';
 
   const handleBannerPro = async () => {
     if (!isSignedIn || !user) {
       const returnUrl = encodeURIComponent(window.location.href);
-      window.location.href = CLERK_HOSTED_SIGNIN + '?redirect_url=' + returnUrl;
+      window.location.href = `/login.html?return_url=${returnUrl}`;
       return;
     }
     try {
@@ -37,63 +32,72 @@ export default function RepoView() {
     }
   };
 
-  const filtered = useMemo(() => {
-    let list = data.skills;
+  const packs = data.skillPacks || [];
 
-    if (activeCategory !== 'all') {
-      list = list.filter((s) => s.category === activeCategory);
-    }
+  // Filter packs by search
+  const filteredPacks = packs.filter((pack) => {
+    if (!search.trim()) return true;
+    const q = search.toLowerCase();
+    return (
+      pack.name.toLowerCase().includes(q) ||
+      pack.description.toLowerCase().includes(q) ||
+      pack.skills.some((s) => s.name.toLowerCase().includes(q) || s.tags.some((t) => t.toLowerCase().includes(q)))
+    );
+  });
 
-    if (search.trim()) {
-      const q = search.toLowerCase();
-      list = list.filter(
-        (s) =>
-          (s.name || '').toLowerCase().includes(q) ||
-          (s.description || '').toLowerCase().includes(q) ||
-          (s.tags || []).some((t) => t.toLowerCase().includes(q)) ||
-          (s.author || '').toLowerCase().includes(q)
-      );
-    }
+  // Filter skills
+  const allSkills = packs.flatMap((p) => p.skills);
+  let filteredSkills = allSkills;
 
-    const sorted = [...list];
-    if (sortBy === 'popular') sorted.sort((a, b) => (b.installs || 0) - (a.installs || 0));
-    else if (sortBy === 'rating') sorted.sort((a, b) => (b.rating || 0) - (a.rating || 0));
-    else if (sortBy === 'newest') {
-      sorted.sort((a, b) => {
-        const va = (a.version || '0.0.0').split('.').map(Number);
-        const vb = (b.version || '0.0.0').split('.').map(Number);
-        for (let i = 0; i < 3; i++) {
-          if ((va[i] || 0) !== (vb[i] || 0)) return (vb[i] || 0) - (va[i] || 0);
-        }
-        return 0;
-      });
-    } else if (sortBy === 'name') sorted.sort((a, b) => (a.name || '').localeCompare(b.name || ''));
+  if (activePack !== 'all') {
+    const pack = packs.find((p) => p.id === activePack);
+    filteredSkills = pack ? pack.skills : [];
+  }
 
-    return sorted;
-  }, [search, activeCategory, sortBy, data.skills]);
+  if (search.trim()) {
+    const q = search.toLowerCase();
+    filteredSkills = filteredSkills.filter(
+      (s) =>
+        (s.name || '').toLowerCase().includes(q) ||
+        (s.description || '').toLowerCase().includes(q) ||
+        (s.tags || []).some((t) => t.toLowerCase().includes(q))
+    );
+  }
 
-  const stats = useMemo(() => {
-    const total = filtered.length;
-    const installs = filtered.reduce((sum, s) => sum + (s.installs || 0), 0);
-    const avgRating =
-      filtered.length > 0
-        ? (filtered.reduce((sum, s) => sum + (s.rating || 0), 0) / filtered.length).toFixed(1)
-        : '0.0';
-    const categories = new Set(filtered.map((s) => s.category)).size;
-    return { total, installs, avgRating, categories };
-  }, [filtered]);
+  // Sort skills
+  if (sortBy === 'popular') {
+    filteredSkills.sort((a, b) => (b.installs || 0) - (a.installs || 0));
+  } else if (sortBy === 'rating') {
+    filteredSkills.sort((a, b) => {
+      const ra = typeof a.rating === 'number' ? a.rating : 0;
+      const rb = typeof b.rating === 'number' ? b.rating : 0;
+      return rb - ra;
+    });
+  } else if (sortBy === 'newest') {
+    filteredSkills.sort((a, b) => {
+      const va = (a.version || '0.0.0').split('.').map(Number);
+      const vb = (b.version || '0.0.0').split('.').map(Number);
+      for (let i = 0; i < 3; i++) {
+        if ((va[i] || 0) !== (vb[i] || 0)) return (vb[i] || 0) - (va[i] || 0);
+      }
+      return 0;
+    });
+  } else if (sortBy === 'name') {
+    filteredSkills.sort((a, b) => (a.name || '').localeCompare(b.name || ''));
+  }
+
+  const totalSkills = allSkills.length;
+  const totalInstalls = allSkills.reduce((sum, s) => sum + (s.installs || 0), 0);
 
   return (
     <div style={page}>
       <style>{
         `
-        .skill-card:hover { transform: translateY(-4px) scale(1.01); border-color: var(--border-subtle) !important; box-shadow: 0 8px 24px rgba(0,0,0,0.4), 0 0 0 1px rgba(99,102,241,0.06); }
-        .skill-card:hover .arrow-btn { background: var(--accent) !important; color: #fff !important; border-color: var(--accent) !important; }
+        .pack-card:hover { transform: translateY(-4px) scale(1.01); border-color: var(--border-subtle) !important; box-shadow: 0 8px 24px rgba(0,0,0,0.4), 0 0 0 1px rgba(99,102,241,0.06); }
+        .pack-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+        @media (max-width: 768px) { .pack-grid { grid-template-columns: 1fr; } }
         .skill-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; }
         @media (max-width: 640px) { .skill-grid { grid-template-columns: 1fr; } }
-        .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
-        @media (max-width: 768px) { .stats-grid { grid-template-columns: repeat(2, 1fr); } }
-        @media (max-width: 480px) { .stats-grid { grid-template-columns: 1fr; } }
         `
       }</style>
 
@@ -103,7 +107,7 @@ export default function RepoView() {
           <div style={bannerInner}>
             <div style={bannerLeft}>
               <Lock size={16} style={{ color: 'var(--violet)', flexShrink: 0 }} />
-              <span>Get unlimited access to all 25 skills — <strong style={{ color: 'var(--violet)' }}>$27/month</strong></span>
+              <span>Get unlimited access to all 11 skills — <strong style={{ color: 'var(--violet)' }}>$27/month</strong></span>
             </div>
             <div style={bannerRight}>
               <button onClick={handleBannerPro} style={bannerBtn}>Go Pro</button>
@@ -113,7 +117,7 @@ export default function RepoView() {
         </div>
       )}
 
-      {/* Sticky header with search + admin */}
+      {/* Nav */}
       <nav style={navStyle}>
         <div style={navInner}>
           <div style={logoWrap}>
@@ -127,7 +131,7 @@ export default function RepoView() {
             <Icons.Search size={16} color="#6b6f82" />
             <input
               type="text"
-              placeholder="Search skills..."
+              placeholder="Search packs and skills..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               style={searchInput}
@@ -140,6 +144,7 @@ export default function RepoView() {
         </div>
       </nav>
 
+      {/* Hero */}
       <div style={hero}>
         <div style={heroInner}>
           <h1 style={heroTitle}>
@@ -151,107 +156,141 @@ export default function RepoView() {
         </div>
       </div>
 
-      {/* Stats */}
-      <div style={statsWrap}>
-        <div className="stats-grid">
-          <StatBox icon="Layers" label="Total Skills" value={stats.total} color="var(--accent)" shadow="var(--accent-glow)" />
-          <StatBox icon="Download" label="Total Installs" value={formatNumber(stats.installs)} color="var(--green)" shadow="rgba(52,211,153,0.22)" />
-          <StatBox icon="Star" label="Avg Rating" value={stats.avgRating} color="var(--amber)" shadow="rgba(245,158,11,0.22)" />
-          <StatBox icon="GitBranch" label="Categories" value={stats.categories} color="var(--cyan)" shadow="rgba(34,211,238,0.22)" />
+      {/* View Toggle */}
+      <div style={viewToggleWrap}>
+        <div style={viewToggle}>
+          <button
+            onClick={() => setViewMode('packs')}
+            style={{
+              ...toggleBtn,
+              background: viewMode === 'packs' ? 'var(--accent)' : 'var(--bg-card)',
+              color: viewMode === 'packs' ? '#fff' : 'var(--text-secondary)',
+            }}
+>
+            <Layers size={14} />
+            Packs
+          </button>
+          <button
+            onClick={() => setViewMode('skills')}
+            style={{
+              ...toggleBtn,
+              background: viewMode === 'skills' ? 'var(--accent)' : 'var(--bg-card)',
+              color: viewMode === 'skills' ? '#fff' : 'var(--text-secondary)',
+            }}
+          >
+            <Grid size={14} />
+            All Skills
+          </button>
         </div>
       </div>
 
-      {/* Pricing Section */}
-      <PricingSection />
-
-      {/* Categories */}
-      <div style={catWrap}>
-        <div style={catScroll}>
-          {data.categories.map((cat) => {
-            const Icon = Icons[cat.icon] || Icons.Circle;
-            const isActive = activeCategory === cat.id;
-            return (
-              <button
-                key={cat.id}
-                onClick={() => setActiveCategory(cat.id)}
-                style={{
-                  ...pill,
-                  background: isActive ? 'var(--accent)' : 'var(--bg-card)',
-                  color: isActive ? '#fff' : 'var(--text-secondary)',
-                  borderColor: isActive ? 'var(--accent)' : 'var(--border)',
-                  boxShadow: isActive ? '0 2px 10px var(--accent-glow)' : 'none',
-                }}
-              >
-                <Icon size={16} strokeWidth={2} />
-                <span>{cat.label}</span>
-              </button>
-            );
-          })}
+      {/* Pack Filter (only in skills mode) */}
+      {viewMode === 'skills' && (
+        <div style={catWrap}>
+          <div style={catScroll}>
+            <button
+              onClick={() => setActivePack('all')}
+              style={{
+                ...pill,
+                background: activePack === 'all' ? 'var(--accent)' : 'var(--bg-card)',
+                color: activePack === 'all' ? '#fff' : 'var(--text-secondary)',
+                borderColor: activePack === 'all' ? 'var(--accent)' : 'var(--border)',
+              }}
+            >
+              <Layers size={16} strokeWidth={2} />
+              All Skills
+            </button>
+            {packs.map((pack) => {
+              const Icon = Icons[pack.icon] || Icons.Circle;
+              return (
+                <button
+                  key={pack.id}
+                  onClick={() => setActivePack(pack.id)}
+                  style={{
+                    ...pill,
+                    background: activePack === pack.id ? 'var(--accent)' : 'var(--bg-card)',
+                    color: activePack === pack.id ? '#fff' : 'var(--text-secondary)',
+                    borderColor: activePack === pack.id ? 'var(--accent)' : 'var(--border)',
+                  }}
+                >
+                  <Icon size={16} strokeWidth={2} />
+                  {pack.name}
+                </button>
+              );
+            })}
+          </div>
         </div>
-      </div>
+      )}
 
-      {/* Main grid */}
+      {/* Content */}
       <div style={main}>
-        <div style={toolbar}>
-          <div style={countText}>
-            <span style={{ color: 'var(--text-primary)', fontWeight: 600 }}>{filtered.length}</span>
-            <span style={{ color: 'var(--text-muted)' }}>{' '}skill{filtered.length !== 1 ? 's' : ''} found</span>
-          </div>
-          <div style={sortWrap}>
-            <ArrowUpDown size={14} color="var(--text-muted)" />
-            <select value={sortBy} onChange={(e) => setSortBy(e.target.value)} style={sortSelect}>
-              <option value="popular">Most Popular</option>
-              <option value="rating">Highest Rated</option>
-              <option value="newest">Newest</option>
-              <option value="name">Name (A–Z)</option>
-            </select>
-          </div>
-        </div>
+        {viewMode === 'packs' ? (
+          <>
+            <div style={sectionHeader}>
+              <div>
+                <h2 style={sectionTitle}>Skill Packs</h2>
+                <p style={sectionSub}>{filteredPacks.length} packs · {totalSkills} skills · {totalInstalls.toLocaleString()} installs</p>
+              </div>
+            </div>
+            <div className="pack-grid">
+              {filteredPacks.map((pack) => (
+                <PackCard key={pack.id} pack={pack} />
+              ))}
+            </div>
+          </>
+        ) : (
+          <>
+            <div style={toolbar}>
+              <div style={countText}>
+                <span style={{ color: 'var(--text-primary)', fontWeight: 600 }}>{filteredSkills.length}</span>
+                <span style={{ color: 'var(--text-muted)' }}>{' '}skill{filteredSkills.length !== 1 ? 's' : ''} found</span>
+              </div>
+              <div style={sortWrap}>
+                <ArrowUpDown size={14} color="var(--text-muted)" />
+                <select value={sortBy} onChange={(e) => setSortBy(e.target.value)} style={sortSelect}>
+                  <option value="popular">Most Popular</option>
+                  <option value="rating">Highest Rated</option>
+                  <option value="newest">Newest</option>
+                  <option value="name">Name (A–Z)</option>
+                </select>
+              </div>
+            </div>
 
-        <div className="skill-grid">
-          {filtered.map((skill) => (
-            <SkillCard key={skill.id} skill={skill} />
-          ))}
-        </div>
+            <div className="skill-grid">
+              {filteredSkills.map((skill) => (
+                <SkillCard key={skill.id} skill={skill} />
+              ))}
+            </div>
 
-        {filtered.length === 0 && (
-          <div style={empty}>
-            <div style={emptyIcon}>🔍</div>
-            <h3 style={emptyTitle}>No skills found</h3>
-            <p style={emptyDesc}>Try adjusting your search or filter criteria.</p>
-          </div>
+            {filteredSkills.length === 0 && (
+              <div style={empty}>
+                <div style={emptyIcon}>🔍</div>
+                <h3 style={emptyTitle}>No skills found</h3>
+                <p style={emptyDesc}>Try adjusting your search or filter criteria.</p>
+              </div>
+            )}
+          </>
         )}
       </div>
 
+      {/* Pricing */}
+      <PricingSection />
+
+      {/* Footer */}
       <footer style={footer}>
         <div style={footerInner}>
           <div style={footerLeft}>
             <span style={{ fontWeight: 600, color: 'var(--text-primary)' }}>{settings.title || 'SkillVault'}</span>
-            <span style={{ color: 'var(--text-muted)', marginLeft: 8 }}>· {data.skills.length} skills available</span>
+            <span style={{ color: 'var(--text-muted)', marginLeft: 8 }}>· {totalSkills} skills available</span>
           </div>
           <div style={footerRight}>
-            <a href="#coming-soon" style={footerLink}>Pricing</a>
+            <a href="/pricing.html" style={footerLink}>Pricing</a>
             <a href="#coming-soon" style={footerLink}>Docs</a>
             <a href="#coming-soon" style={footerLink}>API</a>
             <a href="#coming-soon" style={footerLink}>Support</a>
           </div>
         </div>
       </footer>
-    </div>
-  );
-}
-
-function StatBox({ icon, label, value, color, shadow }) {
-  const Icon = Icons[icon] || Icons.Circle;
-  return (
-    <div style={statBox}>
-      <div style={{ ...iconWrapBase, color, boxShadow: `0 2px 8px ${shadow}` }}>
-        <Icon size={20} />
-      </div>
-      <div>
-        <div style={statValue}>{value}</div>
-        <div style={statLabel}>{label}</div>
-      </div>
     </div>
   );
 }
@@ -291,7 +330,7 @@ const bannerClose = {
 
 const navStyle = {
   position: 'sticky', top: 0, zIndex: 100,
-  background: 'rgba(11,12,16,0.88)', backdropFilter: 'blur(16px)', WebkitBackdropFilter: 'blur(16px)',
+  background: 'rgba(11,12,16,0.88)', backdropFilter: 'blur(16px)',
   borderBottom: '1px solid var(--border)',
 };
 
@@ -309,7 +348,7 @@ const logoIcon = {
   boxShadow: '0 2px 8px var(--accent-glow)',
 };
 
-const logoText = { fontFamily: 'var(--font-display)', fontSize: 20, fontWeight: 700, color: 'var(--text-primary)', letterSpacing: '-0.02em' };
+const logoText = { fontFamily: 'var(--font-display)', fontSize: 20, fontWeight: 700, color: 'var(--text-primary)' };
 
 const searchWrap = {
   display: 'flex', alignItems: 'center', gap: 8, flex: 1, maxWidth: 420,
@@ -320,35 +359,36 @@ const searchInput = { background: 'transparent', border: 'none', outline: 'none'
 
 const actionsWrap = { display: 'flex', alignItems: 'center', gap: 10, flexShrink: 0 };
 
-const adminBtn = {
-  display: 'flex', alignItems: 'center', padding: '8px 14px', borderRadius: 10,
-  border: '1px solid var(--border)', background: 'var(--bg-card)', color: 'var(--text-secondary)',
-  fontSize: 13, fontWeight: 500, fontFamily: 'var(--font-body)', cursor: 'pointer', transition: 'all 0.2s',
-};
-
 const hero = { padding: '40px 24px 28px', textAlign: 'center' };
-
 const heroInner = { maxWidth: 680, margin: '0 auto' };
-
 const heroTitle = { fontFamily: 'var(--font-display)', fontSize: 'clamp(32px, 5vw, 48px)', fontWeight: 700, lineHeight: 1.1, color: 'var(--text-primary)', marginBottom: 14 };
-
 const heroSub = { fontSize: 16, lineHeight: 1.6, color: 'var(--text-secondary)', maxWidth: 520, margin: '0 auto' };
 
-const statsWrap = { maxWidth: 1280, margin: '0 auto', padding: '0 24px', marginBottom: 28 };
+const viewToggleWrap = { maxWidth: 1280, margin: '0 auto', padding: '0 24px 20px' };
 
-const statBox = {
-  background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: 'var(--radius-lg)',
-  padding: '20px', display: 'flex', alignItems: 'center', gap: 14,
+const viewToggle = {
+  display: 'flex',
+  gap: 8,
+  background: 'var(--bg-card)',
+  border: '1px solid var(--border)',
+  borderRadius: 12,
+  padding: 4,
+  width: 'fit-content',
 };
 
-const iconWrapBase = {
-  width: 44, height: 44, borderRadius: 'var(--radius-md)', background: 'var(--bg-secondary)',
-  display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
+const toggleBtn = {
+  display: 'flex',
+  alignItems: 'center',
+  gap: 6,
+  padding: '8px 16px',
+  borderRadius: 8,
+  border: 'none',
+  fontSize: 14,
+  fontWeight: 600,
+  fontFamily: 'var(--font-body)',
+  cursor: 'pointer',
+  transition: 'all 0.2s',
 };
-
-const statValue = { fontFamily: 'var(--font-display)', fontSize: 22, fontWeight: 700, color: 'var(--text-primary)', lineHeight: 1.2 };
-
-const statLabel = { fontSize: 13, color: 'var(--text-muted)', marginTop: 2 };
 
 const catWrap = { maxWidth: 1280, margin: '0 auto', padding: '0 24px', marginBottom: 20 };
 
@@ -361,6 +401,21 @@ const pill = {
 };
 
 const main = { maxWidth: 1280, margin: '0 auto', padding: '0 24px 48px', flex: 1 };
+
+const sectionHeader = { marginBottom: 24 };
+
+const sectionTitle = {
+  fontFamily: 'var(--font-display)',
+  fontSize: 24,
+  fontWeight: 700,
+  color: 'var(--text-primary)',
+  marginBottom: 4,
+};
+
+const sectionSub = {
+  fontSize: 14,
+  color: 'var(--text-muted)',
+};
 
 const toolbar = { display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20, paddingBottom: 16, borderBottom: '1px solid var(--border)' };
 

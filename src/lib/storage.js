@@ -1,5 +1,5 @@
 // localStorage helpers for persistence
-import { skills as defaultSkills, categories as defaultCategories } from '../data/skills.js';
+import { skills as defaultSkills, categories as defaultCategories, skillPacks as defaultSkillPacks } from '../data/skills.js';
 
 const STORAGE_KEY = 'skillvault_data';
 const PASSCODE_KEY = 'skillvault_passcode';
@@ -11,7 +11,7 @@ export function loadData() {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (raw) return JSON.parse(raw);
   } catch {}
-  return { skills: defaultSkills, categories: defaultCategories };
+  return { skills: defaultSkills, categories: defaultCategories, skillPacks: defaultSkillPacks };
 }
 
 export function saveData(data) {
