@@ -159,7 +159,6 @@
 
         if (!window.Clerk.loaded) {
           showError('Loading authentication... please wait 2 seconds and try again.');
-          // Try to load it
           try {
             await window.Clerk.load({ publishableKey: 'pk_live_Y2xlcmsudmF1bHRvZnNraWxscy5jb20k' });
           } catch (err) {
@@ -173,6 +172,23 @@
         errorMsg.style.display = 'none';
 
         try {
+          // If we have a pending sign-in (2FA flow), attempt second factor
+          if (window.currentSignIn) {
+            console.log('[Login] Attempting second factor...');
+            const result = await window.currentSignIn.attemptSecondFactor({
+              strategy: 'email_code',
+              code: password
+            });
+            console.log('[Login] 2FA result:', result.status);
+            
+            if (result.status === 'complete') {
+              window.location.href = returnUrl;
+            } else {
+              showError('Verification failed: ' + result.status);
+            }
+            return;
+          }
+
           console.log('[Login] Attempting sign-in...');
           const result = await window.Clerk.client.signIn.create({
             identifier: email,
@@ -182,18 +198,32 @@
           console.log('[Login] Sign-in result:', result.status);
 
           if (result.status === 'complete') {
-            // Reload the page — Clerk will detect the session
             window.location.href = returnUrl;
           } else if (result.status === 'needs_first_factor') {
-            // Requires email verification code
             showError('Please check your email for a verification code.');
+          } else if (result.status === 'needs_second_factor') {
+            try {
+              await result.prepareSecondFactor({ strategy: 'email_code' });
+              showError('A verification code has been sent to your email. Please enter it below.');
+              document.getElementById('password').value = '';
+              document.getElementById('password').placeholder = 'Enter verification code';
+              document.getElementById('password').type = 'text';
+              submitBtn.textContent = 'Verify Code';
+              window.currentSignIn = result;
+            } catch (err) {
+              showError('Two-factor authentication is required but could not be sent.');
+            }
           } else {
             showError('Sign-in requires additional verification: ' + result.status);
           }
         } catch (err) {
           console.error('[Login] Sign-in error:', err);
           showError(err.message || 'Sign in failed. Please check your credentials and try again.');
+        } finally {
+          submitBtn.disabled = false;
+          loading.style.display = 'none';
         }
+      });
       });
     })();
   </script>
