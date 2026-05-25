@@ -1,7 +1,7 @@
 export const skillPacks = [
   {
-    id: 'nova-content-suite',
-    name: 'Nova Content Suite',
+    id: 'content',
+    name: 'Content',
     description: 'The complete content operations system. From trend intelligence and analytics to article writing, video clipping, social publishing, and lead generation — everything you need to run a modern content machine. 11 production-ready skills that work together or standalone.',
     icon: 'Zap',
     color: 'violet',
