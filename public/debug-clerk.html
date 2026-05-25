@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Clerk Debug — SkillVault</title>
+  <style>
+    body { font-family: monospace; background: #0b0c10; color: #f0f2f8; padding: 20px; }
+    pre { background: #1a1c24; padding: 10px; border-radius: 8px; overflow-x: auto; }
+    .ok { color: #34d399; }
+    .err { color: #f43f5e; }
+    .warn { color: #f59e0b; }
+  </style>
+</head>
+<body>
+  <h1>Clerk Debug Console</h1>
+  <div id="log"></div>
+
+  <!-- PRODUCTION Clerk — auto-initializes via data-clerk-publishable-key -->
+  <script crossorigin="anonymous" data-clerk-publishable-key="pk_live_Y2xlcmsudmF1bHRvZnNraWxscy5jb20k" src="https://clerk.vaultofskills.com/npm/@clerk/clerk-js@latest/dist/clerk.browser.js" type="text/javascript"></script>
+
+  <script>
+    const log = document.getElementById('log');
+    function add(msg, cls = '') {
+      const el = document.createElement('pre');
+      el.className = cls;
+      el.textContent = `[${new Date().toISOString().split('T')[1].split('.')[0]}] ${msg}`;
+      log.appendChild(el);
+    }
+
+    add('Page loaded. Clerk script tag present.');
+
+    let attempts = 0;
+    const timer = setInterval(() => {
+      attempts++;
+      const hasClerk = typeof window.Clerk !== 'undefined';
+      const isLoaded = hasClerk && window.Clerk.loaded;
+      const hasMount = hasClerk && typeof window.Clerk.mountSignIn === 'function';
+      const user = hasClerk && window.Clerk.user ? window.Clerk.user.id : 'none';
+
+      add(`Attempt ${attempts}: hasClerk=${hasClerk}, loaded=${isLoaded}, hasMount=${hasMount}, user=${user}`,
+          isLoaded ? 'ok' : '');
+
+      if (isLoaded && hasMount) {
+        clearInterval(timer);
+        add('✅ Clerk ready! Attempting to mount SignIn...', 'ok');
+        try {
+          const el = document.createElement('div');
+          el.id = 'clerk-signin';
+          el.style.minHeight = '400px';
+          document.body.appendChild(el);
+          window.Clerk.mountSignIn(el, { redirectUrl: '/', afterSignInUrl: '/' });
+          add('✅ mountSignIn called successfully.', 'ok');
+        } catch (e) {
+          add(`❌ mountSignIn failed: ${e.message}`, 'err');
+        }
+        return;
+      }
+
+      if (attempts >= 50) {
+        clearInterval(timer);
+        add('❌ Timed out after 5 seconds. Clerk never loaded.', 'err');
+        if (!hasClerk) {
+          add('Clerk object does not exist on window.', 'err');
+        } else if (!isLoaded) {
+          add('Clerk object exists but .loaded is false. It may have failed to initialize.', 'err');
+        } else if (!hasMount) {
+          add('Clerk loaded but mountSignIn is not available.', 'err');
+        }
+      }
+    }, 100);
+  </script>
+</body>
+</html>
