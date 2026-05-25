@@ -44,12 +44,19 @@
 
   function init() {
     if (window.Clerk) {
-      window.Clerk.load({ publishableKey: CLERK_KEY }).then(() => {
+      if (window.Clerk.loaded) {
+        // Already initialized — just render
         renderNav();
         window.Clerk.addListener(() => renderNav());
-      }).catch((err) => {
-        console.error('Clerk load failed:', err);
-      });
+      } else {
+        // Not loaded yet — initialize explicitly
+        window.Clerk.load({ publishableKey: CLERK_KEY }).then(() => {
+          renderNav();
+          window.Clerk.addListener(() => renderNav());
+        }).catch((err) => {
+          console.error('Clerk load failed:', err);
+        });
+      }
     } else {
       setTimeout(init, 100);
     }
