@@ -79,7 +79,7 @@
       <h1 class="card-title">Welcome Back</h1>
       <p class="card-sub">Sign in to your SkillVault account</p>
 
-      <form id="signin-form">
+      <form id="signin-form" onsubmit="event.preventDefault();">
         <div class="form-group">
           <label>Email</label>
           <input type="email" id="email" required placeholder="you@example.com">
