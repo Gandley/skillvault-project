@@ -23,6 +23,7 @@ export function AppProvider({ children }) {
 
   const goAdmin = () => setView('admin');
   const goRepo = () => setView('repo');
+  const goMySkills = () => setView('my-skills');
 
   const addSkill = (skill) => {
     setData((d) => ({ ...d, skills: [skill, ...d.skills] }));
@@ -61,6 +62,7 @@ export function AppProvider({ children }) {
         setView,
         goAdmin,
         goRepo,
+        goMySkills,
         addSkill,
         updateSkill,
         deleteSkill,
