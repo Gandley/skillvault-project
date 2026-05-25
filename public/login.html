@@ -162,7 +162,16 @@
         if (!window.Clerk) { showError('Clerk library not available.'); return; }
         const el = document.getElementById('clerk-signin');
         if (el && window.Clerk.mountSignIn) {
-          window.Clerk.mountSignIn(el, { afterSignInUrl: returnUrl, routing: 'hash' });
+          try {
+            window.Clerk.mountSignIn(el, { 
+              afterSignInUrl: window.location.origin + returnUrl,
+              signInUrl: window.location.origin + '/login.html'
+            });
+            console.log('[Login] mountSignIn called successfully');
+          } catch (e) {
+            console.error('[Login] mountSignIn error:', e);
+            showError('Failed to initialize sign-in: ' + e.message);
+          }
         } else {
           showError('Sign-in component not available.');
         }
