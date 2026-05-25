@@ -169,7 +169,7 @@
       let attempts = 0;
       const timer = setInterval(() => {
         attempts++;
-        if (window.Clerk && window.Clerk.loaded) {
+        if (window.Clerk && window.Clerk.mountSignUp) {
           clearInterval(timer);
           mountSignUp();
           return;

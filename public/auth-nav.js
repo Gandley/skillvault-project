@@ -1,18 +1,18 @@
 /**
  * SkillVault Auth Navigation — Clerk production integration
  * Include this script on every static HTML page after the Clerk CDN.
+ * NOTE: Clerk auto-initializes from the data-clerk-publishable-key script tag.
+ * Do NOT call window.Clerk.load() — it will hang.
  */
 (function() {
   'use strict';
-
-  const CLERK_KEY = 'pk_live_Y2xlcmsudmF1bHRvZnNraWxscy5jb20k';
 
   function getReturnUrl() {
     return encodeURIComponent(window.location.href);
   }
 
   function renderNav() {
-    if (!window.Clerk || !window.Clerk.loaded) return;
+    if (!window.Clerk || !window.Clerk.mountSignIn) return;
     const navAuth = document.getElementById('nav-auth');
     if (!navAuth) return;
 
@@ -43,19 +43,10 @@
   }
 
   function init() {
-    if (window.Clerk) {
-      if (window.Clerk.loaded) {
-        // Already initialized — just render
-        renderNav();
+    if (window.Clerk && window.Clerk.mountSignIn) {
+      renderNav();
+      if (window.Clerk.addListener) {
         window.Clerk.addListener(() => renderNav());
-      } else {
-        // Not loaded yet — initialize explicitly
-        window.Clerk.load({ publishableKey: CLERK_KEY }).then(() => {
-          renderNav();
-          window.Clerk.addListener(() => renderNav());
-        }).catch((err) => {
-          console.error('Clerk load failed:', err);
-        });
       }
     } else {
       setTimeout(init, 100);
