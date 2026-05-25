@@ -3,18 +3,20 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Clerk Debug — SkillVault</title>
+  <title>Clerk Debug v2 — SkillVault</title>
   <style>
     body { font-family: monospace; background: #0b0c10; color: #f0f2f8; padding: 20px; }
-    pre { background: #1a1c24; padding: 10px; border-radius: 8px; overflow-x: auto; }
+    pre { background: #1a1c24; padding: 10px; border-radius: 8px; overflow-x: auto; white-space: pre-wrap; word-break: break-word; }
     .ok { color: #34d399; }
     .err { color: #f43f5e; }
     .warn { color: #f59e0b; }
+    #signin-box { min-height: 400px; border: 2px dashed #6366f1; margin-top: 20px; padding: 20px; }
   </style>
 </head>
 <body>
-  <h1>Clerk Debug Console</h1>
+  <h1>Clerk Debug Console v2</h1>
   <div id="log"></div>
+  <div id="signin-box"></div>
 
   <!-- PRODUCTION Clerk — auto-initializes via data-clerk-publishable-key -->
   <script crossorigin="anonymous" data-clerk-publishable-key="pk_live_Y2xlcmsudmF1bHRvZnNraWxscy5jb20k" src="https://clerk.vaultofskills.com/npm/@clerk/clerk-js@latest/dist/clerk.browser.js" type="text/javascript"></script>
@@ -30,45 +32,64 @@
 
     add('Page loaded. Clerk script tag present.');
 
-    let attempts = 0;
-    const timer = setInterval(() => {
-      attempts++;
+    // Phase 1: Check immediate state
+    setTimeout(() => {
       const hasClerk = typeof window.Clerk !== 'undefined';
       const isLoaded = hasClerk && window.Clerk.loaded;
       const hasMount = hasClerk && typeof window.Clerk.mountSignIn === 'function';
-      const user = hasClerk && window.Clerk.user ? window.Clerk.user.id : 'none';
+      add(`Immediate check: hasClerk=${hasClerk}, loaded=${isLoaded}, hasMount=${hasMount}`);
 
-      add(`Attempt ${attempts}: hasClerk=${hasClerk}, loaded=${isLoaded}, hasMount=${hasMount}, user=${user}`,
-          isLoaded ? 'ok' : '');
-
-      if (isLoaded && hasMount) {
-        clearInterval(timer);
-        add('✅ Clerk ready! Attempting to mount SignIn...', 'ok');
-        try {
-          const el = document.createElement('div');
-          el.id = 'clerk-signin';
-          el.style.minHeight = '400px';
-          document.body.appendChild(el);
-          window.Clerk.mountSignIn(el, { redirectUrl: '/', afterSignInUrl: '/' });
-          add('✅ mountSignIn called successfully.', 'ok');
-        } catch (e) {
-          add(`❌ mountSignIn failed: ${e.message}`, 'err');
-        }
+      if (!hasClerk) {
+        add('❌ Clerk not available at all', 'err');
         return;
       }
 
-      if (attempts >= 50) {
-        clearInterval(timer);
-        add('❌ Timed out after 5 seconds. Clerk never loaded.', 'err');
-        if (!hasClerk) {
-          add('Clerk object does not exist on window.', 'err');
-        } else if (!isLoaded) {
-          add('Clerk object exists but .loaded is false. It may have failed to initialize.', 'err');
-        } else if (!hasMount) {
-          add('Clerk loaded but mountSignIn is not available.', 'err');
+      // Phase 2: Try calling mountSignIn BEFORE load()
+      if (hasMount) {
+        add('Attempting mountSignIn BEFORE calling load()...', 'warn');
+        try {
+          const el = document.getElementById('signin-box');
+          window.Clerk.mountSignIn(el, { redirectUrl: '/', afterSignInUrl: '/' });
+          add('✅ mountSignIn called without load() — no error thrown', 'ok');
+        } catch (e) {
+          add(`❌ mountSignIn failed before load: ${e.message}`, 'err');
         }
       }
-    }, 100);
+
+      // Phase 3: Try explicit load()
+      add('Calling window.Clerk.load() explicitly...', 'warn');
+      const startLoad = Date.now();
+      window.Clerk.load({ publishableKey: 'pk_live_Y2xlcmsudmF1bHRvZnNraWxscy5jb20k' })
+        .then(() => {
+          const elapsed = Date.now() - startLoad;
+          add(`✅ Clerk.load() resolved in ${elapsed}ms`, 'ok');
+          add(`Post-load: loaded=${window.Clerk.loaded}, user=${window.Clerk.user?.id || 'none'}`);
+
+          // Try mountSignIn again after load
+          try {
+            const el = document.getElementById('signin-box');
+            window.Clerk.mountSignIn(el, { redirectUrl: '/', afterSignInUrl: '/' });
+            add('✅ mountSignIn called after load()', 'ok');
+          } catch (e) {
+            add(`❌ mountSignIn failed after load: ${e.message}`, 'err');
+          }
+        })
+        .catch((err) => {
+          const elapsed = Date.now() - startLoad;
+          add(`❌ Clerk.load() rejected after ${elapsed}ms: ${err.message}`, 'err');
+          add(`Error details: ${JSON.stringify({ name: err.name, message: err.message, stack: err.stack?.substring(0, 200) })}`, 'err');
+        });
+    }, 500);
+
+    // Phase 4: Timeout fallback
+    setTimeout(() => {
+      if (!window.Clerk || !window.Clerk.loaded) {
+        add('❌ Still not loaded after 10 seconds. Final state:', 'err');
+        if (window.Clerk) {
+          add(`hasClerk=true, loaded=${window.Clerk.loaded}, keys=${Object.keys(window.Clerk).slice(0, 10).join(', ')}...`, 'err');
+        }
+      }
+    }, 10000);
   </script>
 </body>
 </html>
