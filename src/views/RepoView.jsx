@@ -17,6 +17,7 @@ export default function RepoView() {
   const [viewMode, setViewMode] = useState('packs'); // 'packs' or 'skills'
   const [sortBy, setSortBy] = useState('popular');
   const [bannerDismissed, setBannerDismissed] = useState(false);
+  const [expandedPackId, setExpandedPackId] = useState(null);
 
   const handleBannerPro = async () => {
     if (!isSignedIn || !user) {
@@ -234,7 +235,12 @@ export default function RepoView() {
             </div>
             <div className="pack-grid">
               {filteredPacks.map((pack) => (
-                <PackCard key={pack.id} pack={pack} />
+                <PackCard
+                  key={pack.id}
+                  pack={pack}
+                  isExpanded={expandedPackId === pack.id}
+                  onToggle={() => setExpandedPackId(expandedPackId === pack.id ? null : pack.id)}
+                />
               ))}
             </div>
           </>

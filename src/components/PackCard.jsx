@@ -3,7 +3,6 @@ import * as Icons from 'lucide-react';
 import { ChevronDown, ChevronUp, Gift, Zap, Lock, Star, ArrowRight } from 'lucide-react';
 import { useClerkAuth } from '../lib/auth';
 import { useApp } from '../context/AppContext';
-import { buySingleSkill, subscribeVaultPro } from '../lib/stripe';
 
 const tierBadgeStyles = {
   free: { label: 'Free', bg: 'var(--green-bg)', color: 'var(--green)', border: 'rgba(52,211,153,0.2)' },
@@ -11,8 +10,7 @@ const tierBadgeStyles = {
   pro: { label: 'Pro', bg: 'rgba(167,139,250,0.12)', color: 'var(--violet)', border: 'rgba(167,139,250,0.2)' },
 };
 
-export default function PackCard({ pack }) {
-  const [expanded, setExpanded] = useState(false);
+export default function PackCard({ pack, isExpanded, onToggle }) {
   const { isSignedIn, user, signInRedirect } = useClerkAuth();
   const { goSkillDetail } = useApp();
   const Icon = Icons[pack.icon] || Icons.Box;
@@ -25,9 +23,14 @@ export default function PackCard({ pack }) {
   };
   const theme = colorMap[pack.color] || colorMap.cyan;
 
+  const handleToggle = (e) => {
+    e.stopPropagation();
+    onToggle();
+  };
+
   return (
     <div style={card}>
-      <div style={cardHeader} onClick={() => setExpanded(!expanded)}>
+      <div style={cardHeader}>
         <div style={{ ...iconWrap, background: theme.bg, borderColor: theme.border }}>
           <Icon size={24} color={theme.text} strokeWidth={2} />
         </div>
@@ -38,12 +41,12 @@ export default function PackCard({ pack }) {
           </div>
           <p style={description}>{pack.description}</p>
         </div>
-        <button style={expandBtn}>
-          {expanded ? <ChevronUp size={20} color="var(--text-muted)" /> : <ChevronDown size={20} color="var(--text-muted)" />}
+        <button style={expandBtn} onClick={handleToggle} aria-label={isExpanded ? 'Collapse' : 'Expand'}>
+          {isExpanded ? <ChevronUp size={20} color="var(--text-muted)" /> : <ChevronDown size={20} color="var(--text-muted)" />}
         </button>
       </div>
 
-      {expanded && (
+      {isExpanded && (
         <div style={skillsList}>
           {pack.skills.map((skill) => {
             const SkillIcon = Icons[skill.icon] || Icons.Circle;
@@ -52,7 +55,7 @@ export default function PackCard({ pack }) {
             return (
               <div key={skill.id} style={skillRow} onClick={() => goSkillDetail(skill)}>
                 <div style={skillLeft}>
-                  <div style={{ ...skillIcon, background: tier.bg, borderColor: tier.border }}>
+                  <div style={{ ...skillIconBox, background: tier.bg, borderColor: tier.border }}>
                     <SkillIcon size={16} color={tier.color} />
                   </div>
                   <div>
@@ -185,7 +188,7 @@ const skillLeft = {
   minWidth: 0,
 };
 
-const skillIcon = {
+const skillIconBox = {
   width: 36,
   height: 36,
   borderRadius: 8,
