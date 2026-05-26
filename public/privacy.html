@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Privacy Policy — SkillVault</title>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg-primary: #0b0c10;
+      --bg-card: #1a1c24;
+      --bg-secondary: #13151c;
+      --text-primary: #e2e4eb;
+      --text-secondary: #9ca3b0;
+      --text-muted: #6b6f82;
+      --border: rgba(255,255,255,0.08);
+      --accent: #6366f1;
+      --accent-light: #818cf8;
+      --green: #34d399;
+      --green-bg: rgba(52,211,153,0.12);
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Outfit', system-ui, sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+    nav {
+      background: rgba(11,12,16,0.88);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .nav-inner {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 14px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+    .logo-icon {
+      width: 36px; height: 36px; border-radius: 10px;
+      background: linear-gradient(135deg, var(--accent), var(--accent-light));
+      display: flex; align-items: center; justify-content: center;
+    }
+    .logo-text { font-family: 'Space Grotesk', sans-serif; font-size: 20px; font-weight: 700; color: var(--text-primary); }
+    .container { max-width: 800px; margin: 0 auto; padding: 60px 24px 48px; }
+    h1 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(32px, 5vw, 48px);
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 12px;
+      line-height: 1.1;
+    }
+    .updated { color: var(--text-muted); font-size: 14px; margin-bottom: 40px; }
+    h2 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 24px;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin: 40px 0 16px;
+      line-height: 1.3;
+    }
+    h3 {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin: 24px 0 12px;
+    }
+    p { font-size: 15px; color: var(--text-secondary); margin-bottom: 16px; line-height: 1.7; }
+    ul { margin: 0 0 16px 20px; color: var(--text-secondary); font-size: 15px; line-height: 1.7; }
+    li { margin-bottom: 8px; }
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    .back { display: inline-flex; align-items: center; gap: 8px; padding: 8px 16px; border-radius: 10px; border: 1px solid var(--border); background: var(--bg-card); color: var(--text-secondary); font-size: 14px; font-weight: 500; text-decoration: none; margin-bottom: 32px; }
+    .back:hover { color: var(--text-primary); text-decoration: none; }
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 20px 24px;
+      margin-top: auto;
+    }
+    .footer-inner {
+      max-width: 1280px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12;
+    }
+    .footer-left { font-size: 13px; }
+    .footer-right { display: flex; gap: 20px; }
+    .footer-link { font-size: 13px; color: var(--text-muted); text-decoration: none; transition: color 0.2s; }
+    .footer-link:hover { color: var(--text-primary); }
+    @media (max-width: 640px) {
+      .footer-inner { flex-direction: column; text-align: center; }
+      .footer-right { flex-wrap: wrap; justify-content: center; }
+    }
+  </style>
+</head>
+<body style="display: flex; flex-direction: column; min-height: 100vh;">
+  <nav>
+    <div class="nav-inner">
+      <a href="/" class="logo">
+        <div class="logo-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><polyline points="2 17 12 22 22 17"/></svg>
+        </div>
+        <span class="logo-text">SkillVault</span>
+      </a>
+    </div>
+  </nav>
+
+  <div class="container" style="flex: 1;">
+    <a href="/" class="back">← Back to Skills</a>
+    <h1>Privacy Policy</h1>
+    <p class="updated">Last updated: May 26, 2026</p>
+
+    <p>This Privacy Policy describes how SkillVault collects, uses, stores, and protects your personal information when you use our website, services, and digital products. By using SkillVault, you consent to the practices described in this policy.</p>
+
+    <h2>1. Information We Collect</h2>
+    <h3>Account Information</h3>
+    <p>When you create a SkillVault account through our authentication partner Clerk, we collect:</p>
+    <ul>
+      <li>Email address (required for account creation and login)</li>
+      <li>Name (optional, used for personalization)</li>
+      <li>Profile avatar (optional)</li>
+      <li>Authentication session data (managed securely by Clerk)</li>
+    </ul>
+
+    <h3>Usage Data</h3>
+    <p>We collect information about your interactions with SkillVault, including:</p>
+    <ul>
+      <li>Skills you browse, download, or purchase</li>
+      <li>Download history and timestamps</li>
+      <li>Purchase records and transaction status</li>
+      <li>Browser type, device information, and IP address (for security and analytics)</li>
+    </ul>
+
+    <h3>Payment Information</h3>
+    <p>SkillVault processes payments through Stripe. We do not store your full credit card details on our servers. Stripe handles all payment data in compliance with PCI-DSS standards. We receive and store:</p>
+    <ul>
+      <li>Payment confirmation status</li>
+      <li>Purchase amount and date</li>
+      <li>Stripe session ID (for transaction tracking)</li>
+      <li>Subscription status (active, cancelled, expired)</li>
+    </ul>
+
+    <h2>2. How We Use Your Information</h2>
+    <p>We use the collected information for the following purposes:</p>
+    <ul>
+      <li><strong>Account Management:</strong> To create, authenticate, and manage your SkillVault account</li>
+      <li><strong>Skill Delivery:</strong> To track skill ownership, enable downloads, and verify access rights</li>
+      <li><strong>Payment Processing:</strong> To process purchases, manage subscriptions, and handle billing</li>
+      <li><strong>Customer Support:</strong> To respond to inquiries, troubleshoot issues, and provide assistance</li>
+      <li><strong>Analytics:</strong> To understand usage patterns and improve our services</li>
+      <li><strong>Security:</strong> To detect fraud, prevent abuse, and protect our platform</li>
+    </ul>
+
+    <h2>3. Data Storage and Security</h2>
+    <p>Your data is stored in Supabase, a secure PostgreSQL database service. We implement the following security measures:</p>
+    <ul>
+      <li>Encrypted connections (TLS/SSL) for all data transmission</li>
+      <li>Clerk-managed authentication with industry-standard security</li>
+      <li>Stripe's PCI-compliant payment infrastructure</li>
+      <li>Regular database backups</li>
+      <li>No storage of credit card numbers or CVV codes on our servers</li>
+    </ul>
+
+    <h2>4. Data Sharing</h2>
+    <p>We do not sell your personal information. We share data only with:</p>
+    <ul>
+      <li><strong>Clerk:</strong> For authentication and user session management</li>
+      <li><strong>Stripe:</strong> For payment processing and subscription management</li>
+      <li><strong>Supabase:</strong> For database storage and retrieval</li>
+      <li><strong>Law Enforcement:</strong> When required by valid legal process or to protect our rights</li>
+    </ul>
+
+    <h2>5. Your Rights</h2>
+    <p>You have the following rights regarding your personal information:</p>
+    <ul>
+      <li><strong>Access:</strong> Request a copy of the personal data we hold about you</li>
+      <li><strong>Correction:</strong> Update or correct inaccurate information</li>
+      <li><strong>Deletion:</strong> Request deletion of your account and associated data (subject to legal obligations)</li>
+      <li><strong>Portability:</strong> Request your data in a structured, machine-readable format</li>
+      <li><strong>Opt-out:</strong> Unsubscribe from marketing communications at any time</li>
+    </ul>
+    <p>To exercise these rights, contact us at <a href="mailto:privacy@vaultofskills.com">privacy@vaultofskills.com</a>.</p>
+
+    <h2>6. Cookies and Tracking</h2>
+    <p>SkillVault uses minimal cookies for essential functionality:</p>
+    <ul>
+      <li>Authentication session cookies (managed by Clerk)</li>
+      <li>Local storage for skill data caching (to improve load times)</li>
+      <li>No third-party advertising or tracking cookies</li>
+    </ul>
+
+    <h2>7. Children's Privacy</h2>
+    <p>SkillVault is not intended for children under 13. We do not knowingly collect personal information from children under 13. If you believe we have collected information from a child under 13, please contact us immediately.</p>
+
+    <h2>8. Changes to This Policy</h2>
+    <p>We may update this Privacy Policy periodically. Changes will be posted on this page with an updated "Last updated" date. Continued use of SkillVault after changes constitutes acceptance of the updated policy.</p>
+
+    <h2>9. Contact Us</h2>
+    <p>If you have questions about this Privacy Policy or our data practices, contact us at:</p>
+    <p><strong>Email:</strong> <a href="mailto:privacy@vaultofskills.com">privacy@vaultofskills.com</a><br>
+    <strong>Address:</strong> SkillVault, c/o Gandley LLC<br>
+    <strong>Website:</strong> <a href="https://vaultofskills.com">vaultofskills.com</a></p>
+  </div>
+
+  <footer>
+    <div class="footer-inner">
+      <div class="footer-left">
+        <span style="font-weight: 600; color: var(--text-primary);">SkillVault</span>
+        <span style="color: var(--text-muted); margin-left: 8px;">· 37 skills available</span>
+      </div>
+      <div class="footer-right">
+        <a href="/pricing.html" class="footer-link">Pricing</a>
+        <a href="/privacy.html" class="footer-link">Privacy</a>
+        <a href="/terms.html" class="footer-link">Terms</a>
+        <a href="/refund.html" class="footer-link">Refunds</a>
+        <a href="#coming-soon" class="footer-link">Docs</a>
+        <a href="#coming-soon" class="footer-link">API</a>
+        <a href="#coming-soon" class="footer-link">Support</a>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

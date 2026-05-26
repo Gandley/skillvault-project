@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Terms of Service — SkillVault</title>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg-primary: #0b0c10;
+      --bg-card: #1a1c24;
+      --bg-secondary: #13151c;
+      --text-primary: #e2e4eb;
+      --text-secondary: #9ca3b0;
+      --text-muted: #6b6f82;
+      --border: rgba(255,255,255,0.08);
+      --accent: #6366f1;
+      --accent-light: #818cf8;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Outfit', system-ui, sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+    nav {
+      background: rgba(11,12,16,0.88);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .nav-inner {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 14px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+    .logo-icon {
+      width: 36px; height: 36px; border-radius: 10px;
+      background: linear-gradient(135deg, var(--accent), var(--accent-light));
+      display: flex; align-items: center; justify-content: center;
+    }
+    .logo-text { font-family: 'Space Grotesk', sans-serif; font-size: 20px; font-weight: 700; color: var(--text-primary); }
+    .container { max-width: 800px; margin: 0 auto; padding: 60px 24px 48px; }
+    h1 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(32px, 5vw, 48px);
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 12px;
+      line-height: 1.1;
+    }
+    .updated { color: var(--text-muted); font-size: 14px; margin-bottom: 40px; }
+    h2 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 24px;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin: 40px 0 16px;
+      line-height: 1.3;
+    }
+    h3 {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin: 24px 0 12px;
+    }
+    p { font-size: 15px; color: var(--text-secondary); margin-bottom: 16px; line-height: 1.7; }
+    ul { margin: 0 0 16px 20px; color: var(--text-secondary); font-size: 15px; line-height: 1.7; }
+    li { margin-bottom: 8px; }
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    .back { display: inline-flex; align-items: center; gap: 8px; padding: 8px 16px; border-radius: 10px; border: 1px solid var(--border); background: var(--bg-card); color: var(--text-secondary); font-size: 14px; font-weight: 500; text-decoration: none; margin-bottom: 32px; }
+    .back:hover { color: var(--text-primary); text-decoration: none; }
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 20px 24px;
+      margin-top: auto;
+    }
+    .footer-inner {
+      max-width: 1280px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12;
+    }
+    .footer-left { font-size: 13px; }
+    .footer-right { display: flex; gap: 20px; }
+    .footer-link { font-size: 13px; color: var(--text-muted); text-decoration: none; transition: color 0.2s; }
+    .footer-link:hover { color: var(--text-primary); }
+    @media (max-width: 640px) {
+      .footer-inner { flex-direction: column; text-align: center; }
+      .footer-right { flex-wrap: wrap; justify-content: center; }
+    }
+  </style>
+</head>
+<body style="display: flex; flex-direction: column; min-height: 100vh;">
+  <nav>
+    <div class="nav-inner">
+      <a href="/" class="logo">
+        <div class="logo-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><polyline points="2 17 12 22 22 17"/></svg>
+        </div>
+        <span class="logo-text">SkillVault</span>
+      </a>
+    </div>
+  </nav>
+
+  <div class="container" style="flex: 1;">
+    <a href="/" class="back">← Back to Skills</a>
+    <h1>Terms of Service</h1>
+    <p class="updated">Last updated: May 26, 2026</p>
+
+    <p>These Terms of Service govern your access to and use of SkillVault. By creating an account, downloading skills, or making purchases on SkillVault, you agree to be bound by these terms. If you do not agree, do not use the platform.</p>
+
+    <h2>1. Definitions</h2>
+    <ul>
+      <li><strong>"SkillVault"</strong> refers to this website, its services, and all digital products offered</li>
+      <li><strong>"Skills"</strong> are digital files (ZIP archives containing code, documentation, and configuration) available for download</li>
+      <li><strong>"User"</strong> means any individual with a registered SkillVault account</li>
+      <li><strong>"Pay-Per-Skill"</strong> means a one-time $9 purchase of an individual skill</li>
+      <li><strong>"Vault Pro"</strong> means the $27/month subscription granting access to all skills</li>
+    </ul>
+
+    <h2>2. Account Terms</h2>
+    <p>To use SkillVault, you must:</p>
+    <ul>
+      <li>Be at least 13 years of age</li>
+      <li>Create an account using a valid email address via our authentication provider (Clerk)</li>
+      <li>Maintain the security of your account credentials</li>
+      <li>Not share your account with others or allow unauthorized access</li>
+    </ul>
+    <p>You are responsible for all activity that occurs under your account. If you suspect unauthorized access, notify us immediately.</p>
+
+    <h2>3. Skill Usage Rights</h2>
+    <h3>License Grant</h3>
+    <p>Upon purchase (or acquisition for free skills), you receive a <strong>perpetual, non-exclusive, non-transferable license</strong> to use the skill files you download. This license:</p>
+    <ul>
+      <li>Grants you the right to install, modify, and use the skill code in your own projects and workflows</li>
+      <li>Allows personal and commercial use of the skills you own</li>
+      <li>Does <strong>not</strong> grant you ownership of the intellectual property in the skill files</li>
+      <li>Does <strong>not</strong> permit redistribution, resale, or sublicensing of the original skill files to third parties</li>
+    </ul>
+
+    <h3>What You Can Do</h3>
+    <ul>
+      <li>Use skill code in unlimited personal or client projects</li>
+      <li>Modify skill code to suit your specific needs</li>
+      <li>Deploy skill-generated outputs (websites, pages, content) anywhere</li>
+      <li>Keep and use downloaded files forever, even after subscription cancellation (for purchased skills)</li>
+    </ul>
+
+    <h3>What You Cannot Do</h3>
+    <ul>
+      <li>Resell or redistribute the original skill ZIP files to others</li>
+      <li>Create a competing service using SkillVault's skill files</li>
+      <li>Remove copyright notices or attribution from skill files</li>
+      <li>Use skills for illegal, harmful, or malicious purposes</li>
+      <li>Attempt to bypass access controls or download skills you do not own</li>
+    </ul>
+
+    <h2>4. Acceptable Use</h2>
+    <p>You agree not to use SkillVault to:</p>
+    <ul>
+      <li>Violate any applicable laws or regulations</li>
+      <li>Infringe upon intellectual property rights of others</li>
+      <li>Generate or distribute harmful content (malware, spam, hate speech)</li>
+      <li>Attempt to gain unauthorized access to SkillVault systems or other users' accounts</li>
+      <li>Interfere with the operation of the platform (DDoS, scraping, bot abuse)</li>
+      <li>Share account credentials or allow multiple users to access a single account</li>
+    </ul>
+    <p>Violation of these terms may result in account termination, purchase revocation, and legal action.</p>
+
+    <h2>5. Purchases and Payments</h2>
+    <h3>Pay-Per-Skill ($9)</h3>
+    <ul>
+      <li>One-time purchase, lifetime access to the specific skill</li>
+      <li>Non-refundable once downloaded (see Refund Policy)</li>
+      <li>Requires a free SkillVault account for download management</li>
+      <li>Skill files can be re-downloaded at any time from your account</li>
+    </ul>
+
+    <h3>Vault Pro ($27/month)</h3>
+    <ul>
+      <li>Recurring subscription billed monthly through Stripe</li>
+      <li>Grants access to all current and future skills while subscription is active</li>
+      <li>Can be cancelled at any time; access continues until the end of the current billing period</li>
+      <li>Upon cancellation, previously downloaded skills remain usable but new downloads are blocked</li>
+    </ul>
+
+    <h2>6. Intellectual Property</h2>
+    <p>All skill files, website content, branding, and platform code are the intellectual property of SkillVault and its licensors. Your purchase grants a license to use, not ownership of the underlying intellectual property.</p>
+    <p>Skills are provided "as-is" without warranties regarding fitness for a particular purpose. You are responsible for testing and validating skill outputs in your environment.</p>
+
+    <h2>7. Termination</h2>
+    <p>SkillVault may suspend or terminate your account if you:</p>
+    <ul>
+      <li>Violate these Terms of Service</li>
+      <li>Engage in fraudulent payment activity</li>
+      <li>Distribute skill files in violation of the license terms</li>
+      <li>Attempt to harm the platform or other users</li>
+    </ul>
+    <p>You may delete your account at any time by contacting support. Account deletion does not retroactively revoke licenses for skills you have already downloaded and paid for.</p>
+
+    <h2>8. Limitation of Liability</h2>
+    <p>SkillVault is not liable for any indirect, incidental, special, or consequential damages arising from your use of the platform or skill files. Our total liability shall not exceed the amount you paid to SkillVault in the 12 months preceding the claim.</p>
+    <p>Skills are digital tools. You are responsible for how you use them. We do not guarantee specific results, revenue, or outcomes from using our skills.</p>
+
+    <h2>9. Changes to Terms</h2>
+    <p>We may update these Terms of Service periodically. Material changes will be communicated via email and posted on this page. Continued use of SkillVault after changes constitutes acceptance of the updated terms.</p>
+
+    <h2>10. Governing Law</h2>
+    <p>These terms are governed by the laws of the State of Delaware, United States, without regard to conflict of law principles. Any disputes shall be resolved in the state or federal courts located in Delaware.</p>
+
+    <h2>11. Contact</h2>
+    <p>Questions about these Terms? Contact us:</p>
+    <p><strong>Email:</strong> <a href="mailto:legal@vaultofskills.com">legal@vaultofskills.com</a><br>
+    <strong>Website:</strong> <a href="https://vaultofskills.com">vaultofskills.com</a></p>
+  </div>
+
+  <footer>
+    <div class="footer-inner">
+      <div class="footer-left">
+        <span style="font-weight: 600; color: var(--text-primary);">SkillVault</span>
+        <span style="color: var(--text-muted); margin-left: 8px;">· 37 skills available</span>
+      </div>
+      <div class="footer-right">
+        <a href="/pricing.html" class="footer-link">Pricing</a>
+        <a href="/privacy.html" class="footer-link">Privacy</a>
+        <a href="/terms.html" class="footer-link">Terms</a>
+        <a href="/refund.html" class="footer-link">Refunds</a>
+        <a href="#coming-soon" class="footer-link">Docs</a>
+        <a href="#coming-soon" class="footer-link">API</a>
+        <a href="#coming-soon" class="footer-link">Support</a>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

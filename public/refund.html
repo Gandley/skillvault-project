@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Refund Policy — SkillVault</title>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg-primary: #0b0c10;
+      --bg-card: #1a1c24;
+      --bg-secondary: #13151c;
+      --text-primary: #e2e4eb;
+      --text-secondary: #9ca3b0;
+      --text-muted: #6b6f82;
+      --border: rgba(255,255,255,0.08);
+      --accent: #6366f1;
+      --accent-light: #818cf8;
+      --green: #34d399;
+      --green-bg: rgba(52,211,153,0.12);
+      --amber: #f59e0b;
+      --amber-bg: rgba(245,158,11,0.12);
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Outfit', system-ui, sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+    nav {
+      background: rgba(11,12,16,0.88);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .nav-inner {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 14px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+    .logo-icon {
+      width: 36px; height: 36px; border-radius: 10px;
+      background: linear-gradient(135deg, var(--accent), var(--accent-light));
+      display: flex; align-items: center; justify-content: center;
+    }
+    .logo-text { font-family: 'Space Grotesk', sans-serif; font-size: 20px; font-weight: 700; color: var(--text-primary); }
+    .container { max-width: 800px; margin: 0 auto; padding: 60px 24px 48px; }
+    h1 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(32px, 5vw, 48px);
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 12px;
+      line-height: 1.1;
+    }
+    .updated { color: var(--text-muted); font-size: 14px; margin-bottom: 40px; }
+    h2 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 24px;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin: 40px 0 16px;
+      line-height: 1.3;
+    }
+    h3 {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin: 24px 0 12px;
+    }
+    p { font-size: 15px; color: var(--text-secondary); margin-bottom: 16px; line-height: 1.7; }
+    ul { margin: 0 0 16px 20px; color: var(--text-secondary); font-size: 15px; line-height: 1.7; }
+    li { margin-bottom: 8px; }
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    .back { display: inline-flex; align-items: center; gap: 8px; padding: 8px 16px; border-radius: 10px; border: 1px solid var(--border); background: var(--bg-card); color: var(--text-secondary); font-size: 14px; font-weight: 500; text-decoration: none; margin-bottom: 32px; }
+    .back:hover { color: var(--text-primary); text-decoration: none; }
+    .policy-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 28px;
+      margin: 24px 0;
+    }
+    .policy-card h3 { margin-top: 0; }
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      padding: 4px 12px;
+      border-radius: 100;
+      margin-bottom: 12px;
+    }
+    .tag-amber { background: var(--amber-bg); color: var(--amber); border: 1px solid rgba(245,158,11,0.2); }
+    .tag-green { background: var(--green-bg); color: var(--green); border: 1px solid rgba(52,211,153,0.2); }
+    .tag-violet { background: rgba(167,139,250,0.12); color: var(--violet); border: 1px solid rgba(167,139,250,0.2); }
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 20px 24px;
+      margin-top: auto;
+    }
+    .footer-inner {
+      max-width: 1280px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12;
+    }
+    .footer-left { font-size: 13px; }
+    .footer-right { display: flex; gap: 20px; }
+    .footer-link { font-size: 13px; color: var(--text-muted); text-decoration: none; transition: color 0.2s; }
+    .footer-link:hover { color: var(--text-primary); }
+    @media (max-width: 640px) {
+      .footer-inner { flex-direction: column; text-align: center; }
+      .footer-right { flex-wrap: wrap; justify-content: center; }
+    }
+  </style>
+</head>
+<body style="display: flex; flex-direction: column; min-height: 100vh;">
+  <nav>
+    <div class="nav-inner">
+      <a href="/" class="logo">
+        <div class="logo-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><polyline points="2 17 12 22 22 17"/></svg>
+        </div>
+        <span class="logo-text">SkillVault</span>
+      </a>
+    </div>
+  </nav>
+
+  <div class="container" style="flex: 1;">
+    <a href="/" class="back">← Back to Skills</a>
+    <h1>Refund Policy</h1>
+    <p class="updated">Last updated: May 26, 2026</p>
+
+    <p>This Refund Policy explains how SkillVault handles refunds for digital products. By making a purchase on SkillVault, you acknowledge that you are buying digital goods and agree to the terms outlined below.</p>
+
+    <div class="policy-card">
+      <span class="tag tag-amber">💳 Pay-Per-Skill</span>
+      <h3>$9 One-Time Skill Purchases</h3>
+      <p><strong>General policy:</strong> All Pay-Per-Skill purchases are final. Because skills are digital files that can be downloaded and used immediately, we do not offer refunds once a skill has been downloaded.</p>
+      
+      <p><strong>Exception — no download:</strong> If you purchased a skill but <strong>have not downloaded the file</strong>, you may request a refund within 7 days of purchase. We verify this in our system before processing the refund.</p>
+
+      <p><strong>Exception — technical failure:</strong> If the skill file is corrupted, incomplete, or fundamentally non-functional (not due to user error), contact support within 14 days. We will either:</p>
+      <ul>
+        <li>Replace the file with a working version</li>
+        <li>Issue a full refund if replacement is not possible</li>
+      </ul>
+
+      <p><strong>Not eligible for refund:</strong> Change of mind, skill not meeting subjective expectations, or skills downloaded but unused. We provide detailed descriptions and preview metadata to help you make informed purchases.</p>
+    </div>
+
+    <div class="policy-card">
+      <span class="tag tag-violet">👑 Vault Pro Subscription</span>
+      <h3>$27/Month Subscription</h3>
+      <p><strong>Free trial / grace period:</strong> You may cancel within 7 days of your initial subscription start date for a full refund, no questions asked. This applies to first-time subscribers only.</p>
+
+      <p><strong>Monthly billing:</strong> After the 7-day grace period, subscriptions are billed monthly and are non-refundable for partial months. If you cancel mid-month, your access continues until the end of the current billing cycle.</p>
+
+      <p><strong>Cancellation:</strong> You can cancel anytime from your account dashboard or by contacting support. Cancellation stops the next billing cycle; you retain access until the paid period ends.</p>
+
+      <p><strong>Pro-rated refunds:</strong> We do not offer pro-rated refunds for unused days in a billing period. The monthly fee covers unlimited access to all skills during that period, regardless of usage.</p>
+
+      <p><strong>Exception — platform failure:</strong> If SkillVault experiences extended downtime or a material reduction in service quality (e.g., skills cannot be downloaded for 48+ hours due to our fault), we may issue a credit or refund at our discretion.</p>
+    </div>
+
+    <div class="policy-card">
+      <span class="tag tag-green">🎁 Free Skills</span>
+      <h3>Free Tier Downloads</h3>
+      <p>Free skills are available at no cost. No refunds apply as no payment is collected. Free skills are provided "as-is" with community support.</p>
+    </div>
+
+    <h2>How to Request a Refund</h2>
+    <p>To request a refund, follow these steps:</p>
+    <ol style="margin: 0 0 16px 24px; color: var(--text-secondary); font-size: 15px; line-height: 1.7;">
+      <li>Email <a href="mailto:support@vaultofskills.com">support@vaultofskills.com</a> with the subject line "Refund Request"</li>
+      <li>Include your account email address and the skill name or subscription date</li>
+      <li>State the reason for your refund request</li>
+      <li>Allow 3-5 business days for review and processing</li>
+    </ol>
+    <p>Refunds are processed to the original payment method. Stripe typically completes refunds within 5-10 business days, depending on your bank.</p>
+
+    <h2>Fraud Prevention</h2>
+    <p>We reserve the right to deny refund requests in cases of suspected fraud, including:</p>
+    <ul>
+      <li>Multiple refund requests from the same account in a short period</li>
+      <li>Refund requests immediately after downloading multiple skills</li>
+      <li>Accounts with patterns consistent with abuse of the refund system</li>
+    </ul>
+    <p>Fraudulent refund attempts may result in account suspension and legal action.</p>
+
+    <h2>Changes to This Policy</h2>
+    <p>We may update this Refund Policy periodically. Changes will be posted on this page with an updated "Last updated" date. Refund requests are evaluated based on the policy in effect at the time of purchase.</p>
+
+    <h2>Contact</h2>
+    <p>Questions about refunds? Contact us:</p>
+    <p><strong>Email:</strong> <a href="mailto:support@vaultofskills.com">support@vaultofskills.com</a><br>
+    <strong>Website:</strong> <a href="https://vaultofskills.com">vaultofskills.com</a></p>
+  </div>
+
+  <footer>
+    <div class="footer-inner">
+      <div class="footer-left">
+        <span style="font-weight: 600; color: var(--text-primary);">SkillVault</span>
+        <span style="color: var(--text-muted); margin-left: 8px;">· 37 skills available</span>
+      </div>
+      <div class="footer-right">
+        <a href="/pricing.html" class="footer-link">Pricing</a>
+        <a href="/privacy.html" class="footer-link">Privacy</a>
+        <a href="/terms.html" class="footer-link">Terms</a>
+        <a href="/refund.html" class="footer-link">Refunds</a>
+        <a href="#coming-soon" class="footer-link">Docs</a>
+        <a href="#coming-soon" class="footer-link">API</a>
+        <a href="#coming-soon" class="footer-link">Support</a>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

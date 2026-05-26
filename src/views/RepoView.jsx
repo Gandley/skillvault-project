@@ -291,6 +291,9 @@ export default function RepoView() {
           </div>
           <div style={footerRight}>
             <a href="/pricing.html" style={footerLink}>Pricing</a>
+            <a href="/privacy.html" style={footerLink}>Privacy</a>
+            <a href="/terms.html" style={footerLink}>Terms</a>
+            <a href="/refund.html" style={footerLink}>Refunds</a>
             <a href="#coming-soon" style={footerLink}>Docs</a>
             <a href="#coming-soon" style={footerLink}>API</a>
             <a href="#coming-soon" style={footerLink}>Support</a>
