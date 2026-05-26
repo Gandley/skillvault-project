@@ -107,7 +107,14 @@ export default function MySkillsView() {
                 <div style={cardMeta}>
                   <span style={metaText}>Purchased {new Date(purchase.purchased_at).toLocaleDateString()}</span>
                 </div>
-                <button style={downloadBtn} onClick={() => alert('Download starting...')}>
+                <button style={downloadBtn} onClick={() => {
+                  const link = document.createElement('a');
+                  link.href = `/skills/${skill.id}.zip`;
+                  link.download = `${skill.id}.zip`;
+                  document.body.appendChild(link);
+                  link.click();
+                  document.body.removeChild(link);
+                }}>
                   <Download size={14} />
                   Download
                 </button>

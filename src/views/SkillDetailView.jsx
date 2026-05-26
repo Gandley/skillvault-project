@@ -1,7 +1,7 @@
 import { useApp } from '../context/AppContext';
 import { useClerkAuth } from '../lib/auth';
 import { buySingleSkill, subscribeVaultPro } from '../lib/stripe';
-import { hasUserPurchasedSkill, hasVaultProSubscription, getUserPurchases } from '../lib/supabase';
+import { recordDownload } from '../lib/supabase';
 import * as Icons from 'lucide-react';
 import { ArrowLeft, Star, Download, Zap, Lock, Gift, CheckCircle, Calendar, User, Tag } from 'lucide-react';
 import { useState, useEffect } from 'react';
@@ -61,31 +61,45 @@ export default function SkillDetailView() {
       signInRedirect('/');
       return;
     }
-    if (skill.tier === 'free') {
-      alert('Free download started!');
-      return;
-    }
-    if (isOwned || hasPro) {
-      alert('Download starting...');
-      return;
-    }
-    try {
-      if (skill.tier === 'paid') {
-        await buySingleSkill(skill.id, user.id);
-      } else if (skill.tier === 'pro') {
-        await subscribeVaultPro(user.id);
+
+    // If not owned and not free → payment required
+    if (skill.tier !== 'free' && !isOwned && !hasPro) {
+      try {
+        if (skill.tier === 'paid') {
+          await buySingleSkill(skill.id, user.id);
+        } else if (skill.tier === 'pro') {
+          await subscribeVaultPro(user.id);
+        }
+      } catch (err) {
+        console.error('Checkout error:', err);
+        alert('Payment failed. Please try again.');
       }
+      return;
+    }
+
+    // Free or owned → trigger real download
+    const downloadUrl = `/skills/${skill.id}.zip`;
+    const link = document.createElement('a');
+    link.href = downloadUrl;
+    link.download = `${skill.id}.zip`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    // Record download in Supabase
+    try {
+      await recordDownload({ userId: user.id, skillId: skill.id });
     } catch (err) {
-      console.error('Checkout error:', err);
-      alert('Payment failed. Please try again.');
+      console.error('[SkillDetail] Failed to record download:', err);
     }
   };
 
   const getButtonContent = () => {
-    if (skill.tier === 'free') return ['Get Free'];
-    if (isOwned || hasPro) return ['Owned — Download'];
-    if (skill.tier === 'paid') return ['Buy for $9'];
-    return ['Get Vault Pro'];
+    if (skill.tier !== 'free' && !isOwned && !hasPro) {
+      if (skill.tier === 'paid') return ['Buy for $9'];
+      return ['Get Vault Pro'];
+    }
+    return ['Download'];
   };
 
   return (
