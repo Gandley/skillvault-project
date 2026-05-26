@@ -1,7 +1,7 @@
 // localStorage helpers for persistence
 import { skills as defaultSkills, categories as defaultCategories, skillPacks as defaultSkillPacks } from '../data/skills.js';
 
-const STORAGE_KEY = 'skillvault_data_v4';
+const STORAGE_KEY = 'skillvault_data_v5';
 const PASSCODE_KEY = 'skillvault_passcode';
 const UNLOCKED_KEY = 'skillvault_unlocked';
 const SETTINGS_KEY = 'skillvault_settings';
