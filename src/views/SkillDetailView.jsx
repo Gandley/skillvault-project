@@ -2,8 +2,9 @@ import { useApp } from '../context/AppContext';
 import { useClerkAuth } from '../lib/auth';
 import { buySingleSkill, subscribeVaultPro } from '../lib/stripe';
 import { recordDownload } from '../lib/supabase';
+import BugReportModal from '../components/BugReportModal';
 import * as Icons from 'lucide-react';
-import { ArrowLeft, Star, Download, Zap, Lock, Gift, CheckCircle, Calendar, User, Tag } from 'lucide-react';
+import { ArrowLeft, Star, Download, Zap, Lock, Gift, CheckCircle, Calendar, User, Tag, Bug } from 'lucide-react';
 import { useState, useEffect } from 'react';
 
 export default function SkillDetailView() {
@@ -12,6 +13,7 @@ export default function SkillDetailView() {
   const [isOwned, setIsOwned] = useState(false);
   const [hasPro, setHasPro] = useState(false);
   const [checking, setChecking] = useState(true);
+  const [showBugModal, setShowBugModal] = useState(false);
 
   const skill = selectedSkill;
   if (!skill) return null;
@@ -183,7 +185,14 @@ export default function SkillDetailView() {
               {getButtonContent()}
             </button>
             {checking && <span style={checkingText}>Checking ownership...</span>}
+            <button onClick={() => setShowBugModal(true)} style={bugBtn}>
+              <Bug size={14} /> Report a Bug
+            </button>
           </div>
+
+          {showBugModal && (
+            <BugReportModal skillName={skill.name} onClose={() => setShowBugModal(false)} />
+          )}
         </div>
       </div>
     </div>
@@ -222,3 +231,4 @@ const statusBadge = { fontSize: 12, fontWeight: 600, padding: '4px 12px', border
 const ctaWrap = { display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 10, marginTop: 10 };
 const ctaBtn = { display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10, width: '100%', padding: '14px 24px', borderRadius: 'var(--radius-md)', border: '1px solid', fontSize: 16, fontWeight: 600, fontFamily: 'var(--font-body)', cursor: 'pointer', transition: 'all 0.2s' };
 const checkingText = { fontSize: 13, color: 'var(--text-muted)' };
+const bugBtn = { display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, padding: '9px 18px', borderRadius: 'var(--radius-md)', border: '1px solid var(--border)', background: 'none', color: 'var(--text-muted)', fontSize: 13, fontWeight: 500, fontFamily: 'var(--font-body)', cursor: 'pointer', transition: 'all 0.2s', marginTop: 4 };
