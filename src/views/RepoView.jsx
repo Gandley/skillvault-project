@@ -18,6 +18,15 @@ export default function RepoView() {
   const [sortBy, setSortBy] = useState('popular');
   const [bannerDismissed, setBannerDismissed] = useState(false);
   const [expandedPackId, setExpandedPackId] = useState(null);
+  const [platformFilters, setPlatformFilters] = useState([]);
+
+  const PLATFORMS = ['OpenClaw', 'Claude', 'ChatGPT', 'n8n'];
+
+  const togglePlatform = (p) => {
+    setPlatformFilters((prev) =>
+      prev.includes(p) ? prev.filter((x) => x !== p) : [...prev, p]
+    );
+  };
 
   const handleBannerPro = async () => {
     if (!isSignedIn || !user) {
@@ -62,6 +71,13 @@ export default function RepoView() {
         (s.name || '').toLowerCase().includes(q) ||
         (s.description || '').toLowerCase().includes(q) ||
         (s.tags || []).some((t) => t.toLowerCase().includes(q))
+    );
+  }
+
+  // Platform filter (multi-select — any match passes)
+  if (platformFilters.length > 0) {
+    filteredSkills = filteredSkills.filter((s) =>
+      platformFilters.some((p) => (s.worksWith || []).includes(p))
     );
   }
 
@@ -262,6 +278,38 @@ export default function RepoView() {
           </>
         ) : (
           <>
+            {/* Platform filter */}
+            <div style={platformFilterBar}>
+              <span style={platformFilterLabel}>Works with:</span>
+              <div style={platformFilterBtns}>
+                {PLATFORMS.map((p) => {
+                  const active = platformFilters.includes(p);
+                  return (
+                    <button
+                      key={p}
+                      onClick={() => togglePlatform(p)}
+                      style={{
+                        ...platformBtn,
+                        background: active ? 'var(--accent)' : 'var(--bg-card)',
+                        color: active ? '#fff' : 'var(--text-secondary)',
+                        borderColor: active ? 'var(--accent)' : 'var(--border)',
+                      }}
+                    >
+                      {p}
+                    </button>
+                  );
+                })}
+                {platformFilters.length > 0 && (
+                  <button
+                    onClick={() => setPlatformFilters([])}
+                    style={{ ...platformBtn, background: 'none', color: 'var(--text-muted)', borderColor: 'transparent', paddingLeft: 4 }}
+                  >
+                    Clear ×
+                  </button>
+                )}
+              </div>
+            </div>
+
             <div style={toolbar}>
               <div style={countText}>
                 <span style={{ color: 'var(--text-primary)', fontWeight: 600 }}>{filteredSkills.length}</span>
@@ -447,6 +495,10 @@ const sectionSub = {
   color: 'var(--text-muted)',
 };
 
+const platformFilterBar = { display: 'flex', alignItems: 'center', gap: 12, marginBottom: 16, flexWrap: 'wrap' };
+const platformFilterLabel = { fontSize: 13, fontWeight: 600, color: 'var(--text-muted)', whiteSpace: 'nowrap' };
+const platformFilterBtns = { display: 'flex', gap: 8, flexWrap: 'wrap' };
+const platformBtn = { display: 'inline-flex', alignItems: 'center', gap: 6, padding: '6px 14px', borderRadius: 100, border: '1px solid', fontSize: 13, fontWeight: 600, fontFamily: 'var(--font-body)', cursor: 'pointer', transition: 'all 0.15s', whiteSpace: 'nowrap' };
 const toolbar = { display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20, paddingBottom: 16, borderBottom: '1px solid var(--border)' };
 
 const countText = { fontSize: 14 };

@@ -19,6 +19,7 @@ export const skillPacks = [
         icon: 'TrendingUp',
         color: 'cyan',
         tier: 'free',
+        worksWith: ['OpenClaw', 'Claude', 'ChatGPT'],
       },
       {
         id: 'analytics-feedback-loop',
@@ -33,6 +34,7 @@ export const skillPacks = [
         icon: 'BarChart3',
         color: 'cyan',
         tier: 'paid',
+        worksWith: ['OpenClaw', 'Claude', 'ChatGPT'],
       },
       {
         id: 'content-calendar',
@@ -47,6 +49,7 @@ export const skillPacks = [
         icon: 'Calendar',
         color: 'cyan',
         tier: 'pro',
+        worksWith: ['OpenClaw', 'Claude', 'ChatGPT'],
       },
       {
         id: 'article-cue',
@@ -61,6 +64,7 @@ export const skillPacks = [
         icon: 'FileText',
         color: 'violet',
         tier: 'free',
+        worksWith: ['OpenClaw'],
       },
       {
         id: 'video-cue',
@@ -75,6 +79,7 @@ export const skillPacks = [
         icon: 'Video',
         color: 'violet',
         tier: 'paid',
+        worksWith: ['OpenClaw'],
       },
       {
         id: 'repurposing-engine',
@@ -89,6 +94,7 @@ export const skillPacks = [
         icon: 'Copy',
         color: 'violet',
         tier: 'pro',
+        worksWith: ['OpenClaw', 'Claude', 'ChatGPT'],
       },
       {
         id: 'telegram-bot',
@@ -103,6 +109,7 @@ export const skillPacks = [
         icon: 'MessageSquare',
         color: 'amber',
         tier: 'free',
+        worksWith: ['OpenClaw', 'n8n'],
       },
       {
         id: 'blotato-social',
@@ -117,6 +124,7 @@ export const skillPacks = [
         icon: 'Share2',
         color: 'amber',
         tier: 'paid',
+        worksWith: ['OpenClaw', 'n8n'],
       },
       {
         id: 'social-post-pipeline',
@@ -131,6 +139,7 @@ export const skillPacks = [
         icon: 'Workflow',
         color: 'amber',
         tier: 'pro',
+        worksWith: ['OpenClaw', 'n8n'],
       },
       {
         id: 'lead-magnet-builder',
@@ -145,6 +154,7 @@ export const skillPacks = [
         icon: 'Magnet',
         color: 'rose',
         tier: 'free',
+        worksWith: ['OpenClaw', 'Claude', 'ChatGPT'],
       },
       {
         id: 'nova-orchestrator',
@@ -159,6 +169,7 @@ export const skillPacks = [
         icon: 'GitBranch',
         color: 'rose',
         tier: 'paid',
+        worksWith: ['OpenClaw'],
       },
     ],
   },
@@ -182,6 +193,7 @@ export const skillPacks = [
         icon: 'Workflow',
         color: 'rose',
         tier: 'free',
+        worksWith: ['OpenClaw', 'n8n'],
       },
       {
         id: 'course-architect',
@@ -196,6 +208,7 @@ export const skillPacks = [
         icon: 'Compass',
         color: 'rose',
         tier: 'paid',
+        worksWith: ['OpenClaw', 'Claude', 'ChatGPT'],
       },
       {
         id: 'slide-script-architect',
@@ -210,6 +223,7 @@ export const skillPacks = [
         icon: 'FileText',
         color: 'rose',
         tier: 'paid',
+        worksWith: ['OpenClaw', 'Claude', 'ChatGPT'],
       },
       {
         id: 'elevenlabs-voice',
@@ -224,6 +238,7 @@ export const skillPacks = [
         icon: 'Mic',
         color: 'rose',
         tier: 'pro',
+        worksWith: ['OpenClaw', 'Claude', 'ChatGPT', 'n8n'],
       },
       {
         id: 'cloudinary',
@@ -238,6 +253,7 @@ export const skillPacks = [
         icon: 'Cloud',
         color: 'rose',
         tier: 'pro',
+        worksWith: ['OpenClaw', 'Claude', 'ChatGPT', 'n8n'],
       },
       {
         id: 'slide-renderer',
@@ -252,6 +268,7 @@ export const skillPacks = [
         icon: 'Presentation',
         color: 'rose',
         tier: 'pro',
+        worksWith: ['OpenClaw'],
       },
       {
         id: 'video-assembler',
@@ -266,6 +283,7 @@ export const skillPacks = [
         icon: 'Film',
         color: 'rose',
         tier: 'pro',
+        worksWith: ['OpenClaw', 'n8n'],
       },
       {
         id: 'video-stitcher',
@@ -280,6 +298,7 @@ export const skillPacks = [
         icon: 'Scissors',
         color: 'rose',
         tier: 'paid',
+        worksWith: ['OpenClaw', 'n8n'],
       },
       {
         id: 'google-drive-delivery',
@@ -294,6 +313,7 @@ export const skillPacks = [
         icon: 'HardDrive',
         color: 'rose',
         tier: 'free',
+        worksWith: ['OpenClaw', 'Claude', 'ChatGPT', 'n8n'],
       },
     ],
   },
@@ -317,6 +337,7 @@ export const skillPacks = [
         icon: 'Globe',
         color: 'cyan',
         tier: 'free',
+        worksWith: ['OpenClaw', 'Claude', 'ChatGPT'],
       },
       {
         id: 'landingpage',
@@ -331,6 +352,7 @@ export const skillPacks = [
         icon: 'FileText',
         color: 'cyan',
         tier: 'paid',
+        worksWith: ['OpenClaw', 'Claude', 'ChatGPT'],
       },
       {
         id: 'bridgepage',
@@ -345,6 +367,7 @@ export const skillPacks = [
         icon: 'ArrowRightLeft',
         color: 'cyan',
         tier: 'paid',
+        worksWith: ['OpenClaw', 'Claude', 'ChatGPT'],
       },
       {
         id: 'salespage',
@@ -359,6 +382,7 @@ export const skillPacks = [
         icon: 'TrendingUp',
         color: 'cyan',
         tier: 'pro',
+        worksWith: ['OpenClaw', 'Claude', 'ChatGPT'],
       },
       {
         id: 'vsl',
@@ -373,6 +397,7 @@ export const skillPacks = [
         icon: 'Video',
         color: 'cyan',
         tier: 'pro',
+        worksWith: ['OpenClaw', 'Claude', 'ChatGPT'],
       },
       {
         id: 'herosection',
@@ -387,6 +412,7 @@ export const skillPacks = [
         icon: 'Type',
         color: 'cyan',
         tier: 'free',
+        worksWith: ['OpenClaw', 'Claude', 'ChatGPT'],
       },
       {
         id: 'optinpage',
@@ -401,6 +427,7 @@ export const skillPacks = [
         icon: 'Mail',
         color: 'cyan',
         tier: 'paid',
+        worksWith: ['OpenClaw', 'Claude', 'ChatGPT'],
       },
       {
         id: 'thankyoupage',
@@ -415,6 +442,7 @@ export const skillPacks = [
         icon: 'CheckCircle',
         color: 'cyan',
         tier: 'free',
+        worksWith: ['OpenClaw', 'Claude', 'ChatGPT'],
       },
       {
         id: 'socialproof',
@@ -429,6 +457,7 @@ export const skillPacks = [
         icon: 'Users',
         color: 'cyan',
         tier: 'free',
+        worksWith: ['OpenClaw', 'Claude', 'ChatGPT'],
       },
       {
         id: 'metacopy',
@@ -443,6 +472,7 @@ export const skillPacks = [
         icon: 'Search',
         color: 'cyan',
         tier: 'free',
+        worksWith: ['OpenClaw', 'Claude', 'ChatGPT'],
       },
       {
         id: 'pagecode',
@@ -457,6 +487,7 @@ export const skillPacks = [
         icon: 'Code',
         color: 'cyan',
         tier: 'pro',
+        worksWith: ['OpenClaw', 'Claude', 'ChatGPT'],
       },
       {
         id: 'deployment-setup',
@@ -471,6 +502,7 @@ export const skillPacks = [
         icon: 'GitBranch',
         color: 'cyan',
         tier: 'paid',
+        worksWith: ['OpenClaw', 'n8n'],
       },
       {
         id: 'project-setup',
@@ -485,6 +517,7 @@ export const skillPacks = [
         icon: 'FolderPlus',
         color: 'cyan',
         tier: 'pro',
+        worksWith: ['OpenClaw', 'n8n'],
       },
       {
         id: 'vercel-config',
@@ -499,6 +532,7 @@ export const skillPacks = [
         icon: 'Settings',
         color: 'cyan',
         tier: 'pro',
+        worksWith: ['OpenClaw', 'n8n'],
       },
       {
         id: 'stripe-setup-siteforge',
@@ -513,6 +547,7 @@ export const skillPacks = [
         icon: 'CreditCard',
         color: 'cyan',
         tier: 'pro',
+        worksWith: ['OpenClaw', 'Claude', 'ChatGPT', 'n8n'],
       },
       {
         id: 'inbox-copywriter',
@@ -527,6 +562,7 @@ export const skillPacks = [
         icon: 'Mail',
         color: 'cyan',
         tier: 'paid',
+        worksWith: ['OpenClaw', 'Claude', 'ChatGPT'],
       },
       {
         id: 'master-copywriter',
@@ -541,6 +577,7 @@ export const skillPacks = [
         icon: 'PenTool',
         color: 'cyan',
         tier: 'free',
+        worksWith: ['OpenClaw', 'Claude', 'ChatGPT'],
       },
     ],
   },

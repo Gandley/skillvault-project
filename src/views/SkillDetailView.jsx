@@ -147,6 +147,17 @@ export default function SkillDetailView() {
             <h2 style={sectionTitle}>About This Skill</h2>
             <p style={description}>{skill.description}</p>
 
+            {skill.worksWith && skill.worksWith.length > 0 && (
+              <>
+                <h2 style={sectionTitle}>Works With</h2>
+                <div style={tagsWrap}>
+                  {skill.worksWith.map((p) => (
+                    <span key={p} style={worksWithPillDetail}>{p}</span>
+                  ))}
+                </div>
+              </>
+            )}
+
             <h2 style={sectionTitle}>Tags</h2>
             <div style={tagsWrap}>
               {skill.tags.map((tag) => (
@@ -204,6 +215,7 @@ const sectionTitle = { fontFamily: 'var(--font-display)', fontSize: 18, fontWeig
 const description = { fontSize: 15, lineHeight: 1.7, color: 'var(--text-secondary)' };
 const tagsWrap = { display: 'flex', flexWrap: 'wrap', gap: 8 };
 const tagPill = { fontSize: 13, fontWeight: 500, color: 'var(--text-muted)', background: 'var(--bg-secondary)', padding: '6px 12px', borderRadius: 8, border: '1px solid var(--border)', display: 'flex', alignItems: 'center', gap: 5 };
+const worksWithPillDetail = { fontSize: 13, fontWeight: 700, color: 'var(--accent)', background: 'rgba(99,102,241,0.1)', padding: '5px 14px', borderRadius: 100, border: '1px solid rgba(99,102,241,0.2)' };
 const statusRow = { display: 'flex', gap: 8 };
 const statusBadge = { fontSize: 12, fontWeight: 600, padding: '4px 12px', borderRadius: 100, display: 'flex', alignItems: 'center', gap: 5 };
 

@@ -203,6 +203,15 @@ export default function SkillCard({ skill }) {
           ))}
         </div>
 
+        {/* Works With */}
+        {skill.worksWith && skill.worksWith.length > 0 && (
+          <div style={worksWithWrap}>
+            {skill.worksWith.map((p) => (
+              <span key={p} style={worksWithPill}>{p}</span>
+            ))}
+          </div>
+        )}
+
         {/* Divider */}
         <div style={divider} />
 
@@ -320,6 +329,18 @@ const tagPill = {
   padding: '3px 8px',
   borderRadius: 6,
   border: '1px solid var(--border)',
+};
+
+const worksWithWrap = { display: 'flex', flexWrap: 'wrap', gap: 5, marginTop: 6 };
+const worksWithPill = {
+  fontSize: 10,
+  fontWeight: 700,
+  color: 'var(--accent)',
+  background: 'rgba(99,102,241,0.1)',
+  padding: '2px 8px',
+  borderRadius: 100,
+  border: '1px solid rgba(99,102,241,0.2)',
+  letterSpacing: '0.02em',
 };
 
 const divider = {
