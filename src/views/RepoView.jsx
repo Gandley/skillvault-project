@@ -154,6 +154,22 @@ export default function RepoView() {
             <span style={{ color: 'var(--accent)' }}>AI-Powered Skills</span>
           </h1>
           <p style={heroSub}>{settings.description}</p>
+          <div style={heroStats}>
+            <div style={heroStat}>
+              <span style={heroStatNum}>{totalInstalls.toLocaleString()}+</span>
+              <span style={heroStatLabel}>installs</span>
+            </div>
+            <div style={heroStatDivider} />
+            <div style={heroStat}>
+              <span style={heroStatNum}>{totalSkills}</span>
+              <span style={heroStatLabel}>skills</span>
+            </div>
+            <div style={heroStatDivider} />
+            <div style={heroStat}>
+              <span style={heroStatNum}>{(data.skillPacks || []).length}</span>
+              <span style={heroStatLabel}>packs</span>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -371,7 +387,12 @@ const actionsWrap = { display: 'flex', alignItems: 'center', gap: 10, flexShrink
 const hero = { padding: '40px 24px 28px', textAlign: 'center' };
 const heroInner = { maxWidth: 680, margin: '0 auto' };
 const heroTitle = { fontFamily: 'var(--font-display)', fontSize: 'clamp(32px, 5vw, 48px)', fontWeight: 700, lineHeight: 1.1, color: 'var(--text-primary)', marginBottom: 14 };
-const heroSub = { fontSize: 16, lineHeight: 1.6, color: 'var(--text-secondary)', maxWidth: 520, margin: '0 auto' };
+const heroSub = { fontSize: 16, lineHeight: 1.6, color: 'var(--text-secondary)', maxWidth: 520, margin: '0 auto 28px' };
+const heroStats = { display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 0, marginTop: 0, background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: 14, padding: '14px 28px', width: 'fit-content', margin: '0 auto' };
+const heroStat = { display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2, padding: '0 24px' };
+const heroStatNum = { fontFamily: 'var(--font-display)', fontSize: 26, fontWeight: 700, color: 'var(--text-primary)', lineHeight: 1.1 };
+const heroStatLabel = { fontSize: 12, fontWeight: 500, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.06em' };
+const heroStatDivider = { width: 1, height: 36, background: 'var(--border)', flexShrink: 0 };
 
 const viewToggleWrap = { maxWidth: 1280, margin: '0 auto', padding: '0 24px 20px' };
 
