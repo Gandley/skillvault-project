@@ -1,10 +1,10 @@
 // localStorage helpers for persistence
 import { skills as defaultSkills, categories as defaultCategories, skillPacks as defaultSkillPacks } from '../data/skills.js';
 
-const STORAGE_KEY = 'skillvault_data_v5';
+const STORAGE_KEY = 'skillvault_data_v6';
 const PASSCODE_KEY = 'skillvault_passcode';
 const UNLOCKED_KEY = 'skillvault_unlocked';
-const SETTINGS_KEY = 'skillvault_settings';
+const SETTINGS_KEY = 'skillvault_settings_v2';
 
 export function loadData() {
   try {
@@ -43,7 +43,7 @@ export function loadSettings() {
     title: 'SkillVault',
     subtitle: 'AI-Powered Skills for Modern Teams',
     heroText: 'Discover & Deploy',
-    description: 'Browse, install, and manage production-ready skills for your AI agents. From websites to video, marketing to engineering.',
+    description: 'Production-ready skills built for OpenAI, Claude, ChatGPT, and n8n.\nDrop them into any AI agent or automation workflow and ship faster.',
     logoText: 'SkillVault',
     accentColor: '#6366f1',
   };
