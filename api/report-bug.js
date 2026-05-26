@@ -1,5 +1,3 @@
-const AGENTMAIL_API_KEY = process.env.AGENTMAIL_API_KEY || '';
-
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     res.setHeader('Allow', 'POST');
@@ -10,11 +8,6 @@ export default async function handler(req, res) {
 
   if (!skillName || !userEmail || !description) {
     return res.status(400).json({ error: 'Missing required fields: skillName, userEmail, description' });
-  }
-
-  const apiKey = AGENTMAIL_API_KEY;
-  if (!apiKey) {
-    return res.status(500).json({ error: 'Bug reporting is not configured' });
   }
 
   const emailBody = `BUG REPORT — SkillVault
@@ -39,7 +32,7 @@ Source: SkillVault Bug Report System
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${apiKey}`,
+          Authorization: `Bearer am_us_d8859fd8a456e5993594c8b584c7f63991f28c02afa1d597e9ee6296e0c75fcf`,
         },
         body: JSON.stringify({
           to: ['skillvault@agentmail.to'],
