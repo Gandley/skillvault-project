@@ -1,3 +1,5 @@
+const AGENTMAIL_API_KEY = process.env.AGENTMAIL_API_KEY || '';
+
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     res.setHeader('Allow', 'POST');
@@ -10,9 +12,8 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: 'Missing required fields: skillName, userEmail, description' });
   }
 
-  const apiKey = process.env.AGENTMAIL_API_KEY;
+  const apiKey = AGENTMAIL_API_KEY;
   if (!apiKey) {
-    console.error('[BugReport] AGENTMAIL_API_KEY not configured');
     return res.status(500).json({ error: 'Bug reporting is not configured' });
   }
 
