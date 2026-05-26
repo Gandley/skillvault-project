@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import * as Icons from 'lucide-react';
-import { ChevronDown, ChevronUp, Gift, Zap, Lock, Download, Star, CheckCircle } from 'lucide-react';
+import { ChevronDown, ChevronUp, Gift, Zap, Lock, Star, ArrowRight } from 'lucide-react';
 import { useClerkAuth } from '../lib/auth';
+import { useApp } from '../context/AppContext';
 import { buySingleSkill, subscribeVaultPro } from '../lib/stripe';
 
 const tierBadgeStyles = {
@@ -13,6 +14,7 @@ const tierBadgeStyles = {
 export default function PackCard({ pack }) {
   const [expanded, setExpanded] = useState(false);
   const { isSignedIn, user, signInRedirect } = useClerkAuth();
+  const { goSkillDetail } = useApp();
   const Icon = Icons[pack.icon] || Icons.Box;
 
   const colorMap = {
@@ -22,24 +24,6 @@ export default function PackCard({ pack }) {
     rose: { bg: 'rgba(244,63,94,0.08)', border: 'rgba(244,63,94,0.2)', text: '#f43f5e' },
   };
   const theme = colorMap[pack.color] || colorMap.cyan;
-
-  const handleSkillAction = async (skill) => {
-    if (!isSignedIn) {
-      signInRedirect(window.location.pathname);
-      return;
-    }
-
-    if (skill.tier === 'free') {
-      alert('Free download started!');
-      return;
-    }
-
-    if (skill.tier === 'paid') {
-      await buySingleSkill(skill.id, user.id);
-    } else if (skill.tier === 'pro') {
-      await subscribeVaultPro(user.id);
-    }
-  };
 
   return (
     <div style={card}>
@@ -66,7 +50,7 @@ export default function PackCard({ pack }) {
             const tier = tierBadgeStyles[skill.tier];
 
             return (
-              <div key={skill.id} style={skillRow}>
+              <div key={skill.id} style={skillRow} onClick={() => goSkillDetail(skill)}>
                 <div style={skillLeft}>
                   <div style={{ ...skillIcon, background: tier.bg, borderColor: tier.border }}>
                     <SkillIcon size={16} color={tier.color} />
@@ -87,16 +71,9 @@ export default function PackCard({ pack }) {
                     </div>
                   </div>
                 </div>
-                <button
-                  style={{ ...actionBtn, background: tier.bg, color: tier.color, borderColor: tier.border }}
-                  onClick={() => handleSkillAction(skill)}
-                >
-                  {skill.tier === 'free' ? (
-                    <><Download size={14} /> Get</>
-                  ) : (
-                    <><Zap size={14} /> Buy</>
-                  )}
-                </button>
+                <div style={arrowIcon}>
+                  <ArrowRight size={16} color="var(--text-muted)" />
+                </div>
               </div>
             );
           })}
@@ -190,6 +167,15 @@ const skillRow = {
   borderRadius: 'var(--radius-md)',
   background: 'var(--bg-secondary)',
   border: '1px solid var(--border)',
+  cursor: 'pointer',
+  transition: 'all 0.2s',
+};
+
+const arrowIcon = {
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  flexShrink: 0,
 };
 
 const skillLeft = {
@@ -244,17 +230,3 @@ const ratingText = {
   gap: 3,
 };
 
-const actionBtn = {
-  display: 'flex',
-  alignItems: 'center',
-  gap: 6,
-  padding: '7px 14px',
-  borderRadius: 8,
-  border: '1px solid',
-  fontSize: 13,
-  fontWeight: 600,
-  fontFamily: 'var(--font-body)',
-  cursor: 'pointer',
-  transition: 'all 0.2s',
-  whiteSpace: 'nowrap',
-};

@@ -21,9 +21,12 @@ export function AppProvider({ children }) {
     setSettingsState(next);
   };
 
+  const [selectedSkill, setSelectedSkill] = useState(null);
+
   const goAdmin = () => setView('admin');
-  const goRepo = () => setView('repo');
+  const goRepo = () => { setView('repo'); setSelectedSkill(null); };
   const goMySkills = () => setView('my-skills');
+  const goSkillDetail = (skill) => { setSelectedSkill(skill); setView('skill-detail'); };
 
   const addSkill = (skill) => {
     setData((d) => ({ ...d, skills: [skill, ...d.skills] }));
@@ -60,9 +63,12 @@ export function AppProvider({ children }) {
         setSettings,
         view,
         setView,
+        selectedSkill,
+        setSelectedSkill,
         goAdmin,
         goRepo,
         goMySkills,
+        goSkillDetail,
         addSkill,
         updateSkill,
         deleteSkill,
