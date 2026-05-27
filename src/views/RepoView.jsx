@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useApp } from '../context/AppContext';
 import PackCard from '../components/PackCard';
 import SkillCard from '../components/SkillCard';
@@ -10,7 +10,7 @@ import * as Icons from 'lucide-react';
 import { ArrowUpDown, Lock, Layers, Grid } from 'lucide-react';
 
 export default function RepoView() {
-  const { data, settings } = useApp();
+  const { data, settings, tierFilter, setTierFilter } = useApp();
   const { isSignedIn, user } = useClerkAuth();
   const [search, setSearch] = useState('');
   const [activePack, setActivePack] = useState('all');
@@ -19,14 +19,43 @@ export default function RepoView() {
   const [bannerDismissed, setBannerDismissed] = useState(false);
   const [expandedPackId, setExpandedPackId] = useState(null);
   const [platformFilters, setPlatformFilters] = useState([]);
+  const [tierFilters, setTierFilters] = useState(tierFilter ? [tierFilter] : []);
 
   const PLATFORMS = ['OpenClaw', 'Claude', 'ChatGPT', 'n8n'];
+  const TIERS = [
+    { id: 'free', label: 'Free', color: 'var(--green)', bg: 'var(--green-bg)', border: 'rgba(52,211,153,0.25)' },
+    { id: 'paid', label: '$9', color: 'var(--amber)', bg: 'var(--amber-bg)', border: 'rgba(245,158,11,0.25)' },
+    { id: 'pro', label: 'Pro', color: 'var(--violet)', bg: 'rgba(167,139,250,0.18)', border: 'rgba(167,139,250,0.25)' },
+  ];
 
   const togglePlatform = (p) => {
     setPlatformFilters((prev) =>
       prev.includes(p) ? prev.filter((x) => x !== p) : [...prev, p]
     );
   };
+
+  const toggleTier = (t) => {
+    setTierFilters((prev) =>
+      prev.includes(t) ? prev.filter((x) => x !== t) : [...prev, t]
+    );
+  };
+  const clearTierFilters = () => setTierFilters([]);
+
+  // Handle tierFilter from context (set by PricingSection buttons) or URL param
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const urlTier = urlParams.get('tier');
+    if (urlTier && ['free', 'paid', 'pro'].includes(urlTier)) {
+      setTierFilters([urlTier]);
+      setViewMode('skills');
+      // clean URL
+      window.history.replaceState({}, '', window.location.pathname);
+    } else if (tierFilter) {
+      setTierFilters([tierFilter]);
+      setViewMode('skills');
+      setTierFilter(null);
+    }
+  }, [tierFilter]);
 
   const handleBannerPro = async () => {
     if (!isSignedIn || !user) {
@@ -79,6 +108,11 @@ export default function RepoView() {
     filteredSkills = filteredSkills.filter((s) =>
       platformFilters.some((p) => (s.worksWith || []).includes(p))
     );
+  }
+
+  // Tier filter (multi-select — any match passes)
+  if (tierFilters.length > 0) {
+    filteredSkills = filteredSkills.filter((s) => tierFilters.includes(s.tier));
   }
 
   // Sort skills
@@ -302,6 +336,38 @@ export default function RepoView() {
                 {platformFilters.length > 0 && (
                   <button
                     onClick={() => setPlatformFilters([])}
+                    style={{ ...platformBtn, background: 'none', color: 'var(--text-muted)', borderColor: 'transparent', paddingLeft: 4 }}
+                  >
+                    Clear ×
+                  </button>
+                )}
+              </div>
+            </div>
+
+            {/* Tier filter */}
+            <div style={platformFilterBar}>
+              <span style={platformFilterLabel}>Tier:</span>
+              <div style={platformFilterBtns}>
+                {TIERS.map((t) => {
+                  const active = tierFilters.includes(t.id);
+                  return (
+                    <button
+                      key={t.id}
+                      onClick={() => toggleTier(t.id)}
+                      style={{
+                        ...platformBtn,
+                        background: active ? t.bg : 'var(--bg-card)',
+                        color: active ? t.color : 'var(--text-secondary)',
+                        borderColor: active ? t.border : 'var(--border)',
+                      }}
+                    >
+                      {t.label}
+                    </button>
+                  );
+                })}
+                {tierFilters.length > 0 && (
+                  <button
+                    onClick={clearTierFilters}
                     style={{ ...platformBtn, background: 'none', color: 'var(--text-muted)', borderColor: 'transparent', paddingLeft: 4 }}
                   >
                     Clear ×

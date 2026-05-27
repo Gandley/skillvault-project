@@ -22,9 +22,11 @@ export function AppProvider({ children }) {
   };
 
   const [selectedSkill, setSelectedSkill] = useState(null);
+  const [tierFilter, setTierFilter] = useState(null); // 'free' | 'paid' | 'pro' | null
 
   const goAdmin = () => setView('admin');
-  const goRepo = () => { setView('repo'); setSelectedSkill(null); };
+  const goRepo = () => { setView('repo'); setSelectedSkill(null); setTierFilter(null); };
+  const goRepoWithTier = (tier) => { setView('repo'); setSelectedSkill(null); setTierFilter(tier); };
   const goMySkills = () => setView('my-skills');
   const goSkillDetail = (skill) => { setSelectedSkill(skill); setView('skill-detail'); };
 
@@ -67,8 +69,11 @@ export function AppProvider({ children }) {
         setSelectedSkill,
         goAdmin,
         goRepo,
+        goRepoWithTier,
         goMySkills,
         goSkillDetail,
+        tierFilter,
+        setTierFilter,
         addSkill,
         updateSkill,
         deleteSkill,

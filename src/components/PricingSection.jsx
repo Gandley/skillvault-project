@@ -1,38 +1,21 @@
-import { Check, Zap, Crown, Gift } from 'lucide-react';
+import { Check, Zap, Crown, Gift, ArrowRight } from 'lucide-react';
 import { useClerkAuth } from '../lib/auth';
-import { buySingleSkill, subscribeVaultPro } from '../lib/stripe';
+import { useApp } from '../context/AppContext';
 
 export default function PricingSection() {
-  const { isSignedIn, user, signInRedirect } = useClerkAuth();
+  const { isSignedIn } = useClerkAuth();
+  const { goRepoWithTier } = useApp();
 
   const handleFree = () => {
-    signInRedirect(window.location.pathname + window.location.search);
+    goRepoWithTier('free');
   };
 
-  const handlePaid = async () => {
-    if (!isSignedIn || !user) {
-      signInRedirect(window.location.pathname + window.location.search);
-      return;
-    }
-    try {
-      await buySingleSkill(null, user.id);
-    } catch (err) {
-      console.error('Checkout error:', err);
-      alert('Payment failed. Please try again.');
-    }
+  const handlePaid = () => {
+    goRepoWithTier('paid');
   };
 
-  const handlePro = async () => {
-    if (!isSignedIn || !user) {
-      signInRedirect(window.location.pathname + window.location.search);
-      return;
-    }
-    try {
-      await subscribeVaultPro(user.id);
-    } catch (err) {
-      console.error('Checkout error:', err);
-      alert('Payment failed. Please try again.');
-    }
+  const handlePro = () => {
+    goRepoWithTier('pro');
   };
 
   return (
@@ -75,7 +58,8 @@ export default function PricingSection() {
             ))}
           </ul>
           <button onClick={handleFree} style={{ ...btn, background: 'var(--bg-secondary)', color: 'var(--text-primary)', borderColor: 'var(--border)' }}>
-            Get Started Free
+            <span>{isSignedIn ? 'Browse Free Skills' : 'Get Started Free'}</span>
+            <ArrowRight size={16} />
           </button>
         </div>
 
@@ -106,7 +90,8 @@ export default function PricingSection() {
             ))}
           </ul>
           <button onClick={handlePaid} style={{ ...btn, background: 'var(--amber-bg)', color: 'var(--amber)', borderColor: 'rgba(245,158,11,0.3)' }}>
-            Browse Skills
+            <span>{isSignedIn ? 'Browse $9 Skills' : 'Browse Skills'}</span>
+            <ArrowRight size={16} />
           </button>
         </div>
 
@@ -139,7 +124,8 @@ export default function PricingSection() {
             ))}
           </ul>
           <button onClick={handlePro} style={{ ...btn, background: 'var(--violet)', color: '#0b0c10', borderColor: 'var(--violet)', fontWeight: 700 }}>
-            Go Pro
+            <span>{isSignedIn ? 'Browse Pro Skills' : 'Go Pro'}</span>
+            <ArrowRight size={16} />
           </button>
         </div>
       </div>
@@ -206,7 +192,8 @@ const featureItem = { display: 'flex', alignItems: 'flex-start', gap: 10, fontSi
 const featureText = { paddingTop: 1 };
 
 const btn = {
-  display: 'block', width: '100%', textAlign: 'center', padding: '12px 20px', borderRadius: 'var(--radius-md)',
+  display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
+  width: '100%', textAlign: 'center', padding: '12px 20px', borderRadius: 'var(--radius-md)',
   border: '1px solid', fontSize: 15, fontWeight: 600, fontFamily: 'var(--font-body)',
   textDecoration: 'none', cursor: 'pointer', transition: 'all 0.2s', background: 'none', color: 'inherit',
 };
