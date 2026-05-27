@@ -6,7 +6,7 @@ import { useApp } from '../context/AppContext';
 
 const tierBadgeStyles = {
   free: { label: 'Free', bg: 'var(--green-bg)', color: 'var(--green)', border: 'rgba(52,211,153,0.2)' },
-  paid: { label: '$9', bg: 'var(--amber-bg)', color: 'var(--amber)', border: 'rgba(245,158,11,0.2)' },
+  paid: { label: '$9 or Pro', bg: 'var(--amber-bg)', color: 'var(--amber)', border: 'rgba(245,158,11,0.2)' },
   pro: { label: 'Pro', bg: 'rgba(167,139,250,0.12)', color: 'var(--violet)', border: 'rgba(167,139,250,0.2)' },
 };
 

@@ -25,7 +25,7 @@ export default function RepoView() {
   const PLATFORMS = ['OpenClaw', 'Claude', 'ChatGPT', 'n8n'];
   const TIERS = [
     { id: 'free', label: 'Free', color: 'var(--green)', bg: 'var(--green-bg)', border: 'rgba(52,211,153,0.25)' },
-    { id: 'paid', label: '$9', color: 'var(--amber)', bg: 'var(--amber-bg)', border: 'rgba(245,158,11,0.25)' },
+    { id: 'paid', label: '$9 or Pro', color: 'var(--amber)', bg: 'var(--amber-bg)', border: 'rgba(245,158,11,0.25)' },
     { id: 'pro', label: 'Pro', color: 'var(--violet)', bg: 'rgba(167,139,250,0.18)', border: 'rgba(167,139,250,0.25)' },
   ];
 

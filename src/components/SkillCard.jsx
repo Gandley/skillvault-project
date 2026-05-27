@@ -16,7 +16,7 @@ const colorMap = {
 
 const tierStyles = {
   free: { label: 'Free', color: 'var(--green)', bg: 'var(--green-bg)', border: 'rgba(52,211,153,0.2)' },
-  paid: { label: '$9', color: 'var(--amber)', bg: 'var(--amber-bg)', border: 'rgba(245,158,11,0.2)' },
+  paid: { label: '$9 or Pro', color: 'var(--amber)', bg: 'var(--amber-bg)', border: 'rgba(245,158,11,0.2)' },
   pro: { label: 'Pro', color: 'var(--violet)', bg: 'rgba(167,139,250,0.12)', border: 'rgba(167,139,250,0.2)' },
 };
 
@@ -135,7 +135,7 @@ export default function SkillCard({ skill }) {
       return (
         <button onClick={handlePaid} disabled={checking} style={{ ...ctaBtn, background: 'var(--amber-bg)', color: 'var(--amber)', borderColor: 'rgba(245,158,11,0.25)' }}>
           <Zap size={15} />
-          {checking ? 'Checking...' : 'Buy for $9'}
+          {checking ? 'Checking...' : 'Buy — $9 or Pro'}
         </button>
       );
     }
