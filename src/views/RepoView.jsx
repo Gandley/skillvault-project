@@ -112,7 +112,8 @@ export default function RepoView() {
   }
 
   // Tier filter (multi-select — any match passes)
-  if (tierFilters.length > 0) {
+  // Pro includes ALL skills, so selecting Pro shows everything
+  if (tierFilters.length > 0 && !tierFilters.includes('pro')) {
     filteredSkills = filteredSkills.filter((s) => tierFilters.includes(s.tier));
   }
 
