@@ -18,6 +18,7 @@ export default function RepoView() {
   const [sortBy, setSortBy] = useState('popular');
   const [bannerDismissed, setBannerDismissed] = useState(false);
   const [expandedPackId, setExpandedPackId] = useState(null);
+  const [expandedSkillId, setExpandedSkillId] = useState(null);
   const [platformFilters, setPlatformFilters] = useState([]);
   const [tierFilters, setTierFilters] = useState(tierFilter ? [tierFilter] : []);
 
@@ -394,7 +395,12 @@ export default function RepoView() {
 
             <div className="skill-grid">
               {filteredSkills.map((skill) => (
-                <SkillCard key={skill.id} skill={skill} />
+                <SkillCard
+                  key={skill.id}
+                  skill={skill}
+                  isExpanded={expandedSkillId === skill.id}
+                  onToggle={() => setExpandedSkillId(expandedSkillId === skill.id ? null : skill.id)}
+                />
               ))}
             </div>
 
