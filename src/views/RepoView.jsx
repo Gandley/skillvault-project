@@ -395,12 +395,7 @@ export default function RepoView() {
 
             <div className="skill-grid">
               {filteredSkills.map((skill) => (
-                <SkillCard
-                  key={skill.id}
-                  skill={skill}
-                  isExpanded={expandedSkillId === skill.id}
-                  onToggle={() => setExpandedSkillId(expandedSkillId === skill.id ? null : skill.id)}
-                />
+                <SkillCard key={skill.id} skill={skill} />
               ))}
             </div>
 
