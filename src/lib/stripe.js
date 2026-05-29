@@ -5,8 +5,8 @@
 
 import { recordPurchase } from './supabase';
 
-const PRICE_SINGLE_SKILL = 'price_1Ta4flIOVif6Dy1OEVfhQD15';
-const PRICE_VAULT_PRO = 'price_1Ta4g4IOVif6Dy1O2MJynjMz';
+const PRICE_SINGLE_SKILL = 'price_1TcHl30lnf05XgL9LuczOlix';
+const PRICE_VAULT_PRO = 'price_1TcHl60lnf05XgL9bKFF5D8l';
 
 export async function redirectToCheckout(priceId, metadata = {}) {
   const payload = {
@@ -14,6 +14,7 @@ export async function redirectToCheckout(priceId, metadata = {}) {
     user_id: metadata.userId || null,
     skill_id: metadata.skillId || null,
     mode: metadata.mode || 'payment',
+    success_path: metadata.successPath || '/',
   };
 
   const res = await fetch('/api/create-checkout-session', {
@@ -52,13 +53,15 @@ export function buySingleSkill(skillId, userId) {
     skillId,
     userId,
     mode: 'payment',
+    successPath: `/skill-detail?skill=${skillId}`,
   });
 }
 
-export function subscribeVaultPro(userId) {
+export function subscribeVaultPro(userId, skillId = null) {
   return redirectToCheckout(PRICE_VAULT_PRO, {
     userId,
     mode: 'subscription',
+    successPath: skillId ? `/skill-detail?skill=${skillId}` : '/',
   });
 }
 

@@ -22,6 +22,10 @@
       --border: #2a2d3a;
       --green: #34d399;
       --green-bg: rgba(52,211,153,0.12);
+      --amber: #f59e0b;
+      --amber-bg: rgba(245,158,11,0.12);
+      --violet: #a78bfa;
+      --violet-bg: rgba(167,139,250,0.12);
       --radius-md: 12px;
       --radius-xl: 20px;
     }
@@ -42,45 +46,68 @@
       border: 1px solid var(--border);
       border-radius: var(--radius-xl);
       padding: 48px 36px;
-      max-width: 440px;
+      max-width: 520px;
       width: 100%;
       text-align: center;
     }
     .icon {
       width: 64px; height: 64px;
       border-radius: 50%;
-      background: var(--green-bg);
-      color: var(--green);
       display: flex; align-items: center; justify-content: center;
       margin: 0 auto 24px;
     }
+    .icon.success { background: var(--green-bg); color: var(--green); }
+    .icon.pro { background: var(--violet-bg); color: var(--violet); }
     .icon svg { width: 32px; height: 32px; }
     h1 { font-family: var(--font-display); font-size: 26px; font-weight: 700; margin-bottom: 12px; }
     p { font-size: 15px; color: var(--text-secondary); line-height: 1.6; margin-bottom: 28px; }
     .status { font-size: 13px; color: var(--text-muted); margin-bottom: 20px; }
     .btn {
-      display: inline-block;
+      display: inline-flex; align-items: center; gap: 8px;
       padding: 12px 24px;
       border-radius: var(--radius-md);
-      background: var(--accent);
-      color: #fff;
-      font-size: 15px;
-      font-weight: 600;
+      font-size: 15px; font-weight: 600;
       text-decoration: none;
       transition: all 0.2s;
+      border: 1px solid;
+      cursor: pointer;
     }
-    .btn:hover { background: var(--accent-light); }
+    .btn-primary { background: var(--accent); color: #fff; border-color: var(--accent); }
+    .btn-primary:hover { background: var(--accent-light); }
+    .btn-secondary { background: var(--green-bg); color: var(--green); border-color: rgba(52,211,153,0.25); }
+    .btn-secondary:hover { background: rgba(52,211,153,0.18); }
+    .countdown { font-size: 13px; color: var(--text-muted); margin-top: 12px; }
+    .skill-box {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 16px 20px;
+      margin-bottom: 20px;
+      text-align: left;
+    }
+    .skill-box .label { font-size: 12px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 6px; }
+    .skill-box .name { font-family: var(--font-display); font-size: 16px; font-weight: 600; }
+    .buttons { display: flex; flex-direction: column; gap: 10px; }
   </style>
 </head>
 <body>
   <div class="card">
-    <div class="icon">
+    <div class="icon success" id="icon">
       <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
     </div>
-    <h1>Payment Successful</h1>
-    <p>Thank you for your purchase. Your access will be activated shortly.</p>
+    <h1 id="title">Payment Successful</h1>
+    <p id="message">Thank you for your purchase. Your access will be activated shortly.</p>
     <div class="status" id="sync-status">Activating your account...</div>
-    <a href="/" class="btn">Back to Skills</a>
+
+    <div id="skill-info" class="skill-box" style="display:none;">
+      <div class="label">Your Skill</div>
+      <div class="name" id="skill-name">—</div>
+    </div>
+
+    <div class="buttons" id="buttons">
+      <a href="/" class="btn btn-primary" id="main-btn">Back to Skills</a>
+    </div>
+    <div class="countdown" id="countdown"></div>
   </div>
 
   <script type="module">
@@ -92,11 +119,77 @@
 
     const params = new URLSearchParams(window.location.search);
     const sessionId = params.get('session_id');
+    const skillId = params.get('skill_id');
+    const redirectPath = params.get('redirect') || '/';
+
+    const iconEl = document.getElementById('icon');
+    const titleEl = document.getElementById('title');
+    const messageEl = document.getElementById('message');
     const statusEl = document.getElementById('sync-status');
+    const skillInfoEl = document.getElementById('skill-info');
+    const skillNameEl = document.getElementById('skill-name');
+    const buttonsEl = document.getElementById('buttons');
+    const mainBtn = document.getElementById('main-btn');
+    const countdownEl = document.getElementById('countdown');
+
+    // Skill name mapping (matches skill IDs from the app)
+    const skillNames = {
+      'analytics-feedback-loop': 'Analytics Feedback Loop',
+      'video-cue': 'Video Cue',
+      'blotato-social': 'Blotato Social',
+      'nova-orchestrator': 'Nova Orchestrator',
+      'course-architect': 'Course Architect',
+      'slide-script-architect': 'Slide Script Architect',
+      'video-stitcher': 'Video Stitcher',
+      'landingpage': 'Landing Page Builder',
+      'bridgepage': 'Bridge Page Builder',
+      'optinpage': 'Opt-In Page Builder',
+      'inbox-copywriter': 'Inbox Copywriter',
+      'content-calendar': 'Content Calendar',
+      'repurposing-engine': 'Repurposing Engine',
+      'social-post-pipeline': 'Social Post Pipeline',
+      'elevenlabs-voice': 'ElevenLabs Voice',
+      'cloudinary': 'Cloudinary',
+      'slide-renderer': 'Slide Renderer',
+      'video-assembler': 'Video Assembler',
+      'salespage': 'Sales Page Generator',
+      'vsl': 'VSL Script Generator',
+      'pagecode': 'Page Code Generator',
+      'deployment-setup': 'Deployment Setup',
+      'project-setup': 'Project Setup',
+      'vercel-config': 'Vercel Config',
+      'stripe-setup-siteforge': 'Stripe Setup',
+    };
+
+    let countdown = 5;
+    let countdownTimer = null;
+
+    function startRedirect() {
+      countdownEl.textContent = `Redirecting to your skill in ${countdown}s...`;
+      countdownTimer = setInterval(() => {
+        countdown--;
+        if (countdown > 0) {
+          countdownEl.textContent = `Redirecting to your skill in ${countdown}s...`;
+        } else {
+          clearInterval(countdownTimer);
+          doRedirect();
+        }
+      }, 1000);
+    }
+
+    function doRedirect() {
+      const url = redirectPath.startsWith('/') ? redirectPath : '/';
+      // For skill purchases, append download trigger
+      if (skillId) {
+        window.location.href = url + (url.includes('?') ? '&' : '?') + 'downloaded=1';
+      } else {
+        window.location.href = url;
+      }
+    }
 
     async function syncPurchase() {
       if (!sessionId) {
-        statusEl.textContent = 'No session ID found.';
+        statusEl.textContent = 'Purchase confirmed.';
         return;
       }
 
@@ -113,7 +206,46 @@
           return;
         }
 
-        statusEl.textContent = "Account activated! You're all set.";
+        // Fetch session details from Stripe via our API
+        // In a real webhook setup, we'd have the full details already
+        statusEl.textContent = 'Account activated! You\'re all set.';
+
+        // Customize UI based on purchase type
+        if (skillId && skillNames[skillId]) {
+          // Individual skill purchase
+          titleEl.textContent = 'Skill Unlocked!';
+          messageEl.textContent = 'Your purchase is confirmed. Your skill is ready for download.';
+          skillNameEl.textContent = skillNames[skillId] || skillId;
+          skillInfoEl.style.display = 'block';
+
+          // Build download button
+          const downloadBtn = document.createElement('a');
+          downloadBtn.className = 'btn btn-secondary';
+          downloadBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg> Download Skill Now';
+          downloadBtn.href = `/skills/${skillId}.zip`;
+          downloadBtn.download = `${skillId}.zip`;
+          buttonsEl.appendChild(downloadBtn);
+
+          mainBtn.textContent = 'Back to Skill Page';
+          mainBtn.href = redirectPath;
+
+          // Start auto-redirect countdown
+          startRedirect();
+        } else {
+          // Pro subscription
+          iconEl.classList.remove('success');
+          iconEl.classList.add('pro');
+          iconEl.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>';
+          titleEl.textContent = 'Welcome to Vault Pro!';
+          messageEl.textContent = 'You now have unlimited access to all 37+ skills — present and future. New skills added monthly.';
+          mainBtn.textContent = 'Browse All Skills';
+          mainBtn.href = '/';
+
+          // Auto-redirect after 4 seconds
+          countdown = 4;
+          startRedirect();
+        }
+
       } catch (err) {
         console.error('Sync failed:', err);
         statusEl.textContent = 'Account updated.';

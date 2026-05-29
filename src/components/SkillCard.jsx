@@ -105,7 +105,7 @@ export default function SkillCard({ skill }) {
       return;
     }
     try {
-      await subscribeVaultPro(user.id);
+      await subscribeVaultPro(user.id, skill.id);
     } catch (err) {
       console.error('Checkout error:', err);
       alert('Payment failed. Please try again.');

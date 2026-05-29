@@ -58,27 +58,89 @@
     h1 { font-family: var(--font-display); font-size: 26px; font-weight: 700; margin-bottom: 12px; }
     p { font-size: 15px; color: var(--text-secondary); line-height: 1.6; margin-bottom: 28px; }
     .btn {
-      display: inline-block;
+      display: inline-flex; align-items: center; gap: 8px;
       padding: 12px 24px;
       border-radius: var(--radius-md);
-      background: var(--accent);
-      color: #fff;
-      font-size: 15px;
-      font-weight: 600;
+      font-size: 15px; font-weight: 600;
       text-decoration: none;
       transition: all 0.2s;
+      border: 1px solid;
+      cursor: pointer;
     }
-    .btn:hover { background: var(--accent-light); }
+    .btn-primary { background: var(--accent); color: #fff; border-color: var(--accent); }
+    .btn-primary:hover { background: var(--accent-light); }
+    .btn-secondary { background: var(--amber-bg); color: var(--amber); border-color: rgba(245,158,11,0.25); }
+    .btn-secondary:hover { background: rgba(245,158,11,0.18); }
+    .buttons { display: flex; flex-direction: column; gap: 10px; }
+    .skill-box {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 16px 20px;
+      margin-bottom: 20px;
+      text-align: left;
+    }
+    .skill-box .label { font-size: 12px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 6px; }
+    .skill-box .name { font-family: var(--font-display); font-size: 16px; font-weight: 600; }
   </style>
 </head>
 <body>
   <div class="card">
     <div class="icon">
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
     </div>
     <h1>Payment Cancelled</h1>
-    <p>No worries — you can come back anytime and pick up where you left off. Your skills are waiting.</p>
-    <a href="/" class="btn">Back to Skills</a>
+    <p>No worries — your card wasn't charged. You can come back and complete your purchase anytime.</p>
+
+    <div id="skill-info" class="skill-box" style="display:none;">
+      <div class="label">Your Skill</div>
+      <div class="name" id="skill-name">—</div>
+    </div>
+
+    <div class="buttons">
+      <a href="/" class="btn btn-primary" id="back-btn">Back to Skills</a>
+      <a href="/pricing.html" class="btn btn-secondary">View Pricing</a>
+    </div>
   </div>
+
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const skillId = params.get('skill_id');
+    const redirectPath = params.get('redirect') || '/';
+    const skillNames = {
+      'analytics-feedback-loop': 'Analytics Feedback Loop',
+      'video-cue': 'Video Cue',
+      'blotato-social': 'Blotato Social',
+      'nova-orchestrator': 'Nova Orchestrator',
+      'course-architect': 'Course Architect',
+      'slide-script-architect': 'Slide Script Architect',
+      'video-stitcher': 'Video Stitcher',
+      'landingpage': 'Landing Page Builder',
+      'bridgepage': 'Bridge Page Builder',
+      'optinpage': 'Opt-In Page Builder',
+      'inbox-copywriter': 'Inbox Copywriter',
+      'content-calendar': 'Content Calendar',
+      'repurposing-engine': 'Repurposing Engine',
+      'social-post-pipeline': 'Social Post Pipeline',
+      'elevenlabs-voice': 'ElevenLabs Voice',
+      'cloudinary': 'Cloudinary',
+      'slide-renderer': 'Slide Renderer',
+      'video-assembler': 'Video Assembler',
+      'salespage': 'Sales Page Generator',
+      'vsl': 'VSL Script Generator',
+      'pagecode': 'Page Code Generator',
+      'deployment-setup': 'Deployment Setup',
+      'project-setup': 'Project Setup',
+      'vercel-config': 'Vercel Config',
+      'stripe-setup-siteforge': 'Stripe Setup',
+    };
+
+    if (skillId) {
+      document.getElementById('skill-info').style.display = 'block';
+      document.getElementById('skill-name').textContent = skillNames[skillId] || skillId;
+      document.getElementById('back-btn').href = redirectPath;
+      document.getElementById('back-btn').textContent = 'Back to Skill Page';
+    }
+  </script>
 </body>
 </html>

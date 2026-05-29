@@ -9,7 +9,7 @@ export default async function handler(req, res) {
   }
 
   try {
-    const { price_id, skill_id, user_id, mode = 'payment' } = req.body;
+    const { price_id, skill_id, user_id, mode = 'payment', success_path = '/' } = req.body;
 
     if (!price_id) {
       return res.status(400).json({ error: 'Missing price_id' });
@@ -28,8 +28,8 @@ export default async function handler(req, res) {
         },
       ],
       metadata,
-      success_url: `${req.headers.origin || 'https://skillvault-project-nu.vercel.app'}/success.html`,
-      cancel_url: `${req.headers.origin || 'https://skillvault-project-nu.vercel.app'}/cancel.html`,
+      success_url: `${req.headers.origin || 'https://skillvault-project-nu.vercel.app'}/success.html?session_id={CHECKOUT_SESSION_ID}&skill_id=${skill_id || ''}&redirect=${encodeURIComponent(success_path)}`,
+      cancel_url: `${req.headers.origin || 'https://skillvault-project-nu.vercel.app'}/cancel.html?skill_id=${skill_id || ''}&redirect=${encodeURIComponent(success_path)}`,
     });
 
     return res.status(200).json({ url: session.url, session_id: session.id });

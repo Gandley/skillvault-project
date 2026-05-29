@@ -8,14 +8,20 @@ import { ArrowLeft, Star, Download, Zap, Lock, Gift, CheckCircle, Calendar, User
 import { useState, useEffect } from 'react';
 
 export default function SkillDetailView() {
-  const { selectedSkill, goRepo } = useApp();
+  const { selectedSkill, goRepo, data } = useApp();
   const { isSignedIn, user, signInRedirect } = useClerkAuth();
   const [isOwned, setIsOwned] = useState(false);
   const [hasPro, setHasPro] = useState(false);
   const [checking, setChecking] = useState(true);
   const [showBugModal, setShowBugModal] = useState(false);
+  const [autoDownloaded, setAutoDownloaded] = useState(false);
 
-  const skill = selectedSkill;
+  // Load skill from URL param if context doesn't have it (e.g. after Stripe redirect)
+  const urlParams = new URLSearchParams(window.location.search);
+  const urlSkillId = urlParams.get('skill');
+  const justPurchased = urlParams.get('downloaded') === '1';
+
+  const skill = selectedSkill || (urlSkillId ? data.skills.find((s) => s.id === urlSkillId) : null);
   if (!skill) return null;
 
   const Icon = Icons[skill.icon] || Icons.Circle;
@@ -35,6 +41,7 @@ export default function SkillDetailView() {
   };
   const tier = tierMap[skill.tier] || tierMap.free;
 
+  // Check ownership on mount
   useEffect(() => {
     if (!isSignedIn || !user) {
       setChecking(false);
@@ -58,6 +65,29 @@ export default function SkillDetailView() {
     check();
   }, [isSignedIn, user, skill.id, skill.tier]);
 
+  // Auto-download after successful purchase redirect
+  useEffect(() => {
+    if (justPurchased && !autoDownloaded && !checking) {
+      // Just purchased — trust Stripe's confirmation and trigger download
+      setAutoDownloaded(true);
+      const link = document.createElement('a');
+      link.href = `/skills/${skill.id}.zip`;
+      link.download = `${skill.id}.zip`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      if (user) {
+        recordDownload({ userId: user.id, skillId: skill.id }).catch((err) => {
+          console.error('[SkillDetail] Failed to record download:', err);
+        });
+      }
+      // Clean URL so refresh doesn't re-trigger
+      const url = new URL(window.location.href);
+      url.searchParams.delete('downloaded');
+      window.history.replaceState({}, '', url);
+    }
+  }, [justPurchased, autoDownloaded, checking, skill.id, user]);
+
   const handleAction = async () => {
     if (!isSignedIn) {
       signInRedirect('/');
@@ -70,7 +100,7 @@ export default function SkillDetailView() {
         if (skill.tier === 'paid') {
           await buySingleSkill(skill.id, user.id);
         } else if (skill.tier === 'pro') {
-          await subscribeVaultPro(user.id);
+          await subscribeVaultPro(user.id, skill.id);
         }
       } catch (err) {
         console.error('Checkout error:', err);
@@ -101,6 +131,7 @@ export default function SkillDetailView() {
       if (skill.tier === 'paid') return ['Buy — $9 or Pro'];
       return ['Get Vault Pro'];
     }
+    if (autoDownloaded) return ['Downloaded ✓'];
     return ['Download'];
   };
 
