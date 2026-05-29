@@ -139,7 +139,7 @@
     </div>
   </footer>
 
-  <script async crossorigin="anonymous" data-clerk-publishable-key="pk_live_Y2xlcmsudmF1bHRvZnNraWxscy5jb20k" src="https://clerk.vaultofskills.com/npm/@clerk/clerk-js@latest/dist/clerk.browser.js" type="text/javascript"></script>
+  <script crossorigin="anonymous" data-clerk-publishable-key="pk_live_Y2xlcmsudmF1bHRvZnNraWxscy5jb20k" src="https://clerk.vaultofskills.com/npm/@clerk/clerk-js@latest/dist/clerk.browser.js" type="text/javascript"></script>
 
   <script>
     (function() {
@@ -216,18 +216,17 @@
           return;
         }
 
+        // Wait for Clerk to auto-initialize (it does this from the data attribute)
+        let waited = 0;
+        while (!window.Clerk.loaded && waited < 10000) {
+          await new Promise(r => setTimeout(r, 200));
+          waited += 200;
+        }
+        
         if (!window.Clerk.loaded) {
-          showStep1Error('Loading authentication... please wait 2 seconds and try again.');
-          try {
-            await window.Clerk.load({ publishableKey: 'pk_live_Y2xlcmsudmF1bHRvZnNraWxscy5jb20k' });
-          } catch (err) {
-            console.error('Clerk load failed:', err);
-          }
+          showStep1Error("Authentication system not responding. Please refresh and try again.");
           return;
         }
-
-        submitBtn.disabled = true;
-        loading.style.display = 'flex';
         errorMsg.style.display = 'none';
 
         try {
