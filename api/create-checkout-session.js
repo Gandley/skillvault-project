@@ -1,6 +1,10 @@
 import Stripe from 'stripe';
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || 'sk_test_placeholder');
+const secretKey = process.env.VERCEL_ENV === 'production' 
+  ? process.env.STRIPE_SECRET_KEY_LIVE 
+  : process.env.STRIPE_SECRET_KEY_TEST;
+
+const stripe = new Stripe(secretKey || 'sk_test_placeholder');
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
