@@ -1,14 +1,30 @@
 import { useClerkAuth } from '../lib/auth';
 import { useApp } from '../context/AppContext';
-import { Briefcase } from 'lucide-react';
+import { hasVaultProSubscription } from '../lib/supabase';
+import { Briefcase, Crown } from 'lucide-react';
+import { useState, useEffect } from 'react';
 
 export default function AuthNav() {
   const { isSignedIn, user, signOut } = useClerkAuth();
   const { goMySkills, view } = useApp();
+  const [isPro, setIsPro] = useState(false);
+
+  useEffect(() => {
+    if (!isSignedIn || !user) { setIsPro(false); return; }
+    hasVaultProSubscription(user.id)
+      .then(setIsPro)
+      .catch(() => setIsPro(false));
+  }, [isSignedIn, user]);
 
   if (isSignedIn && user) {
     return (
       <div style={authUser}>
+        {isPro && (
+          <span style={proBadge}>
+            <Crown size={12} />
+            Vault Pro
+          </span>
+        )}
         <button 
           onClick={goMySkills} 
           style={{
@@ -36,6 +52,17 @@ export default function AuthNav() {
 }
 
 const authUser = { display: 'flex', alignItems: 'center', gap: 14 };
+
+const proBadge = {
+  display: 'inline-flex', alignItems: 'center', gap: 5,
+  padding: '4px 10px', borderRadius: 100,
+  background: 'rgba(167,139,250,0.15)',
+  border: '1px solid rgba(167,139,250,0.3)',
+  color: '#a78bfa',
+  fontSize: 12, fontWeight: 700,
+  letterSpacing: '0.03em',
+  fontFamily: 'var(--font-body)',
+};
 const authEmail = { fontSize: 14, color: 'var(--text-secondary)', maxWidth: 160, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' };
 const authSignout = {
   padding: '7px 14px', borderRadius: 8, border: '1px solid var(--border)',

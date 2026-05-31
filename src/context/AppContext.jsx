@@ -29,10 +29,16 @@ export function AppProvider({ children }) {
   useEffect(() => {
     const path = window.location.pathname;
     const params = new URLSearchParams(window.location.search);
+
+    // Handle ?view=my-skills redirect (e.g. from success page after $9 purchase)
+    if (params.get('view') === 'my-skills') {
+      setView('my-skills');
+      return;
+    }
+
     if (path === '/skill-detail') {
       const skillId = params.get('skill');
       if (skillId) {
-        // Search flat skills list and inside skill packs
         const allSkills = [
           ...(allSkillsFlat || []),
           ...(skillPacks || []).flatMap((p) => p.skills || []),

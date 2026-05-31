@@ -194,40 +194,50 @@
       }
 
       try {
-        // Update the purchase status to completed
-        const { error } = await supabase
-          .from('purchases')
-          .update({ status: 'completed', updated_at: new Date().toISOString() })
-          .eq('stripe_session_id', sessionId);
-
-        if (error) {
-          console.error('Supabase sync error:', error);
-          statusEl.textContent = 'Account updated.';
-          return;
+        // Call server-side sync route (uses service role key to bypass RLS)
+        let syncResult = null;
+        try {
+          const resp = await fetch('/api/sync-purchase', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ session_id: sessionId }),
+          });
+          syncResult = await resp.json();
+          console.log('[success] sync result:', syncResult);
+        } catch (syncErr) {
+          console.warn('[success] Server sync failed, continuing anyway:', syncErr);
         }
 
-        // Fetch session details from Stripe via our API
-        // In a real webhook setup, we'd have the full details already
         statusEl.textContent = 'Account activated! You\'re all set.';
 
         // Customize UI based on purchase type
         if (skillId && skillNames[skillId]) {
           // Individual skill purchase
           titleEl.textContent = 'Skill Unlocked!';
-          messageEl.textContent = 'Your purchase is confirmed. Your skill is ready for download.';
+          messageEl.textContent = 'Your purchase is confirmed. Your download has started automatically.';
           skillNameEl.textContent = skillNames[skillId] || skillId;
           skillInfoEl.style.display = 'block';
 
-          // Build download button
+          // Auto-trigger the download immediately
+          setTimeout(() => {
+            const dlLink = document.createElement('a');
+            dlLink.href = `/skills/${skillId}.zip`;
+            dlLink.download = `${skillId}.zip`;
+            document.body.appendChild(dlLink);
+            dlLink.click();
+            document.body.removeChild(dlLink);
+          }, 800);
+
+          // Build manual download button as backup
           const downloadBtn = document.createElement('a');
           downloadBtn.className = 'btn btn-secondary';
-          downloadBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg> Download Skill Now';
+          downloadBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg> Download Again';
           downloadBtn.href = `/skills/${skillId}.zip`;
           downloadBtn.download = `${skillId}.zip`;
           buttonsEl.appendChild(downloadBtn);
 
-          mainBtn.textContent = 'Back to Skill Page';
-          mainBtn.href = redirectPath;
+          mainBtn.textContent = 'Go to My Skills';
+          mainBtn.href = '/?view=my-skills';
 
           // Start auto-redirect countdown
           startRedirect();
