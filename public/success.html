@@ -211,11 +211,11 @@
         statusEl.textContent = 'Account activated! You\'re all set.';
 
         // Customize UI based on purchase type
-        if (skillId && skillNames[skillId]) {
+        if (skillId) {
           // Individual skill purchase
           titleEl.textContent = 'Skill Unlocked!';
           messageEl.textContent = 'Your purchase is confirmed. Your download has started automatically.';
-          skillNameEl.textContent = skillNames[skillId] || skillId;
+          skillNameEl.textContent = skillNames[skillId] || skillId.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
           skillInfoEl.style.display = 'block';
 
           // Auto-trigger the download immediately
