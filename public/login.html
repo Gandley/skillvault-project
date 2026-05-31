@@ -211,6 +211,11 @@
           return;
         }
 
+        // Show loading immediately so user knows something is happening
+        submitBtn.disabled = true;
+        loading.style.display = 'flex';
+        errorMsg.style.display = 'none';
+
         if (!window.Clerk) {
           showStep1Error('Authentication system not loaded. Please refresh the page.');
           return;

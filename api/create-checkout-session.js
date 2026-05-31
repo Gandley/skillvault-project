@@ -1,8 +1,6 @@
 import Stripe from 'stripe';
 
-const secretKey = process.env.VERCEL_ENV === 'production' 
-  ? process.env.STRIPE_SECRET_KEY_LIVE 
-  : process.env.STRIPE_SECRET_KEY_TEST;
+const secretKey = process.env.STRIPE_SECRET_KEY_TEST || process.env.STRIPE_SECRET_KEY_LIVE;
 
 const stripe = new Stripe(secretKey || 'sk_test_placeholder');
 
