@@ -216,21 +216,29 @@
         loading.style.display = 'flex';
         errorMsg.style.display = 'none';
 
+        // Wait up to 8s for Clerk script to appear on the page
+        let scriptWait = 0;
+        while (!window.Clerk && scriptWait < 8000) {
+          await new Promise(r => setTimeout(r, 200));
+          scriptWait += 200;
+        }
+
         if (!window.Clerk) {
           showStep1Error('Authentication system not loaded. Please refresh the page.');
           return;
         }
 
-        // Wait for Clerk to auto-initialize (it does this from the data attribute)
-        let waited = 0;
-        while (!window.Clerk.loaded && waited < 10000) {
-          await new Promise(r => setTimeout(r, 200));
-          waited += 200;
-        }
-        
+        // Explicitly call Clerk.load() — don't just wait for the data-attribute auto-init
         if (!window.Clerk.loaded) {
-          showStep1Error("Authentication system not responding. Please refresh and try again.");
-          return;
+          try {
+            await window.Clerk.load({
+              publishableKey: 'pk_live_Y2xlcmsudmF1bHRvZnNraWxscy5jb20k'
+            });
+          } catch (loadErr) {
+            console.error('[Login] Clerk.load() failed:', loadErr);
+            showStep1Error('Authentication system failed to start. Please refresh and try again.');
+            return;
+          }
         }
         errorMsg.style.display = 'none';
 
