@@ -2,5 +2,11 @@
   "version": 2,
   "buildCommand": "vite build",
   "outputDirectory": "dist",
-  "framework": "vite"
+  "framework": "vite",
+  "rewrites": [
+    {
+      "source": "/((?!api/|skills/|favicon\.svg|icons\.svg|auth-nav\.js|login\.html|signup\.html|cancel\.html|success\.html|pricing\.html|privacy\.html|refund\.html|terms\.html|debug-clerk\.html|test-signin\.html).*)",
+      "destination": "/index.html"
+    }
+  ]
 }

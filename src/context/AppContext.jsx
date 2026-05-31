@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, useEffect } from 'react';
 import { loadData, saveData, loadSettings, saveSettings } from '../lib/storage';
+import { skills as allSkillsFlat, skillPacks } from '../data/skills.js';
 
 const AppContext = createContext();
 
@@ -23,6 +24,27 @@ export function AppProvider({ children }) {
 
   const [selectedSkill, setSelectedSkill] = useState(null);
   const [tierFilter, setTierFilter] = useState(null); // 'free' | 'paid' | 'pro' | null
+
+  // On first load, check if we landed via a redirect from Stripe cancel/success
+  useEffect(() => {
+    const path = window.location.pathname;
+    const params = new URLSearchParams(window.location.search);
+    if (path === '/skill-detail') {
+      const skillId = params.get('skill');
+      if (skillId) {
+        // Search flat skills list and inside skill packs
+        const allSkills = [
+          ...(allSkillsFlat || []),
+          ...(skillPacks || []).flatMap((p) => p.skills || []),
+        ];
+        const found = allSkills.find((s) => s.id === skillId);
+        if (found) {
+          setSelectedSkill(found);
+          setView('skill-detail');
+        }
+      }
+    }
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const goAdmin = () => setView('admin');
   const goRepo = () => { setView('repo'); setSelectedSkill(null); setTierFilter(null); };
