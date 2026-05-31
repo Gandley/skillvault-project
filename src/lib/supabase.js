@@ -37,30 +37,26 @@ export async function recordPurchase({ userId, skillId, stripeSessionId, amount,
  * Get all purchases for a user
  */
 export async function getUserPurchases(userId) {
-  const { data, error } = await supabase
-    .from('purchases')
-    .select('*')
-    .eq('clerk_user_id', userId)
-    .order('purchased_at', { ascending: false });
-
-  if (error) throw error;
-  return data || [];
+  try {
+    const res = await fetch(`/api/check-access?clerk_user_id=${encodeURIComponent(userId)}`);
+    const data = await res.json();
+    return data.purchases || [];
+  } catch {
+    return [];
+  }
 }
 
 /**
  * Check if user has purchased a specific skill
  */
 export async function hasUserPurchasedSkill(userId, skillId) {
-  const { data, error } = await supabase
-    .from('purchases')
-    .select('*')
-    .eq('clerk_user_id', userId)
-    .eq('skill_id', skillId)
-    .eq('status', 'completed')
-    .maybeSingle();
-
-  if (error) throw error;
-  return !!data;
+  try {
+    const res = await fetch(`/api/check-access?clerk_user_id=${encodeURIComponent(userId)}&skill_id=${encodeURIComponent(skillId)}`);
+    const data = await res.json();
+    return data.isOwned === true;
+  } catch {
+    return false;
+  }
 }
 
 /**
@@ -120,14 +116,13 @@ export async function getUserProfile(userId) {
  * Check if user has active Vault Pro subscription
  */
 export async function hasVaultProSubscription(userId) {
-  const { data, error } = await supabase
-    .from('users')
-    .select('subscription_status')
-    .eq('clerk_user_id', userId)
-    .maybeSingle();
-
-  if (error) throw error;
-  return data?.subscription_status === 'active';
+  try {
+    const res = await fetch(`/api/check-access?clerk_user_id=${encodeURIComponent(userId)}`);
+    const data = await res.json();
+    return data.isPro === true;
+  } catch {
+    return false;
+  }
 }
 
 /**
