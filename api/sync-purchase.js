@@ -116,6 +116,13 @@ export default async function handler(req, res) {
         ? session.customer
         : session.customer?.id || null;
 
+      // Tag the Stripe customer with clerk_user_id so billing portal can find them
+      if (stripeCustomerId && clerkUserId) {
+        stripe.customers.update(stripeCustomerId, {
+          metadata: { clerk_user_id: clerkUserId },
+        }).catch((err) => console.warn('[sync-purchase] Failed to tag customer:', err.message));
+      }
+
       const existingUser = await supabaseGet(
         'users',
         `clerk_user_id=eq.${encodeURIComponent(clerkUserId)}&select=clerk_user_id`,

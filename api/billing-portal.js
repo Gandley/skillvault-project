@@ -80,28 +80,39 @@ export default async function handler(req, res) {
         serviceKey
       );
 
-      if (!Array.isArray(purchases) || purchases.length === 0) {
-        return res.status(404).json({
-          error: 'No completed purchases found. Make sure your subscription has been processed.',
-        });
-      }
-
-      // Try each session until we find one with a customer
-      for (const p of purchases) {
-        if (!p.stripe_session_id || p.stripe_session_id === 'unknown') continue;
-        try {
-          const session = await stripe.checkout.sessions.retrieve(p.stripe_session_id);
-          const cid = typeof session.customer === 'string'
-            ? session.customer
-            : session.customer?.id || null;
-          if (cid) {
-            customerId = cid;
-            console.log('[billing-portal] Found customer via session:', customerId);
-            break;
+      if (Array.isArray(purchases) && purchases.length > 0) {
+        for (const p of purchases) {
+          if (!p.stripe_session_id || p.stripe_session_id === 'unknown') continue;
+          try {
+            const session = await stripe.checkout.sessions.retrieve(p.stripe_session_id);
+            const cid = typeof session.customer === 'string'
+              ? session.customer
+              : session.customer?.id || null;
+            if (cid) {
+              customerId = cid;
+              console.log('[billing-portal] Found customer via session:', customerId);
+              break;
+            }
+          } catch (err) {
+            console.warn('[billing-portal] Session retrieve failed:', p.stripe_session_id, err.message);
           }
-        } catch (err) {
-          console.warn('[billing-portal] Session retrieve failed:', p.stripe_session_id, err.message);
         }
+      }
+    }
+
+    // ── Strategy 3: search Stripe customers by clerk_user_id metadata ─────────
+    if (!customerId) {
+      try {
+        const results = await stripe.customers.search({
+          query: `metadata['clerk_user_id']:'${clerk_user_id}'`,
+          limit: 1,
+        });
+        if (results.data && results.data.length > 0) {
+          customerId = results.data[0].id;
+          console.log('[billing-portal] Found customer via Stripe metadata search:', customerId);
+        }
+      } catch (err) {
+        console.warn('[billing-portal] Stripe customer search failed:', err.message);
       }
     }
 
