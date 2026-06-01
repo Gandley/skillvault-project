@@ -70,12 +70,21 @@ export default function SkillCard({ skill }) {
     checkOwnership();
   }, [isSignedIn, user, skill.id, isPaid]);
 
+  const triggerDownload = () => {
+    const link = document.createElement('a');
+    link.href = `/skills/${skill.id}.zip`;
+    link.download = `${skill.id}.zip`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   const handleFree = () => {
     if (!isSignedIn || !user) {
       signInRedirect(window.location.pathname + window.location.search);
       return;
     }
-    alert('Free download started!');
+    triggerDownload();
   };
 
   const handlePaid = async () => {
@@ -124,9 +133,9 @@ export default function SkillCard({ skill }) {
 
     if (isOwned || hasPro) {
       return (
-        <button onClick={() => alert('Download starting...')} style={{ ...ctaBtn, background: 'var(--green-bg)', color: 'var(--green)', borderColor: 'rgba(52,211,153,0.25)' }}>
-          <CheckCircle size={15} />
-          Owned — Download
+        <button onClick={triggerDownload} style={{ ...ctaBtn, background: 'var(--green-bg)', color: 'var(--green)', borderColor: 'rgba(52,211,153,0.25)' }}>
+          <Download size={15} />
+          Download
         </button>
       );
     }

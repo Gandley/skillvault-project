@@ -1,12 +1,12 @@
 import { useClerkAuth } from '../lib/auth';
 import { useApp } from '../context/AppContext';
 import { hasVaultProSubscription } from '../lib/supabase';
-import { Briefcase, Crown } from 'lucide-react';
+import { Settings, Crown } from 'lucide-react';
 import { useState, useEffect } from 'react';
 
 export default function AuthNav() {
   const { isSignedIn, user, signOut } = useClerkAuth();
-  const { goMySkills, view } = useApp();
+  const { goMySkills, view } = useApp(); // goMySkills now routes to settings
   const [isPro, setIsPro] = useState(false);
 
   useEffect(() => {
@@ -25,15 +25,15 @@ export default function AuthNav() {
             Vault Pro
           </span>
         )}
-        <button 
-          onClick={goMySkills} 
+        <button
+          onClick={goMySkills}
           style={{
             ...mySkillsBtn,
-            color: view === 'my-skills' ? 'var(--accent)' : 'var(--text-secondary)',
+            color: view === 'settings' ? 'var(--accent)' : 'var(--text-secondary)',
           }}
         >
-          <Briefcase size={14} />
-          My Skills
+          <Settings size={14} />
+          Settings
         </button>
         <span style={authEmail}>{user.primaryEmailAddress?.emailAddress || user.firstName || 'User'}</span>
         <button onClick={signOut} style={authSignout}>Sign Out</button>

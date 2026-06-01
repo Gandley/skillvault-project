@@ -55,7 +55,8 @@ export function AppProvider({ children }) {
   const goAdmin = () => setView('admin');
   const goRepo = () => { setView('repo'); setSelectedSkill(null); setTierFilter(null); };
   const goRepoWithTier = (tier) => { setView('repo'); setSelectedSkill(null); setTierFilter(tier); };
-  const goMySkills = () => setView('my-skills');
+  const goSettings = () => setView('settings');
+  const goMySkills = () => setView('settings'); // legacy alias
   const goSkillDetail = (skill) => { setSelectedSkill(skill); setView('skill-detail'); };
 
   const addSkill = (skill) => {
@@ -98,6 +99,7 @@ export function AppProvider({ children }) {
         goAdmin,
         goRepo,
         goRepoWithTier,
+        goSettings,
         goMySkills,
         goSkillDetail,
         tierFilter,

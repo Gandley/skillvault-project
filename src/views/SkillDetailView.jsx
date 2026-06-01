@@ -1,7 +1,7 @@
 import { useApp } from '../context/AppContext';
 import { useClerkAuth } from '../lib/auth';
 import { buySingleSkill, subscribeVaultPro } from '../lib/stripe';
-import { recordDownload } from '../lib/supabase';
+import { recordDownload, hasVaultProSubscription, hasUserPurchasedSkill } from '../lib/supabase';
 import BugReportModal from '../components/BugReportModal';
 import * as Icons from 'lucide-react';
 import { ArrowLeft, Star, Download, Zap, Lock, Gift, CheckCircle, Calendar, User, Tag, Bug } from 'lucide-react';
