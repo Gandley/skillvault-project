@@ -192,6 +192,14 @@ export default function RepoView() {
           </div>
 
           <div style={actionsWrap}>
+            <a
+              href="https://franchisenow.ai/investment"
+              target="_blank"
+              rel="noreferrer"
+              style={agentSetupBtn}
+            >
+              Agent Setup
+            </a>
             <AuthNav />
           </div>
         </div>
@@ -499,6 +507,7 @@ const searchWrap = {
 const searchInput = { background: 'transparent', border: 'none', outline: 'none', color: 'var(--text-primary)', fontSize: 14, width: '100%', fontFamily: 'var(--font-body)' };
 
 const actionsWrap = { display: 'flex', alignItems: 'center', gap: 10, flexShrink: 0 };
+const agentSetupBtn = { display: 'inline-flex', alignItems: 'center', padding: '8px 16px', borderRadius: 10, background: 'var(--accent)', color: '#fff', fontSize: 13, fontWeight: 600, textDecoration: 'none', transition: 'all 0.2s', boxShadow: '0 2px 8px rgba(99,102,241,0.25)', whiteSpace: 'nowrap' };
 
 const hero = { padding: '40px 24px 28px', textAlign: 'center' };
 const heroInner = { maxWidth: 680, margin: '0 auto' };
