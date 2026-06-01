@@ -19,12 +19,6 @@ export default function AuthNav() {
   if (isSignedIn && user) {
     return (
       <div style={authUser}>
-        {isPro && (
-          <span style={proBadge}>
-            <Crown size={12} />
-            Vault Pro
-          </span>
-        )}
         <button
           onClick={goMySkills}
           style={{
@@ -36,6 +30,12 @@ export default function AuthNav() {
           Settings
         </button>
         <span style={authEmail}>{user.primaryEmailAddress?.emailAddress || user.firstName || 'User'}</span>
+        {isPro && (
+          <span style={proBadge}>
+            <Crown size={12} />
+            Vault Pro
+          </span>
+        )}
         <button onClick={signOut} style={authSignout}>Sign Out</button>
       </div>
     );
