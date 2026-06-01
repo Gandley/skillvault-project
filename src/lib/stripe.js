@@ -5,8 +5,8 @@
 
 import { recordPurchase } from './supabase';
 
-const PRICE_SINGLE_SKILL = 'price_1TcHl30lnf05XgL9LuczOlix';
-const PRICE_VAULT_PRO = 'price_1TcHl60lnf05XgL9bKFF5D8l';
+const PRICE_SINGLE_SKILL = 'price_1Ta4flIOVif6Dy1OEVfhQD15'; // $9 one-time (live)
+const PRICE_VAULT_PRO = 'price_1Ta4g4IOVif6Dy1O2MJynjMz'; // $27/mo subscription (live)
 
 export async function redirectToCheckout(priceId, metadata = {}) {
   const payload = {

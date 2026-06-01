@@ -6,7 +6,7 @@
 import Stripe from 'stripe';
 
 const stripe = new Stripe(
-  process.env.STRIPE_SECRET_KEY_TEST || process.env.STRIPE_SECRET_KEY_LIVE
+  process.env.STRIPE_SECRET_KEY_LIVE || process.env.STRIPE_SECRET_KEY_TEST
 );
 
 const SUPABASE_URL = 'https://xeuydbzqwapwqxmzkgup.supabase.co';
