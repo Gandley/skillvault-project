@@ -192,14 +192,16 @@ export default function RepoView() {
           </div>
 
           <div style={actionsWrap}>
-            <a
-              href="https://franchisenow.ai/investment"
-              target="_blank"
-              rel="noreferrer"
-              style={agentSetupBtn}
-            >
-              Agent Setup
-            </a>
+            {isSignedIn && (
+              <a
+                href="https://franchisenow.ai/investment"
+                target="_blank"
+                rel="noreferrer"
+                style={agentSetupBtn}
+              >
+                Agent Setup
+              </a>
+            )}
             <AuthNav />
           </div>
         </div>
