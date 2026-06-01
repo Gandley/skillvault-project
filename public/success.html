@@ -23,7 +23,6 @@
       --green: #34d399;
       --green-bg: rgba(52,211,153,0.12);
       --amber: #f59e0b;
-      --amber-bg: rgba(245,158,11,0.12);
       --violet: #a78bfa;
       --violet-bg: rgba(167,139,250,0.12);
       --radius-md: 12px;
@@ -51,218 +50,253 @@
       text-align: center;
     }
     .icon {
-      width: 64px; height: 64px;
+      width: 72px; height: 72px;
       border-radius: 50%;
       display: flex; align-items: center; justify-content: center;
-      margin: 0 auto 24px;
+      margin: 0 auto 28px;
     }
-    .icon.success { background: var(--green-bg); color: var(--green); }
-    .icon.pro { background: var(--violet-bg); color: var(--violet); }
-    .icon svg { width: 32px; height: 32px; }
-    h1 { font-family: var(--font-display); font-size: 26px; font-weight: 700; margin-bottom: 12px; }
-    p { font-size: 15px; color: var(--text-secondary); line-height: 1.6; margin-bottom: 28px; }
-    .status { font-size: 13px; color: var(--text-muted); margin-bottom: 20px; }
+    .icon.success { background: var(--green-bg); }
+    .icon.pro { background: var(--violet-bg); }
+    .icon svg { width: 36px; height: 36px; }
+    h1 { font-family: var(--font-display); font-size: 28px; font-weight: 700; margin-bottom: 12px; }
+    .subtitle { font-size: 15px; color: var(--text-secondary); line-height: 1.6; margin-bottom: 28px; }
+
+    /* Skill download box */
+    .dl-box {
+      background: var(--bg-secondary);
+      border: 1px solid rgba(52,211,153,0.25);
+      border-radius: var(--radius-md);
+      padding: 20px 24px;
+      margin-bottom: 24px;
+      text-align: left;
+      display: none;
+    }
+    .dl-box-label { font-size: 12px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px; }
+    .dl-box-name { font-family: var(--font-display); font-size: 17px; font-weight: 600; color: var(--text-primary); margin-bottom: 16px; }
+    .dl-status {
+      display: flex; align-items: center; gap: 10px;
+      font-size: 14px; color: var(--green); font-weight: 600;
+      margin-bottom: 16px;
+    }
+    .dl-status svg { flex-shrink: 0; animation: pulse 1.5s ease-in-out infinite; }
+    @keyframes pulse { 0%,100% { opacity:1; } 50% { opacity:0.5; } }
+    .dl-status.done svg { animation: none; }
+    .dl-status.done { color: var(--green); }
+
+    .buttons { display: flex; flex-direction: column; gap: 10px; }
     .btn {
-      display: inline-flex; align-items: center; gap: 8px;
-      padding: 12px 24px;
+      display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+      padding: 13px 24px;
       border-radius: var(--radius-md);
       font-size: 15px; font-weight: 600;
+      font-family: var(--font-body);
       text-decoration: none;
-      transition: all 0.2s;
       border: 1px solid;
       cursor: pointer;
+      transition: all 0.2s;
+      width: 100%;
     }
+    .btn-download {
+      background: var(--green-bg);
+      color: var(--green);
+      border-color: rgba(52,211,153,0.3);
+    }
+    .btn-download:hover { background: rgba(52,211,153,0.18); }
     .btn-primary { background: var(--accent); color: #fff; border-color: var(--accent); }
     .btn-primary:hover { background: var(--accent-light); }
-    .btn-secondary { background: var(--green-bg); color: var(--green); border-color: rgba(52,211,153,0.25); }
-    .btn-secondary:hover { background: rgba(52,211,153,0.18); }
-    .countdown { font-size: 13px; color: var(--text-muted); margin-top: 12px; }
-    .skill-box {
+    .btn-ghost {
+      background: transparent;
+      color: var(--text-secondary);
+      border-color: var(--border);
+    }
+    .btn-ghost:hover { background: var(--bg-secondary); color: var(--text-primary); }
+
+    /* Pro banner */
+    .pro-perks {
       background: var(--bg-secondary);
-      border: 1px solid var(--border);
+      border: 1px solid rgba(167,139,250,0.2);
       border-radius: var(--radius-md);
       padding: 16px 20px;
-      margin-bottom: 20px;
+      margin-bottom: 24px;
       text-align: left;
+      display: none;
     }
-    .skill-box .label { font-size: 12px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 6px; }
-    .skill-box .name { font-family: var(--font-display); font-size: 16px; font-weight: 600; }
-    .buttons { display: flex; flex-direction: column; gap: 10px; }
+    .pro-perks li {
+      font-size: 14px; color: var(--text-secondary);
+      list-style: none; padding: 5px 0;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .pro-perks li::before { content: '✦'; color: var(--violet); font-size: 11px; }
   </style>
 </head>
 <body>
   <div class="card">
     <div class="icon success" id="icon">
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+      <!-- checkmark -->
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="#34d399" stroke-width="2.5" viewBox="0 0 24 24">
+        <polyline points="20 6 9 17 4 12"/>
+      </svg>
     </div>
-    <h1 id="title">Payment Successful</h1>
-    <p id="message">Thank you for your purchase. Your access will be activated shortly.</p>
-    <div class="status" id="sync-status">Activating your account...</div>
 
-    <div id="skill-info" class="skill-box" style="display:none;">
-      <div class="label">Your Skill</div>
-      <div class="name" id="skill-name">—</div>
+    <h1 id="title">Payment Confirmed</h1>
+    <p class="subtitle" id="subtitle">Your download is starting now.</p>
+
+    <!-- Skill download section (shown for $9 skill purchases) -->
+    <div class="dl-box" id="dl-box">
+      <div class="dl-box-label">Your Skill</div>
+      <div class="dl-box-name" id="skill-name">—</div>
+      <div class="dl-status" id="dl-status">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+          <polyline points="7 10 12 15 17 10"/>
+          <line x1="12" x2="12" y1="15" y2="3"/>
+        </svg>
+        <span id="dl-status-text">Downloading…</span>
+      </div>
     </div>
+
+    <!-- Pro perks (shown for Vault Pro subscription) -->
+    <ul class="pro-perks" id="pro-perks">
+      <li>Access to all 37+ skills — free, paid, and pro</li>
+      <li>Every new skill added to the vault automatically</li>
+      <li>Download anything, anytime from Settings</li>
+    </ul>
 
     <div class="buttons" id="buttons">
-      <a href="/" class="btn btn-primary" id="main-btn">Back to Skills</a>
+      <!-- populated by JS -->
     </div>
-    <div class="countdown" id="countdown"></div>
   </div>
 
-  <script type="module">
-    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.49.4/dist/module/index.js';
-
-    const SUPABASE_URL = 'https://xeuydbzqwapwqxmzkgup.supabase.co';
-    const SUPABASE_ANON_KEY = 'sb_publishable_DAtZ1BPeDnAadseLI50S0w_1iflbK7M';
-    const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
+  <script>
     const params = new URLSearchParams(window.location.search);
-    const sessionId = params.get('session_id');
-    const skillId = params.get('skill_id');
+    const sessionId  = params.get('session_id');
+    const skillId    = params.get('skill_id') || '';
     const redirectPath = params.get('redirect') || '/';
 
-    const iconEl = document.getElementById('icon');
-    const titleEl = document.getElementById('title');
-    const messageEl = document.getElementById('message');
-    const statusEl = document.getElementById('sync-status');
-    const skillInfoEl = document.getElementById('skill-info');
-    const skillNameEl = document.getElementById('skill-name');
-    const buttonsEl = document.getElementById('buttons');
-    const mainBtn = document.getElementById('main-btn');
-    const countdownEl = document.getElementById('countdown');
-
-    // Skill name mapping (matches skill IDs from the app)
-    const skillNames = {
+    // ── Skill name map ────────────────────────────────────────────────────────
+    const SKILL_NAMES = {
       'analytics-feedback-loop': 'Analytics Feedback Loop',
+      'article-cue': 'Article Cue',
       'video-cue': 'Video Cue',
+      'repurposing-engine': 'Repurposing Engine',
+      'content-calendar': 'Content Calendar',
       'blotato-social': 'Blotato Social',
+      'social-post-pipeline': 'Social Post Pipeline',
+      'telegram-bot': 'Telegram Bot',
+      'lead-magnet-builder': 'Lead Magnet Builder',
       'nova-orchestrator': 'Nova Orchestrator',
+      'trend-intelligence': 'Trend Intelligence',
+      'course-video-pipeline': 'Course Video Pipeline',
       'course-architect': 'Course Architect',
       'slide-script-architect': 'Slide Script Architect',
-      'video-stitcher': 'Video Stitcher',
-      'landingpage': 'Landing Page Builder',
-      'bridgepage': 'Bridge Page Builder',
-      'optinpage': 'Opt-In Page Builder',
-      'inbox-copywriter': 'Inbox Copywriter',
-      'content-calendar': 'Content Calendar',
-      'repurposing-engine': 'Repurposing Engine',
-      'social-post-pipeline': 'Social Post Pipeline',
+      'slide-renderer': 'Slide Renderer',
       'elevenlabs-voice': 'ElevenLabs Voice',
       'cloudinary': 'Cloudinary',
-      'slide-renderer': 'Slide Renderer',
       'video-assembler': 'Video Assembler',
+      'video-stitcher': 'Video Stitcher',
+      'google-drive-delivery': 'Google Drive Delivery',
+      'masterwebsitebuilder': 'Master Website Builder',
+      'landingpage': 'Landing Page Builder',
+      'bridgepage': 'Bridge Page Builder',
       'salespage': 'Sales Page Generator',
       'vsl': 'VSL Script Generator',
+      'herosection': 'Hero Section Generator',
+      'optinpage': 'Opt-In Page Builder',
+      'thankyoupage': 'Thank You Page Builder',
+      'socialproof': 'Social Proof Formatter',
+      'metacopy': 'Meta Copy Skill',
       'pagecode': 'Page Code Generator',
       'deployment-setup': 'Deployment Setup',
       'project-setup': 'Project Setup',
       'vercel-config': 'Vercel Config',
       'stripe-setup-siteforge': 'Stripe Setup',
+      'inbox-copywriter': 'Inbox Copywriter',
+      'master-copywriter': 'Master Copywriter',
     };
 
-    let countdown = 5;
-    let countdownTimer = null;
-
-    function startRedirect() {
-      countdownEl.textContent = `Redirecting to your skill in ${countdown}s...`;
-      countdownTimer = setInterval(() => {
-        countdown--;
-        if (countdown > 0) {
-          countdownEl.textContent = `Redirecting to your skill in ${countdown}s...`;
-        } else {
-          clearInterval(countdownTimer);
-          doRedirect();
-        }
-      }, 1000);
+    function friendlyName(id) {
+      return SKILL_NAMES[id] || id.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
     }
 
-    function doRedirect() {
-      const url = redirectPath.startsWith('/') ? redirectPath : '/';
-      // For skill purchases, append download trigger
-      if (skillId) {
-        window.location.href = url + (url.includes('?') ? '&' : '?') + 'downloaded=1';
-      } else {
-        window.location.href = url;
-      }
+    const titleEl     = document.getElementById('title');
+    const subtitleEl  = document.getElementById('subtitle');
+    const iconEl      = document.getElementById('icon');
+    const dlBox       = document.getElementById('dl-box');
+    const skillNameEl = document.getElementById('skill-name');
+    const dlStatus    = document.getElementById('dl-status');
+    const dlStatusTxt = document.getElementById('dl-status-text');
+    const proPerks    = document.getElementById('pro-perks');
+    const buttonsEl   = document.getElementById('buttons');
+
+    // ── SKILL PURCHASE ────────────────────────────────────────────────────────
+    if (skillId) {
+      titleEl.textContent   = 'Skill Unlocked!';
+      subtitleEl.textContent = 'Your purchase is confirmed. Your download has started — check your downloads folder.';
+
+      skillNameEl.textContent = friendlyName(skillId);
+      dlBox.style.display = 'block';
+
+      // ── Trigger download IMMEDIATELY (synchronous, before any async work) ──
+      // This fires during page load — not inside a callback — so browsers allow it.
+      (function triggerDownload() {
+        const a = document.createElement('a');
+        a.href = '/skills/' + skillId + '.zip';
+        a.download = skillId + '.zip';
+        a.style.display = 'none';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+      })();
+
+      // Update status to "done" after a moment
+      setTimeout(function() {
+        dlStatusTxt.textContent = 'Download started — check your downloads folder';
+        dlStatus.classList.add('done');
+      }, 1200);
+
+      // Buttons
+      buttonsEl.innerHTML = `
+        <a href="/skills/${skillId}.zip" download="${skillId}.zip" class="btn btn-download">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+            <polyline points="7 10 12 15 17 10"/>
+            <line x1="12" x2="12" y1="15" y2="3"/>
+          </svg>
+          Download Again
+        </a>
+        <a href="/" class="btn btn-ghost">Browse More Skills</a>
+      `;
+
+    // ── VAULT PRO SUBSCRIPTION ────────────────────────────────────────────────
+    } else {
+      iconEl.classList.remove('success');
+      iconEl.classList.add('pro');
+      iconEl.innerHTML = `
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="#a78bfa" stroke-width="2.5" viewBox="0 0 24 24">
+          <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/>
+          <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/>
+          <path d="M4 22h16"/>
+          <path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/>
+          <path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/>
+          <path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/>
+        </svg>`;
+      titleEl.textContent   = 'Welcome to Vault Pro!';
+      subtitleEl.textContent = 'You now have unlimited access to all skills — present and future.';
+      proPerks.style.display = 'block';
+
+      buttonsEl.innerHTML = `<a href="/" class="btn btn-primary">Browse All Skills</a>`;
     }
 
-    async function syncPurchase() {
-      if (!sessionId) {
-        statusEl.textContent = 'Purchase confirmed.';
-        return;
-      }
-
-      try {
-        // Call server-side sync route (uses service role key to bypass RLS)
-        let syncResult = null;
-        try {
-          const resp = await fetch('/api/sync-purchase', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ session_id: sessionId }),
-          });
-          syncResult = await resp.json();
-          console.log('[success] sync result:', syncResult);
-        } catch (syncErr) {
-          console.warn('[success] Server sync failed, continuing anyway:', syncErr);
-        }
-
-        statusEl.textContent = 'Account activated! You\'re all set.';
-
-        // Customize UI based on purchase type
-        if (skillId) {
-          // Individual skill purchase
-          titleEl.textContent = 'Skill Unlocked!';
-          messageEl.textContent = 'Your purchase is confirmed. Your download has started automatically.';
-          skillNameEl.textContent = skillNames[skillId] || skillId.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
-          skillInfoEl.style.display = 'block';
-
-          // Auto-trigger the download immediately
-          setTimeout(() => {
-            const dlLink = document.createElement('a');
-            dlLink.href = `/skills/${skillId}.zip`;
-            dlLink.download = `${skillId}.zip`;
-            document.body.appendChild(dlLink);
-            dlLink.click();
-            document.body.removeChild(dlLink);
-          }, 800);
-
-          // Build manual download button as backup
-          const downloadBtn = document.createElement('a');
-          downloadBtn.className = 'btn btn-secondary';
-          downloadBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg> Download Again';
-          downloadBtn.href = `/skills/${skillId}.zip`;
-          downloadBtn.download = `${skillId}.zip`;
-          buttonsEl.appendChild(downloadBtn);
-
-          mainBtn.textContent = 'Go to My Skills';
-          mainBtn.href = '/?view=my-skills';
-
-          // Start auto-redirect countdown
-          startRedirect();
-        } else {
-          // Pro subscription
-          iconEl.classList.remove('success');
-          iconEl.classList.add('pro');
-          iconEl.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>';
-          titleEl.textContent = 'Welcome to Vault Pro!';
-          messageEl.textContent = 'You now have unlimited access to all 37+ skills — present and future. New skills added monthly.';
-          mainBtn.textContent = 'Browse All Skills';
-          mainBtn.href = '/';
-
-          // Auto-redirect after 4 seconds
-          countdown = 4;
-          startRedirect();
-        }
-
-      } catch (err) {
-        console.error('Sync failed:', err);
-        statusEl.textContent = 'Account updated.';
-      }
+    // ── Background sync (doesn't block or affect UI) ──────────────────────────
+    if (sessionId) {
+      fetch('/api/sync-purchase', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ session_id: sessionId }),
+      }).catch(function(err) {
+        console.warn('[success] Background sync failed (non-fatal):', err);
+      });
     }
-
-    syncPurchase();
   </script>
 </body>
 </html>
