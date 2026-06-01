@@ -2,6 +2,16 @@ import { useState, useEffect } from 'react';
 import { useClerkAuth } from '../lib/auth';
 import { hasVaultProSubscription } from '../lib/supabase';
 import { useApp } from '../context/AppContext';
+import { skills as allSkillsFlat, skillPacks } from '../data/skills.js';
+
+const ALL_SKILLS = [
+  ...(allSkillsFlat || []),
+  ...(skillPacks || []).flatMap((p) => p.skills || []),
+];
+function getSkillName(id) {
+  const s = ALL_SKILLS.find((x) => x.id === id);
+  return s ? s.name : id;
+}
 import {
   ArrowLeft, Crown, User, CreditCard, Download, LogOut,
   Mail, Shield, ExternalLink, ChevronRight, Clock,
@@ -53,7 +63,7 @@ export default function SettingsView() {
       if (data.url) {
         window.location.href = data.url;
       } else {
-        alert('Could not open billing portal. Please try again.');
+        alert(data.error || 'Could not open billing portal. Please try again.');
       }
     } catch (err) {
       console.error('[Settings] billing portal error:', err);
@@ -261,7 +271,7 @@ export default function SettingsView() {
                           <div style={{ display: 'flex', alignItems: 'center', gap: 12, flex: 1 }}>
                             <div style={dlIcon}><Download size={16} color="var(--accent)" /></div>
                             <div>
-                              <div style={dlSkillId}>{p.skill_id}</div>
+                              <div style={dlSkillId}>{getSkillName(p.skill_id)}</div>
                               {p.purchased_at && (
                                 <div style={dlDate}>
                                   <Clock size={11} style={{ marginRight: 3 }} />

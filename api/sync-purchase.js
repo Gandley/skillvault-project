@@ -111,24 +111,34 @@ export default async function handler(req, res) {
 
     // For Pro subscriptions — update or create user record
     if (mode === 'subscription' && clerkUserId) {
+      // Grab the Stripe customer ID from the session so billing portal works later
+      const stripeCustomerId = typeof session.customer === 'string'
+        ? session.customer
+        : session.customer?.id || null;
+
       const existingUser = await supabaseGet(
         'users',
         `clerk_user_id=eq.${encodeURIComponent(clerkUserId)}&select=clerk_user_id`,
         serviceKey
       );
 
+      const userPayload = {
+        subscription_status: 'active',
+        updated_at: now,
+        ...(stripeCustomerId ? { stripe_customer_id: stripeCustomerId } : {}),
+      };
+
       if (existingUser && existingUser.length > 0) {
         await supabasePatch(
           'users',
           `clerk_user_id=eq.${encodeURIComponent(clerkUserId)}`,
-          { subscription_status: 'active', updated_at: now },
+          userPayload,
           serviceKey
         );
       } else {
         await supabasePost('users', {
           clerk_user_id: clerkUserId,
-          subscription_status: 'active',
-          updated_at: now,
+          ...userPayload,
         }, serviceKey);
       }
     }
