@@ -428,7 +428,7 @@ export default function RepoView() {
             <a href="/refund.html" style={footerLink}>Refunds</a>
             <a href="#coming-soon" style={footerLink}>Docs</a>
             <a href="#coming-soon" style={footerLink}>API</a>
-            <a href="#coming-soon" style={footerLink}>Support</a>
+            <a href="mailto:support@franchisenow.media" style={footerLink}>Support</a>
           </div>
         </div>
       </footer>
