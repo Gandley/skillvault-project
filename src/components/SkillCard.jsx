@@ -12,6 +12,7 @@ const colorMap = {
   rose: { bg: 'var(--rose-bg)', text: 'var(--rose)', border: 'rgba(244,63,94,0.2)' },
   cyan: { bg: 'var(--cyan-bg)', text: 'var(--cyan)', border: 'rgba(34,211,238,0.2)' },
   violet: { bg: 'var(--violet-bg)', text: 'var(--violet)', border: 'rgba(167,139,250,0.2)' },
+  orange: { bg: 'rgba(249,115,22,0.08)', text: '#f97316', border: 'rgba(249,115,22,0.2)' },
 };
 
 const tierStyles = {
