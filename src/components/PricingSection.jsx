@@ -111,7 +111,7 @@ export default function PricingSection() {
           </div>
           <ul style={featureList}>
             {[
-              'All 37 skills + future additions',
+              'All 41 skills + future additions',
               'New skills added monthly',
               'Priority support',
               'Advanced documentation & examples',
