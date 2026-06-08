@@ -160,7 +160,7 @@ export default function RepoView() {
           <div style={bannerInner}>
             <div style={bannerLeft}>
               <Lock size={16} style={{ color: 'var(--violet)', flexShrink: 0 }} />
-              <span>Get unlimited access to all 42 skills — <strong style={{ color: 'var(--violet)' }}>$27/month</strong></span>
+              <span>Get unlimited access to all 62 skills — <strong style={{ color: 'var(--violet)' }}>$27/month</strong></span>
             </div>
             <div style={bannerRight}>
               <button onClick={handleBannerPro} style={bannerBtn}>Go Pro</button>
