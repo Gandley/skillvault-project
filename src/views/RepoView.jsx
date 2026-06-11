@@ -85,8 +85,9 @@ export default function RepoView() {
     );
   });
 
-  // Filter skills
-  const allSkills = packs.flatMap((p) => p.skills);
+  // Filter skills (pack skills + individual standalone skills)
+  const individualSkills = data.individualSkills || [];
+  const allSkills = [...packs.flatMap((p) => p.skills), ...individualSkills];
   let filteredSkills = allSkills;
 
   if (activePack !== 'all') {

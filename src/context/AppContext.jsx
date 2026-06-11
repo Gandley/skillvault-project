@@ -5,7 +5,7 @@ import { skills as allSkillsFlat, skillPacks, individualSkills } from '../data/s
 const AppContext = createContext();
 
 export function AppProvider({ children }) {
-  const [data, setData] = useState({ ...loadData, individualSkills });
+  const [data, setData] = useState(loadData());
   const [settings, setSettingsState] = useState(loadSettings);
   const [view, setView] = useState('repo');
 
