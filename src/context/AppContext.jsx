@@ -1,11 +1,11 @@
 import { createContext, useContext, useState, useEffect } from 'react';
 import { loadData, saveData, loadSettings, saveSettings } from '../lib/storage';
-import { skills as allSkillsFlat, skillPacks } from '../data/skills.js';
+import { skills as allSkillsFlat, skillPacks, individualSkills } from '../data/skills.js';
 
 const AppContext = createContext();
 
 export function AppProvider({ children }) {
-  const [data, setData] = useState(loadData);
+  const [data, setData] = useState({ ...loadData, individualSkills });
   const [settings, setSettingsState] = useState(loadSettings);
   const [view, setView] = useState('repo');
 

@@ -976,8 +976,27 @@ export const skillPacks = [
   },
 ];
 
-// Flatten all skills for backward compatibility
-export const skills = skillPacks.flatMap((pack) => pack.skills);
+// Individual standalone skills (not part of any pack)
+export const individualSkills = [
+  {
+    id: 'gmail',
+    name: 'Gmail Skill',
+    description: 'Reads, searches, drafts, sends, and organizes email in Gmail. Use this skill whenever an agent needs to find an email, create a draft, reply to a thread, send a message, or apply a label. Works via Zapier SDK (Node.js), Zapier REST API (any HTTP client), or direct Gmail API (any language). Never sends email without explicit user confirmation — always drafts first.',
+    status: 'active',
+    version: '1.0.0',
+    installs: 0,
+    rating: 'NEW',
+    author: 'SkillVault',
+    tags: ['gmail', 'email', 'zapier', 'api', 'communication'],
+    icon: 'Mail',
+    color: 'red',
+    tier: 'paid',
+    worksWith: ['OpenClaw', 'Claude', 'ChatGPT', 'n8n'],
+  },
+];
+
+// Flatten all skills for backward compatibility (packs + individual)
+export const skills = [...skillPacks.flatMap((pack) => pack.skills), ...individualSkills];
 
 // Categories are now skill packs
 export const categories = [
